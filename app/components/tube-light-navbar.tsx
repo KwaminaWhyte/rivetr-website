@@ -17,9 +17,13 @@ export interface NavItem {
 export function TubeLightNavBar({
   items,
   className,
+  bare = false,
 }: {
   items: NavItem[];
   className?: string;
+  // When true, render only the link list (no pill chrome) so it can nest
+  // inside a larger container.
+  bare?: boolean;
 }) {
   const { pathname } = useLocation();
 
@@ -30,7 +34,9 @@ export function TubeLightNavBar({
     <nav
       aria-label="Primary"
       className={cn(
-        "flex items-center gap-1 rounded-full border border-ink-700 bg-ink-900/70 px-1 py-1 backdrop-blur-lg",
+        "flex items-center gap-1",
+        !bare &&
+          "rounded-full border border-ink-700 bg-ink-900/70 px-1 py-1 backdrop-blur-lg",
         className,
       )}
     >
