@@ -36,7 +36,7 @@ export function TubeLightNavBar({
       className={cn(
         "flex items-center gap-1",
         !bare &&
-          "rounded-full border border-ink-700 bg-ink-900/70 px-1 py-1 backdrop-blur-lg",
+          "rounded-full border border-border bg-surface/70 px-1 py-1 backdrop-blur-lg",
         className,
       )}
     >
@@ -50,7 +50,7 @@ export function TubeLightNavBar({
             aria-current={active ? "page" : undefined}
             className={cn(
               "relative cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60",
-              active ? "text-brand-300" : "text-mist-400 hover:text-white",
+              active ? "text-brand-300" : "text-subtle hover:text-strong",
             )}
           >
             <span className="hidden sm:inline">{item.name}</span>

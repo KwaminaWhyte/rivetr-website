@@ -42,11 +42,12 @@ export function Button({
     lg: "px-6 py-3 text-base",
   };
   const variants = {
+    // Primary stays brand-on-white; readable in both themes.
     primary:
       "bg-brand-500 text-white hover:bg-brand-400 hover:-translate-y-0.5 shadow-[0_8px_30px_-8px_rgba(249,115,22,0.6)]",
     outline:
-      "border border-ink-600 text-mist-200 hover:border-brand-500/60 hover:text-white hover:bg-ink-800/60",
-    ghost: "text-mist-300 hover:text-white hover:bg-ink-800/60",
+      "border border-border-strong text-fg hover:border-brand-500/60 hover:text-strong hover:bg-surface-strong/60",
+    ghost: "text-muted hover:text-strong hover:bg-surface-strong/60",
   };
   const cls = cx(base, sizes[size], variants[variant], className);
   const external = href.startsWith("http");
@@ -106,11 +107,11 @@ export function SectionHeading({
           {eyebrow}
         </p>
       )}
-      <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+      <h2 className="text-3xl font-bold tracking-tight text-strong sm:text-4xl">
         {title}
       </h2>
       {blurb && (
-        <p className="mt-4 text-lg leading-relaxed text-mist-400">{blurb}</p>
+        <p className="mt-4 text-lg leading-relaxed text-subtle">{blurb}</p>
       )}
     </div>
   );

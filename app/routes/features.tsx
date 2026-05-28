@@ -32,10 +32,10 @@ export default function Features() {
             <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
             Every feature, no paid tiers
           </Badge>
-          <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
+          <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-bold tracking-tight text-strong sm:text-5xl">
             One binary, the <span className="text-gradient">whole platform</span>
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-mist-400">
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-subtle">
             Rivetr bundles everything a modern self-hosted PaaS needs: deploys,
             databases, security, observability, and scale, into a single Rust
             binary that idles around 30&nbsp;MB of RAM.

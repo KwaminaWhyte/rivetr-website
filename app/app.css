@@ -6,7 +6,7 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
     Consolas, monospace;
 
-  /* Brand: rust/amber, nodding to Rust the language */
+  /* Brand: rust/amber, nodding to Rust the language. Stable across themes. */
   --color-brand-50: #fff7ed;
   --color-brand-100: #ffedd5;
   --color-brand-200: #fed7aa;
@@ -18,7 +18,8 @@
   --color-brand-800: #9a3412;
   --color-brand-900: #7c2d12;
 
-  /* Ink: near-black slate surfaces */
+  /* Ink: near-black slate surfaces (legacy, still referenced by a handful
+     of brand chrome accents). Prefer the semantic tokens below. */
   --color-ink-950: #07090d;
   --color-ink-900: #0b0e14;
   --color-ink-850: #0f131b;
@@ -29,33 +30,128 @@
   --color-mist-400: #8b95a7;
   --color-mist-300: #aab3c2;
   --color-mist-200: #c9d0db;
+}
 
+/* ── Semantic theme tokens ────────────────────────────────────────────────
+   Source of truth lives on :root (dark) and [data-theme="light"]. The
+   inline @theme block below republishes them as Tailwind colour utilities
+   (`bg-bg`, `text-fg`, `border-border`, …) so component code doesn't have
+   to type `var(--...)` everywhere. */
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --bg: #07090d;          /* page */
+  --bg-elevated: #0b0e14; /* footer / wide bands */
+  --surface: #0b0e14;     /* cards, frames */
+  --surface-strong: #141925;
+
+  /* Text */
+  --fg-strong: #ffffff;
+  --fg: #c9d0db;          /* default body */
+  --fg-muted: #aab3c2;
+  --fg-subtle: #8b95a7;
+
+  /* Lines */
+  --border: #1d2433;
+  --border-strong: #2a3344;
+
+  /* Decorative */
+  --grid-dot: rgba(148, 163, 184, 0.09);
+  --aurora-a: rgba(249, 115, 22, 0.12);
+  --aurora-b: rgba(124, 45, 18, 0.06);
+  --aurora-c: rgba(249, 115, 22, 0.12);
   --shadow-glow: 0 0 0 1px rgba(249, 115, 22, 0.18),
     0 18px 60px -18px rgba(249, 115, 22, 0.45);
+  --selection-bg: rgba(249, 115, 22, 0.3);
+  --selection-fg: #ffffff;
+
+  /* Backdrops & overlays — components reference these for translucent
+     surfaces that need to invert with the theme. */
+  --overlay-soft: rgba(20, 25, 37, 0.6);   /* dark tinted pane */
+  --overlay-scrim: rgba(7, 9, 13, 0.8);    /* drawer scrim */
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* Warm cream surfaces */
+  --bg: #faf7f2;
+  --bg-elevated: #f5efe5;
+  --surface: #ffffff;
+  --surface-strong: #f5efe5;
+
+  /* Slate ink text on cream — tuned for ≥4.5:1 against --bg */
+  --fg-strong: #0b0e14;
+  --fg: #2a3344;
+  --fg-muted: #4b5568;
+  --fg-subtle: #6b7280;
+
+  /* Warm-tinted borders */
+  --border: #e5dccc;
+  --border-strong: #c2b7a3;
+
+  /* Decorative */
+  --grid-dot: rgba(120, 90, 40, 0.10);
+  --aurora-a: rgba(249, 115, 22, 0.16);
+  --aurora-b: rgba(194, 65, 12, 0.08);
+  --aurora-c: rgba(253, 186, 116, 0.18);
+  --shadow-glow: 0 0 0 1px rgba(249, 115, 22, 0.22),
+    0 18px 60px -18px rgba(249, 115, 22, 0.35);
+  --selection-bg: rgba(249, 115, 22, 0.28);
+  --selection-fg: #0b0e14;
+
+  --overlay-soft: rgba(255, 255, 255, 0.7);
+  --overlay-scrim: rgba(11, 14, 20, 0.4);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-fg: var(--fg);
+  --color-fg-strong: var(--fg-strong);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
 }
 
 html,
 body {
-  @apply bg-ink-950 text-mist-200 antialiased;
-  color-scheme: dark;
+  @apply bg-bg text-fg antialiased;
 }
 
 ::selection {
-  background: rgba(249, 115, 22, 0.3);
-  color: #fff;
+  background: var(--selection-bg);
+  color: var(--selection-fg);
 }
 
-/* Thin scrollbar to match the dark surface */
+/* Thin scrollbar tuned to whatever surface is current. */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-ink-600) transparent;
+  scrollbar-color: var(--border-strong) transparent;
 }
 
+/* Theme-aware text colour shortcuts. Defined as plain rules (not @layer
+   utilities) so they can be referenced by other utility classes via @apply
+   in v4 — utilities defined inside @layer utilities can't always be
+   re-@applied from outside that layer. */
+.text-strong { color: var(--fg-strong); }
+.text-muted { color: var(--fg-muted); }
+.text-subtle { color: var(--fg-subtle); }
+
+/* Theme-aware surface shortcut. */
+.bg-elevated { background-color: var(--bg-elevated); }
+
 @layer utilities {
+
   /* Dotted grid backdrop for hero/section depth */
   .bg-grid {
     background-image: radial-gradient(
-      rgba(148, 163, 184, 0.09) 1px,
+      var(--grid-dot) 1px,
       transparent 1px
     );
     background-size: 22px 22px;
@@ -68,7 +164,7 @@ body {
   }
 
   .text-gradient {
-    background: linear-gradient(120deg, #fff 0%, #fdba74 55%, #f97316 100%);
+    background: linear-gradient(120deg, var(--fg-strong) 0%, #fdba74 55%, #f97316 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -78,13 +174,13 @@ body {
     box-shadow: var(--shadow-glow);
   }
 
-  /* Animated conic glow behind hero */
+  /* Animated conic glow behind hero — theme-aware stops */
   .aurora {
     background: conic-gradient(
       from 180deg at 50% 50%,
-      rgba(249, 115, 22, 0.12),
-      rgba(124, 45, 18, 0.06),
-      rgba(249, 115, 22, 0.12)
+      var(--aurora-a),
+      var(--aurora-b),
+      var(--aurora-c)
     );
     filter: blur(70px);
   }
@@ -145,18 +241,18 @@ body {
   );
 }
 
-/* Markdown prose styling for docs + changelog (dark) */
+/* Markdown prose styling for docs + changelog */
 .prose-rivetr {
-  @apply text-mist-300 leading-relaxed;
+  @apply text-fg-muted leading-relaxed;
 }
 .prose-rivetr h1 {
-  @apply mt-0 mb-4 text-3xl font-bold tracking-tight text-white;
+  @apply mt-0 mb-4 text-3xl font-bold tracking-tight text-fg-strong;
 }
 .prose-rivetr h2 {
-  @apply mt-10 mb-3 border-b border-ink-700 pb-2 text-2xl font-semibold tracking-tight text-white scroll-mt-24;
+  @apply mt-10 mb-3 border-b border-border pb-2 text-2xl font-semibold tracking-tight text-fg-strong scroll-mt-24;
 }
 .prose-rivetr h3 {
-  @apply mt-7 mb-2 text-lg font-semibold text-white scroll-mt-24;
+  @apply mt-7 mb-2 text-lg font-semibold text-fg-strong scroll-mt-24;
 }
 .prose-rivetr p {
   @apply my-4;
@@ -165,19 +261,26 @@ body {
   @apply font-medium text-brand-400 underline-offset-4 hover:underline;
 }
 .prose-rivetr ul {
-  @apply my-4 list-disc space-y-1.5 pl-6 marker:text-ink-600;
+  @apply my-4 list-disc space-y-1.5 pl-6;
+}
+.prose-rivetr ul {
+  list-style-type: disc;
+}
+.prose-rivetr ul::marker,
+.prose-rivetr ol::marker {
+  color: var(--border-strong);
 }
 .prose-rivetr ol {
-  @apply my-4 list-decimal space-y-1.5 pl-6 marker:text-mist-400;
+  @apply my-4 list-decimal space-y-1.5 pl-6;
 }
 .prose-rivetr li {
   @apply pl-1;
 }
 .prose-rivetr strong {
-  @apply font-semibold text-white;
+  @apply font-semibold text-fg-strong;
 }
 .prose-rivetr code {
-  @apply rounded-md border border-ink-700 bg-ink-900 px-1.5 py-0.5 font-mono text-[0.85em] text-brand-300;
+  @apply rounded-md border border-border bg-surface px-1.5 py-0.5 font-mono text-[0.85em] text-brand-300;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
@@ -187,23 +290,24 @@ body {
   min-width: 0;
 }
 .prose-rivetr pre {
-  @apply my-5 overflow-x-auto rounded-xl border border-ink-700 bg-ink-900 p-4 text-sm;
+  @apply my-5 overflow-x-auto rounded-xl border border-border bg-surface p-4 text-sm;
 }
 .prose-rivetr pre code {
-  @apply border-0 bg-transparent p-0 text-mist-200;
+  @apply border-0 bg-transparent p-0 text-fg;
 }
 .prose-rivetr blockquote {
-  @apply my-5 border-l-2 border-brand-500/50 pl-4 text-mist-400 italic;
+  @apply my-5 border-l-2 border-brand-500/50 pl-4 italic;
+  color: var(--fg-subtle);
 }
 .prose-rivetr table {
   @apply my-5 w-full border-collapse overflow-hidden rounded-lg text-sm;
 }
 .prose-rivetr th {
-  @apply border-b border-ink-700 bg-ink-900 px-3 py-2 text-left font-semibold text-white;
+  @apply border-b border-border bg-surface px-3 py-2 text-left font-semibold text-fg-strong;
 }
 .prose-rivetr td {
-  @apply border-b border-ink-800 px-3 py-2 align-top;
+  @apply border-b border-border px-3 py-2 align-top;
 }
 .prose-rivetr hr {
-  @apply my-8 border-ink-700;
+  @apply my-8 border-border;
 }

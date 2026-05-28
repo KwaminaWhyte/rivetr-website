@@ -33,7 +33,7 @@ const COLUMNS = [
 function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
   const external = href.startsWith("http");
   const cls =
-    "text-sm text-mist-400 hover:text-white transition-colors duration-150 focus:outline-none focus-visible:text-white";
+    "text-sm text-subtle hover:text-strong transition-colors duration-150 focus:outline-none focus-visible:text-strong";
 
   if (external) {
     return (
@@ -53,7 +53,7 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-ink-700 bg-ink-900">
+    <footer className="border-t border-border bg-elevated">
       {/* Main content */}
       <div className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-8">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
@@ -61,16 +61,16 @@ export function SiteFooter() {
           <div className="lg:col-span-1">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 rounded text-base font-bold text-white transition-colors hover:text-brand-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
+              className="inline-flex items-center gap-2 rounded text-base font-bold text-strong transition-colors hover:text-brand-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
             >
               <RivetrLogo size={22} />
               {SITE.name}
             </Link>
-            <p className="mt-2 text-sm text-mist-400 leading-relaxed">
+            <p className="mt-2 text-sm text-subtle leading-relaxed">
               {SITE.tagline}
             </p>
             {/* Install command chip */}
-            <div className="mt-4 inline-flex items-center rounded-md border border-ink-600 bg-ink-800 px-3 py-1.5">
+            <div className="mt-4 inline-flex items-center rounded-md border border-border-strong bg-surface-strong px-3 py-1.5">
               <code className="font-mono text-xs text-brand-300 select-all">
                 {SITE.installCmd}
               </code>
@@ -80,7 +80,7 @@ export function SiteFooter() {
           {/* Link columns */}
           {COLUMNS.map((col) => (
             <div key={col.heading}>
-              <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest text-mist-300">
+              <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest text-muted">
                 {col.heading}
               </h3>
               <ul className="space-y-3" role="list">
@@ -96,16 +96,16 @@ export function SiteFooter() {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-ink-700">
+      <div className="border-t border-border">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
-          <p className="text-xs text-mist-400">
+          <p className="text-xs text-subtle">
             &copy; {year} {SITE.name} &middot; MIT licensed
           </p>
           <a
             href={SITE.github}
             target="_blank"
             rel="noreferrer"
-            className="text-mist-400 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60 rounded"
+            className="text-subtle hover:text-strong transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60 rounded"
             aria-label="Rivetr on GitHub"
           >
             <GithubIcon size={16} />

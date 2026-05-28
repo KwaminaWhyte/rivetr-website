@@ -21,13 +21,13 @@ function CellValue({
   if (value === false) {
     return (
       <Minus
-        className="mx-auto h-5 w-5 text-mist-500/60"
+        className="mx-auto h-5 w-5 text-fg-subtle/60"
         aria-label="Not supported"
       />
     );
   }
   return (
-    <span className={isRivetr ? "text-white font-medium" : "text-mist-200"}>
+    <span className={isRivetr ? "text-strong font-medium" : "text-fg"}>
       {value}
     </span>
   );
@@ -35,11 +35,11 @@ function CellValue({
 
 function MobileCard({ row }: { row: CompareRow }) {
   return (
-    <div className="rounded-xl border border-ink-700 overflow-hidden">
-      <div className="bg-ink-800/60 px-4 py-2.5">
-        <span className="text-sm font-medium text-mist-200">{row.feature}</span>
+    <div className="rounded-xl border border-border overflow-hidden">
+      <div className="bg-surface-strong/60 px-4 py-2.5">
+        <span className="text-sm font-medium text-fg">{row.feature}</span>
       </div>
-      <div className="grid grid-cols-3 divide-x divide-ink-700">
+      <div className="grid grid-cols-3 divide-x divide-[var(--border)]">
         {(
           [
             { label: "Rivetr", value: row.rivetr, isRivetr: true },
@@ -56,7 +56,7 @@ function MobileCard({ row }: { row: CompareRow }) {
             }
           >
             <span
-              className={`text-xs font-semibold uppercase tracking-wider ${isRivetr ? "text-brand-400" : "text-mist-500"}`}
+              className={`text-xs font-semibold uppercase tracking-wider ${isRivetr ? "text-brand-400" : "text-subtle"}`}
             >
               {label}
             </span>
@@ -82,11 +82,11 @@ export function Compare() {
 
         {/* Desktop table */}
         <div className="mt-14 hidden md:block">
-          <div className="overflow-hidden rounded-xl border border-ink-700">
+          <div className="overflow-hidden rounded-xl border border-border">
             <table className="w-full border-collapse text-sm">
               <thead>
-                <tr className="border-b border-ink-700">
-                  <th className="w-56 bg-ink-900 px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-mist-500">
+                <tr className="border-b border-border">
+                  <th className="w-56 bg-surface px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-subtle">
                     Feature
                   </th>
                   {/* Rivetr header: highlighted */}
@@ -95,12 +95,12 @@ export function Compare() {
                       className="absolute inset-x-0 top-0 h-0.5 bg-brand-500"
                       aria-hidden="true"
                     />
-                    <span className="text-sm font-bold text-white">Rivetr</span>
+                    <span className="text-sm font-bold text-strong">Rivetr</span>
                   </th>
-                  <th className="bg-ink-900 px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-mist-500">
+                  <th className="bg-surface px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-subtle">
                     Coolify
                   </th>
-                  <th className="bg-ink-900 px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-mist-500">
+                  <th className="bg-surface px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-subtle">
                     Dokploy
                   </th>
                 </tr>
@@ -111,11 +111,11 @@ export function Compare() {
                     key={row.feature}
                     className={
                       i % 2 === 0
-                        ? "border-b border-ink-700/60"
-                        : "border-b border-ink-700/60 bg-ink-900/40"
+                        ? "border-b border-border/60"
+                        : "border-b border-border/60 bg-surface/40"
                     }
                   >
-                    <td className="px-6 py-4 font-medium text-mist-300">
+                    <td className="px-6 py-4 font-medium text-muted">
                       {row.feature}
                     </td>
                     <td className="bg-brand-500/[0.06] px-6 py-4 text-center">
@@ -141,7 +141,7 @@ export function Compare() {
           ))}
         </div>
 
-        <p className="mt-4 text-center text-xs text-mist-500">
+        <p className="mt-4 text-center text-xs text-subtle">
           Figures from public docs and our own measurements, 2026.
         </p>
       </Container>

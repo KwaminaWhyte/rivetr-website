@@ -13,7 +13,7 @@ function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
     <nav aria-label="Documentation navigation" className="space-y-6">
       {DOCS_NAV.map((group) => (
         <div key={group.group}>
-          <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-widest text-mist-400">
+          <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-widest text-subtle">
             {group.group}
           </p>
           <ul className="space-y-0.5">
@@ -29,7 +29,7 @@ function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
                       "block rounded-md px-3 py-1.5 text-sm transition-colors duration-150",
                       active
                         ? "bg-brand-500/10 text-brand-400 font-medium"
-                        : "text-mist-300 hover:bg-ink-800 hover:text-white",
+                        : "text-muted hover:bg-surface-strong hover:text-strong",
                     ].join(" ")}
                   >
                     {item.title}
@@ -41,12 +41,12 @@ function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
         </div>
       ))}
 
-      <div className="border-t border-ink-700 pt-4">
+      <div className="border-t border-border pt-4">
         <a
           href={GITHUB_DOCS_BASE}
           target="_blank"
           rel="noreferrer"
-          className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm text-mist-400 transition-colors hover:text-white"
+          className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm text-subtle transition-colors hover:text-strong"
         >
           <ExternalLink size={13} />
           View on GitHub
@@ -60,7 +60,7 @@ export default function DocsLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-ink-950">
+    <div className="min-h-screen bg-bg">
       {/* Top bar: same height as site-nav to account for fixed nav */}
       <div className="h-14" aria-hidden="true" />
 
@@ -69,7 +69,7 @@ export default function DocsLayout() {
         <aside className="hidden w-56 shrink-0 lg:block xl:w-64">
           <div className="sticky top-[72px] max-h-[calc(100vh-72px)] overflow-y-auto py-8 pr-6">
             {/* Docs label */}
-            <div className="mb-6 flex items-center gap-2 text-white">
+            <div className="mb-6 flex items-center gap-2 text-strong">
               <BookOpen size={16} className="text-brand-400" />
               <span className="text-sm font-semibold">Docs</span>
             </div>
@@ -82,7 +82,7 @@ export default function DocsLayout() {
           <button
             aria-label={sidebarOpen ? "Close navigation" : "Open navigation"}
             onClick={() => setSidebarOpen((v) => !v)}
-            className="flex h-12 w-12 items-center justify-center rounded-full border border-ink-600 bg-ink-900 text-mist-200 shadow-lg transition-colors hover:border-brand-500/60 hover:text-white"
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-border-strong bg-surface text-fg shadow-lg transition-colors hover:border-brand-500/60 hover:text-strong"
           >
             {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -92,11 +92,12 @@ export default function DocsLayout() {
         {sidebarOpen && (
           <>
             <div
-              className="fixed inset-0 z-30 bg-ink-950/80 backdrop-blur-sm lg:hidden"
+              className="fixed inset-0 z-30 backdrop-blur-sm lg:hidden"
+              style={{ background: "var(--overlay-scrim)" }}
               onClick={() => setSidebarOpen(false)}
             />
-            <aside className="fixed inset-y-0 left-0 z-40 w-64 overflow-y-auto border-r border-ink-700 bg-ink-900 p-6 lg:hidden">
-              <div className="mb-6 flex items-center gap-2 text-white">
+            <aside className="fixed inset-y-0 left-0 z-40 w-64 overflow-y-auto border-r border-border bg-surface p-6 lg:hidden">
+              <div className="mb-6 flex items-center gap-2 text-strong">
                 <BookOpen size={16} className="text-brand-400" />
                 <span className="text-sm font-semibold">Docs</span>
               </div>

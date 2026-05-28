@@ -125,22 +125,22 @@ export default function About() {
             <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
             Open source · MIT licensed
           </Badge>
-          <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+          <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-bold tracking-tight text-strong sm:text-5xl lg:text-6xl">
             Why{" "}
             <span className="text-gradient">Rivetr</span>{" "}
             exists
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-mist-400">
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-subtle">
             Most self-hosted PaaS tools ship a constellation of containers:
             Postgres, Redis, Traefik, and a control-plane API, that together
             idle at 400–800&nbsp;MB of RAM. The bet behind Rivetr is simpler:
             a PaaS control plane should be small enough to run on the cheapest
             VPS you can rent.
           </p>
-          <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-mist-400">
+          <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-subtle">
             Rivetr is a single Rust binary. It embeds its own database (SQLite
             in WAL mode) and its own reverse proxy. It idles at{" "}
-            <span className="font-semibold text-mist-200">~30–80&nbsp;MB</span>{" "}
+            <span className="font-semibold text-fg">~30–80&nbsp;MB</span>{" "}
             of RAM, has zero external runtime dependencies, and still does
             everything you need to ship production software.
           </p>
@@ -168,15 +168,15 @@ export default function About() {
             {PRINCIPLES.map(({ icon: Icon, title, body }) => (
               <article
                 key={title}
-                className="group rounded-2xl border border-ink-700 bg-ink-900 p-6 transition-colors hover:border-ink-600 hover:bg-ink-850"
+                className="group rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-border-strong hover:bg-surface-strong"
               >
                 <div className="mb-4 inline-flex rounded-xl border border-brand-500/30 bg-brand-500/10 p-3">
                   <Icon className="h-5 w-5 text-brand-400" aria-hidden />
                 </div>
-                <h3 className="mb-2 text-base font-semibold text-white">
+                <h3 className="mb-2 text-base font-semibold text-strong">
                   {title}
                 </h3>
-                <p className="text-sm leading-relaxed text-mist-400">{body}</p>
+                <p className="text-sm leading-relaxed text-subtle">{body}</p>
               </article>
             ))}
           </div>
@@ -184,7 +184,7 @@ export default function About() {
       </Section>
 
       {/* ── What's inside ── */}
-      <Section id="tech" className="bg-ink-950">
+      <Section id="tech" className="bg-bg">
         <Container>
           <SectionHeading
             eyebrow="What's inside"
@@ -196,17 +196,17 @@ export default function About() {
             }
             blurb="Every layer was chosen to minimise runtime overhead and external surface area."
           />
-          <div className="mt-14 overflow-hidden rounded-2xl border border-ink-700">
+          <div className="mt-14 overflow-hidden rounded-2xl border border-border">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-ink-700 bg-ink-900">
-                  <th className="px-6 py-4 text-left font-semibold text-mist-300">
+                <tr className="border-b border-border bg-surface">
+                  <th className="px-6 py-4 text-left font-semibold text-muted">
                     Layer
                   </th>
-                  <th className="px-6 py-4 text-left font-semibold text-mist-300">
+                  <th className="px-6 py-4 text-left font-semibold text-muted">
                     Technology
                   </th>
-                  <th className="hidden px-6 py-4 text-left font-semibold text-mist-300 md:table-cell">
+                  <th className="hidden px-6 py-4 text-left font-semibold text-muted md:table-cell">
                     Why
                   </th>
                 </tr>
@@ -217,17 +217,17 @@ export default function About() {
                     key={label}
                     className={
                       i % 2 === 0
-                        ? "border-b border-ink-700/60 bg-ink-950"
-                        : "border-b border-ink-700/60 bg-ink-900/50"
+                        ? "border-b border-border/60 bg-bg"
+                        : "border-b border-border/60 bg-surface/50"
                     }
                   >
-                    <td className="px-6 py-4 font-medium text-mist-300">
+                    <td className="px-6 py-4 font-medium text-muted">
                       {label}
                     </td>
                     <td className="px-6 py-4 font-mono text-brand-400">
                       {value}
                     </td>
-                    <td className="hidden px-6 py-4 text-mist-400 md:table-cell">
+                    <td className="hidden px-6 py-4 text-subtle md:table-cell">
                       {detail}
                     </td>
                   </tr>
@@ -250,12 +250,12 @@ export default function About() {
             {CAPABILITIES.map(({ icon: Icon, text }) => (
               <li
                 key={text}
-                className="flex items-start gap-3 rounded-xl border border-ink-700 bg-ink-900 p-4"
+                className="flex items-start gap-3 rounded-xl border border-border bg-surface p-4"
               >
-                <div className="mt-0.5 shrink-0 rounded-lg border border-ink-600 bg-ink-800 p-1.5">
+                <div className="mt-0.5 shrink-0 rounded-lg border border-border-strong bg-surface-strong p-1.5">
                   <Icon className="h-4 w-4 text-brand-400" aria-hidden />
                 </div>
-                <span className="text-sm leading-relaxed text-mist-300">
+                <span className="text-sm leading-relaxed text-muted">
                   {text}
                 </span>
               </li>
@@ -265,18 +265,18 @@ export default function About() {
       </Section>
 
       {/* ── License note ── */}
-      <Section className="bg-ink-950">
+      <Section className="bg-bg">
         <Container>
-          <div className="rounded-2xl border border-ink-700 bg-ink-900 p-8 sm:p-12">
+          <div className="rounded-2xl border border-border bg-surface p-8 sm:p-12">
             <div className="mx-auto max-w-2xl text-center">
               <Binary
                 className="mx-auto mb-6 h-10 w-10 text-brand-400"
                 aria-hidden
               />
-              <h2 className="text-2xl font-bold text-white sm:text-3xl">
+              <h2 className="text-2xl font-bold text-strong sm:text-3xl">
                 Free. Forever.
               </h2>
-              <p className="mt-4 text-lg leading-relaxed text-mist-400">
+              <p className="mt-4 text-lg leading-relaxed text-subtle">
                 Rivetr is MIT licensed. There are no paid tiers, no feature
                 gates, and no telemetry. Self-host it on any server you own or
                 rent, with no seat limits and no expiry.
@@ -294,10 +294,10 @@ export default function About() {
                 </Button>
               </div>
               <div className="mt-8">
-                <p className="mb-2 text-xs uppercase tracking-widest text-mist-400">
+                <p className="mb-2 text-xs uppercase tracking-widest text-subtle">
                   Quick install
                 </p>
-                <pre className="inline-block rounded-lg border border-ink-700 bg-ink-950 px-5 py-3 font-mono text-sm text-mist-200">
+                <pre className="inline-block rounded-lg border border-border bg-bg px-5 py-3 font-mono text-sm text-fg">
                   {SITE.installCmd}
                 </pre>
               </div>

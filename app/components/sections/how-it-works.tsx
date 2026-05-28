@@ -17,7 +17,7 @@ export function HowItWorks() {
               {i < STEPS.length - 1 && (
                 <div
                   aria-hidden="true"
-                  className="absolute left-full top-6 hidden w-6 -translate-y-1/2 border-t border-dashed border-ink-600 md:block"
+                  className="absolute left-full top-6 hidden w-6 -translate-y-1/2 border-t border-dashed border-border-strong md:block"
                   style={{ width: "calc(100% - 100% + 1.5rem)" }}
                 />
               )}
@@ -27,21 +27,21 @@ export function HowItWorks() {
                 <span className="font-mono text-4xl font-bold leading-none text-brand-500/30 select-none">
                   {step.n}
                 </span>
-                <div className="h-px flex-1 border-t border-ink-700 md:hidden" />
+                <div className="h-px flex-1 border-t border-border md:hidden" />
               </div>
 
               {/* Content */}
               <div>
-                <h3 className="mb-2 font-semibold text-white">{step.title}</h3>
-                <p className="text-sm leading-relaxed text-mist-400">{step.body}</p>
+                <h3 className="mb-2 font-semibold text-strong">{step.title}</h3>
+                <p className="text-sm leading-relaxed text-subtle">{step.body}</p>
               </div>
 
               {/* Code chip */}
-              <div className="rounded-md border border-ink-700 bg-ink-900 px-3 py-2">
+              <div className="rounded-md border border-border bg-surface px-3 py-2">
                 <span className="mr-2 font-mono text-sm text-brand-400" aria-hidden="true">
                   $
                 </span>
-                <code className="font-mono text-sm text-mist-200 break-all">{step.code}</code>
+                <code className="font-mono text-sm text-fg break-all">{step.code}</code>
               </div>
             </div>
           ))}

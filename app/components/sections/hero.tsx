@@ -3,7 +3,7 @@ import { Badge, Button, Container } from "~/components/ui";
 import { HERO, SITE, STATS } from "~/lib/content";
 
 const LOG_LINES: { icon: string; color: string; text: string }[] = [
-  { icon: "$", color: "text-mist-400", text: SITE.installCmd },
+  { icon: "$", color: "text-subtle", text: SITE.installCmd },
   { icon: "", color: "text-green-400", text: "cloned repo in 0.8s" },
   { icon: "", color: "text-green-400", text: "built image (Dockerfile) in 14s" },
   { icon: "", color: "text-green-400", text: "health check passed (HTTP 200)" },
@@ -13,16 +13,16 @@ const LOG_LINES: { icon: string; color: string; text: string }[] = [
 function TerminalMock() {
   return (
     <div
-      className="w-full max-w-2xl mx-auto rounded-xl border border-ink-700 bg-ink-900 glow-ring overflow-hidden"
+      className="w-full max-w-2xl mx-auto rounded-xl border border-border bg-surface glow-ring overflow-hidden"
       role="img"
       aria-label="Terminal showing a Rivetr deploy"
     >
       {/* Titlebar */}
-      <div className="flex items-center gap-1.5 border-b border-ink-700 bg-ink-850 px-4 py-2.5">
+      <div className="flex items-center gap-1.5 border-b border-border bg-elevated px-4 py-2.5">
         <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" aria-hidden="true" />
         <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/70" aria-hidden="true" />
         <span className="h-2.5 w-2.5 rounded-full bg-green-500/70" aria-hidden="true" />
-        <span className="ml-3 text-xs text-mist-400 font-mono select-none">
+        <span className="ml-3 text-xs text-subtle font-mono select-none">
           rivetr - bash
         </span>
       </div>
@@ -34,7 +34,7 @@ function TerminalMock() {
             {i === 0 ? (
               <>
                 <span className="shrink-0 text-brand-400 select-none">$</span>
-                <span className="text-mist-200">{line.text}</span>
+                <span className="text-fg">{line.text}</span>
               </>
             ) : (
               <>
@@ -66,10 +66,10 @@ function StatCard({
   sub: string;
 }) {
   return (
-    <div className="rounded-xl border border-ink-700 bg-ink-900 px-5 py-5">
-      <p className="text-3xl font-bold text-white tracking-tight">{value}</p>
-      <p className="mt-1 text-sm font-medium text-mist-200">{label}</p>
-      <p className="mt-0.5 text-xs text-mist-400">{sub}</p>
+    <div className="rounded-xl border border-border bg-surface px-5 py-5">
+      <p className="text-3xl font-bold text-strong tracking-tight">{value}</p>
+      <p className="mt-1 text-sm font-medium text-fg">{label}</p>
+      <p className="mt-0.5 text-xs text-subtle">{sub}</p>
     </div>
   );
 }
@@ -107,14 +107,14 @@ export function Hero() {
           {/* Headline */}
           <h1 className="mb-6 max-w-3xl text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
             {titleLines.map((line, i) => (
-              <span key={i} className={i === 1 ? "text-gradient block" : "text-white block"}>
+              <span key={i} className={i === 1 ? "text-gradient block" : "text-strong block"}>
                 {line}
               </span>
             ))}
           </h1>
 
           {/* Subtitle */}
-          <p className="mb-8 max-w-2xl text-lg leading-relaxed text-mist-400">
+          <p className="mb-8 max-w-2xl text-lg leading-relaxed text-subtle">
             {HERO.subtitle}
           </p>
 

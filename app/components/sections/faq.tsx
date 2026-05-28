@@ -19,15 +19,15 @@ export function Faq() {
           {FAQS.map((item, i) => {
             const isOpen = openIndex === i;
             return (
-              <div key={i} className="border-b border-ink-700">
+              <div key={i} className="border-b border-border">
                 <button
                   type="button"
                   aria-expanded={isOpen}
                   onClick={() => toggle(i)}
-                  className="flex w-full items-center justify-between gap-4 py-5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
+                  className="flex w-full items-center justify-between gap-4 py-5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]"
                 >
-                  <span className="font-medium text-white">{item.q}</span>
-                  <span className="shrink-0 text-mist-400" aria-hidden="true">
+                  <span className="font-medium text-strong">{item.q}</span>
+                  <span className="shrink-0 text-subtle" aria-hidden="true">
                     {isOpen ? (
                       <Minus className="h-4 w-4" />
                     ) : (
@@ -41,7 +41,7 @@ export function Faq() {
                   hidden={!isOpen}
                   className={
                     isOpen
-                      ? "block pb-5 text-mist-400 leading-relaxed"
+                      ? "block pb-5 text-subtle leading-relaxed"
                       : "hidden"
                   }
                 >

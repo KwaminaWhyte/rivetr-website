@@ -36,14 +36,14 @@ function CategoryCard({ category }: { category: TemplateCategory }) {
   const Icon = ICON_MAP[category.icon] ?? Box;
 
   return (
-    <div className="group rounded-xl border border-ink-700 bg-ink-900 p-5 transition-colors duration-200 hover:border-brand-500/40">
+    <div className="group rounded-xl border border-border bg-surface p-5 transition-colors duration-200 hover:border-brand-500/40">
       <div className="mb-3 flex items-center gap-3">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-500/10 text-brand-400">
           <Icon size={18} aria-hidden="true" />
         </div>
-        <h3 className="font-semibold text-white">{category.name}</h3>
+        <h3 className="font-semibold text-strong">{category.name}</h3>
       </div>
-      <p className="text-xs text-mist-400 leading-relaxed">
+      <p className="text-xs text-subtle leading-relaxed">
         {category.examples.join(" · ")}
       </p>
     </div>
@@ -74,7 +74,7 @@ export function TemplatesShowcase() {
           >
             {TEMPLATE_COUNT}
           </p>
-          <p className="mt-1 text-sm font-semibold uppercase tracking-widest text-mist-400">
+          <p className="mt-1 text-sm font-semibold uppercase tracking-widest text-subtle">
             one-click services across 12 categories
           </p>
         </div>
@@ -90,7 +90,7 @@ export function TemplatesShowcase() {
         </div>
 
         {/* Community note */}
-        <p className="mt-8 text-center text-sm text-mist-400">
+        <p className="mt-8 text-center text-sm text-subtle">
           Community-submitted templates accepted via pull request.{" "}
           <a
             href="https://github.com/KwaminaWhyte/rivetr"

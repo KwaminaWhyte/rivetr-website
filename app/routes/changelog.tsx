@@ -33,10 +33,10 @@ export default function Changelog() {
             <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
             All releases · Semantic versioning
           </Badge>
-          <h1 className="mx-auto mt-6 max-w-2xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
+          <h1 className="mx-auto mt-6 max-w-2xl text-4xl font-bold tracking-tight text-strong sm:text-5xl">
             Changelog
           </h1>
-          <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-mist-400">
+          <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-subtle">
             Every release, in detail.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
@@ -61,7 +61,7 @@ export default function Changelog() {
       {/* ── Markdown body ── */}
       <section className="pb-28" id="changelog-content">
         <Container>
-          <div className="mx-auto max-w-3xl rounded-2xl border border-ink-700 bg-ink-900 px-6 py-10 sm:px-10 sm:py-14">
+          <div className="mx-auto max-w-3xl rounded-2xl border border-border bg-surface px-6 py-10 sm:px-10 sm:py-14">
             <Markdown>{changelog}</Markdown>
           </div>
 
@@ -73,7 +73,7 @@ export default function Changelog() {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="inline-flex items-center gap-2 rounded-lg border border-ink-700 bg-ink-900 px-4 py-2 text-sm text-mist-400 transition-colors hover:border-ink-600 hover:text-mist-200"
+              className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2 text-sm text-subtle transition-colors hover:border-border-strong hover:text-fg"
               aria-label="Back to top"
             >
               <ArrowUp className="h-4 w-4" aria-hidden />

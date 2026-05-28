@@ -5,6 +5,7 @@ import { Button } from "~/components/ui";
 import { GithubIcon } from "~/components/icons/github";
 import { TubeLightNavBar, type NavItem } from "~/components/tube-light-navbar";
 import { RivetrLogo } from "~/components/icons/logo";
+import { ThemeToggle } from "~/components/theme-toggle";
 import { SITE } from "~/lib/content";
 import { useGithubStars, formatCount } from "~/lib/use-github-stars";
 
@@ -23,12 +24,12 @@ function GithubStarButton() {
       href={SITE.github}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm text-mist-300 transition-colors hover:bg-ink-800/70 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
+      className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm text-muted transition-colors hover:bg-surface-strong/70 hover:text-strong focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
       aria-label="Rivetr on GitHub"
     >
       <GithubIcon size={15} />
       {data && (
-        <span className="inline-flex items-center gap-1 text-mist-400">
+        <span className="inline-flex items-center gap-1 text-subtle">
           <Star size={12} className="fill-brand-400 text-brand-400" />
           {formatCount(data.stars)}
         </span>
@@ -54,33 +55,36 @@ export function SiteNav() {
       {/* One pill holds everything: wordmark · nav (with lamp) · CTAs. */}
       <div
         className={[
-          "pointer-events-auto flex max-w-full items-center gap-1 rounded-full border border-ink-700 bg-ink-900/70 p-1.5 backdrop-blur-lg transition-shadow duration-200",
+          "pointer-events-auto flex max-w-full items-center gap-1 rounded-full border border-border bg-surface/70 p-1.5 backdrop-blur-lg transition-shadow duration-200",
           scrolled ? "shadow-lg shadow-black/40" : "",
         ].join(" ")}
       >
         {/* Wordmark */}
         <Link
           to="/"
-          className="flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
+          className="flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-bold text-strong focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
           aria-label="Rivetr home"
         >
           <RivetrLogo size={22} />
           <span className="hidden sm:inline">{SITE.name}</span>
         </Link>
 
-        <span className="mx-1 h-5 w-px shrink-0 bg-ink-700" aria-hidden />
+        <span className="mx-1 h-5 w-px shrink-0 bg-border" aria-hidden />
 
         {/* Nav links with the tube-light lamp */}
         <TubeLightNavBar items={NAV_ITEMS} bare />
 
-        <span className="mx-1 hidden h-5 w-px shrink-0 bg-ink-700 sm:block" aria-hidden />
+        <span className="mx-1 hidden h-5 w-px shrink-0 bg-border sm:block" aria-hidden />
 
-        {/* CTAs */}
-        <div className="hidden items-center gap-1 sm:flex">
-          <GithubStarButton />
-          <Button href="/docs" variant="primary" className="rounded-full">
-            Get started
-          </Button>
+        {/* CTAs — theme toggle is always visible, GH/CTA hide on mobile */}
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <div className="hidden items-center gap-1 sm:flex">
+            <GithubStarButton />
+            <Button href="/docs" variant="primary" className="rounded-full">
+              Get started
+            </Button>
+          </div>
         </div>
       </div>
     </header>

@@ -206,10 +206,10 @@ export default function DocsIndex() {
         <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-brand-400">
           Documentation
         </p>
-        <h1 className="mb-3 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+        <h1 className="mb-3 text-3xl font-bold tracking-tight text-strong sm:text-4xl">
           Get started with Rivetr
         </h1>
-        <p className="max-w-xl text-lg leading-relaxed text-mist-400">
+        <p className="max-w-xl text-lg leading-relaxed text-subtle">
           Rivetr is a self-hosted PaaS that deploys your apps from Git in a
           single binary: no Redis, no PostgreSQL, no Traefik.
         </p>
@@ -217,13 +217,13 @@ export default function DocsIndex() {
 
       {/* Quick start strip */}
       <div className="mb-10 rounded-xl border border-brand-500/20 bg-brand-500/5 p-5">
-        <p className="mb-3 text-sm font-semibold text-white">Quick start</p>
-        <pre className="overflow-x-auto rounded-lg border border-ink-700 bg-ink-900 p-4 font-mono text-sm text-mist-200">
+        <p className="mb-3 text-sm font-semibold text-strong">Quick start</p>
+        <pre className="overflow-x-auto rounded-lg border border-border bg-surface p-4 font-mono text-sm text-fg">
           <code>curl -fsSL https://rivetr.dev/install.sh | sh</code>
         </pre>
-        <p className="mt-3 text-sm text-mist-400">
+        <p className="mt-3 text-sm text-subtle">
           Then open{" "}
-          <code className="rounded border border-ink-700 bg-ink-900 px-1.5 py-0.5 text-xs text-brand-300">
+          <code className="rounded border border-border bg-surface px-1.5 py-0.5 text-xs text-brand-300">
             http://your-server:8080
           </code>{" "}
           and create your admin account.{" "}
@@ -240,7 +240,7 @@ export default function DocsIndex() {
       <div className="space-y-10">
         {SECTIONS.map((section) => (
           <div key={section.label}>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-mist-500">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-subtle">
               {section.label}
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -248,16 +248,16 @@ export default function DocsIndex() {
                 <Link
                   key={card.slug}
                   to={`/docs/${card.slug}`}
-                  className="group flex gap-4 rounded-xl border border-ink-700 bg-ink-900/60 p-5 transition-all duration-200 hover:border-brand-500/40 hover:bg-ink-900"
+                  className="group flex gap-4 rounded-xl border border-border bg-surface/60 p-5 transition-all duration-200 hover:border-brand-500/40 hover:bg-surface"
                 >
                   <div className="mt-0.5 shrink-0 text-brand-400 transition-colors group-hover:text-brand-300">
                     {card.icon}
                   </div>
                   <div>
-                    <p className="mb-1 font-semibold text-white transition-colors group-hover:text-white">
+                    <p className="mb-1 font-semibold text-strong transition-colors group-hover:text-strong">
                       {card.title}
                     </p>
-                    <p className="text-sm leading-relaxed text-mist-400">
+                    <p className="text-sm leading-relaxed text-subtle">
                       {card.description}
                     </p>
                   </div>
@@ -269,12 +269,12 @@ export default function DocsIndex() {
       </div>
 
       {/* Footer links */}
-      <div className="mt-10 flex flex-wrap gap-4 border-t border-ink-700 pt-6 text-sm text-mist-400">
+      <div className="mt-10 flex flex-wrap gap-4 border-t border-border pt-6 text-sm text-subtle">
         <a
           href="https://github.com/KwaminaWhyte/rivetr"
           target="_blank"
           rel="noreferrer"
-          className="transition-colors hover:text-white"
+          className="transition-colors hover:text-strong"
         >
           GitHub →
         </a>
@@ -282,7 +282,7 @@ export default function DocsIndex() {
           href="https://github.com/KwaminaWhyte/rivetr/issues"
           target="_blank"
           rel="noreferrer"
-          className="transition-colors hover:text-white"
+          className="transition-colors hover:text-strong"
         >
           Report an issue →
         </a>
@@ -290,7 +290,7 @@ export default function DocsIndex() {
           href="https://github.com/KwaminaWhyte/rivetr/releases"
           target="_blank"
           rel="noreferrer"
-          className="transition-colors hover:text-white"
+          className="transition-colors hover:text-strong"
         >
           Changelog →
         </a>

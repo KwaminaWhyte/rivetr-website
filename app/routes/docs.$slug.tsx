@@ -59,12 +59,12 @@ export default function DocPage() {
   if (!content) {
     return (
       <div className="py-16 text-center">
-        <p className="mb-4 text-2xl font-semibold text-white">
+        <p className="mb-4 text-2xl font-semibold text-strong">
           Page not found
         </p>
-        <p className="mb-8 text-mist-400">
+        <p className="mb-8 text-subtle">
           No documentation page exists for{" "}
-          <code className="rounded border border-ink-700 bg-ink-900 px-1.5 py-0.5 font-mono text-sm text-brand-300">
+          <code className="rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-sm text-brand-300">
             {slug}
           </code>
           .
@@ -93,7 +93,7 @@ export default function DocPage() {
       {/* Prev / Next navigation */}
       <nav
         aria-label="Page navigation"
-        className="mt-12 flex items-center justify-between border-t border-ink-700 pt-6"
+        className="mt-12 flex items-center justify-between border-t border-border pt-6"
       >
         <div>
           {prev && (
@@ -101,10 +101,10 @@ export default function DocPage() {
               to={`/docs/${prev.slug}`}
               className="group flex flex-col text-sm"
             >
-              <span className="mb-0.5 text-xs text-mist-400 transition-colors group-hover:text-mist-300">
+              <span className="mb-0.5 text-xs text-subtle transition-colors group-hover:text-muted">
                 ← Previous
               </span>
-              <span className="font-medium text-mist-200 transition-colors group-hover:text-white">
+              <span className="font-medium text-fg transition-colors group-hover:text-strong">
                 {prev.title}
               </span>
             </Link>
@@ -116,10 +116,10 @@ export default function DocPage() {
               to={`/docs/${next.slug}`}
               className="group flex flex-col text-sm"
             >
-              <span className="mb-0.5 text-xs text-mist-400 transition-colors group-hover:text-mist-300">
+              <span className="mb-0.5 text-xs text-subtle transition-colors group-hover:text-muted">
                 Next →
               </span>
-              <span className="font-medium text-mist-200 transition-colors group-hover:text-white">
+              <span className="font-medium text-fg transition-colors group-hover:text-strong">
                 {next.title}
               </span>
             </Link>

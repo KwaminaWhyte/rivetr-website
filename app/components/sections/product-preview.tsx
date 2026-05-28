@@ -14,14 +14,14 @@ function BrowserFrame({
 }) {
   return (
     <figure
-      className={`overflow-hidden rounded-xl border border-ink-700 bg-ink-900 shadow-2xl shadow-black/50 ${className ?? ""}`}
+      className={`overflow-hidden rounded-xl border border-border bg-surface shadow-2xl shadow-black/50 ${className ?? ""}`}
     >
-      <div className="flex items-center gap-2 border-b border-ink-700 bg-ink-850 px-4 py-2.5">
-        <span className="h-2.5 w-2.5 rounded-full bg-ink-600" />
-        <span className="h-2.5 w-2.5 rounded-full bg-ink-600" />
-        <span className="h-2.5 w-2.5 rounded-full bg-ink-600" />
+      <div className="flex items-center gap-2 border-b border-border bg-elevated px-4 py-2.5">
+        <span className="h-2.5 w-2.5 rounded-full bg-border-strong" />
+        <span className="h-2.5 w-2.5 rounded-full bg-border-strong" />
+        <span className="h-2.5 w-2.5 rounded-full bg-border-strong" />
         <div className="ml-3 flex-1">
-          <span className="inline-flex max-w-full items-center rounded-md bg-ink-950/70 px-3 py-1 font-mono text-xs text-mist-400">
+          <span className="inline-flex max-w-full items-center rounded-md bg-bg/70 px-3 py-1 font-mono text-xs text-subtle">
             {url}
           </span>
         </div>

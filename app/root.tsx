@@ -1,16 +1,20 @@
 import {
+  data,
   isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useRouteLoaderData,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import "./app.css";
 import { SiteNav } from "./components/site-nav";
 import { SiteFooter } from "./components/site-footer";
+import { getTheme, themeCookie } from "./cookies.server";
+import { themeColorFor, type Theme } from "./lib/theme";
 
 export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
@@ -45,15 +49,38 @@ export const meta: Route.MetaFunction = () => [
   },
   { property: "og:type", content: "website" },
   { name: "twitter:card", content: "summary_large_image" },
-  { name: "theme-color", content: "#07090d" },
 ];
 
+export async function loader({ request }: Route.LoaderArgs) {
+  const theme = await getTheme(request);
+  return { theme };
+}
+
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const raw = formData.get("theme");
+  const theme: Theme = raw === "light" ? "light" : "dark";
+  return data(
+    { theme },
+    {
+      headers: {
+        "Set-Cookie": await themeCookie.serialize(theme),
+      },
+    },
+  );
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  // Layout renders for loader errors too, where loaderData may be undefined.
+  const loaderData = useRouteLoaderData<typeof loader>("root");
+  const theme: Theme = loaderData?.theme === "light" ? "light" : "dark";
+
   return (
-    <html lang="en">
+    <html lang="en" data-theme={theme} style={{ colorScheme: theme }}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content={themeColorFor(theme)} />
         <Meta />
         <Links />
       </head>
@@ -68,7 +95,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <div className="flex min-h-screen flex-col bg-ink-950">
+    <div className="flex min-h-screen flex-col">
       <SiteNav />
       <main className="flex-1">
         <Outlet />

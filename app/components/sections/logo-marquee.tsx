@@ -80,7 +80,7 @@ function MarqueeTrack({ items, reverse }: { items: TechItem[]; reverse?: boolean
         {doubled.map((item, i) => (
           <div
             key={`${item.slug}-${i}`}
-            className="flex shrink-0 items-center gap-2 rounded-lg border border-ink-700 bg-ink-900 px-4 py-2.5 text-mist-400 transition-colors hover:text-mist-200"
+            className="flex shrink-0 items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2.5 text-subtle transition-colors hover:text-fg"
           >
             <Glyph slug={item.slug} name={item.name} />
             <span className="whitespace-nowrap text-sm font-medium">
@@ -95,9 +95,9 @@ function MarqueeTrack({ items, reverse }: { items: TechItem[]; reverse?: boolean
 
 export function LogoMarquee() {
   return (
-    <div className="overflow-hidden border-b border-ink-700 bg-ink-950 py-12">
+    <div className="overflow-hidden border-b border-border bg-bg py-12">
       <Container>
-        <p className="mb-8 text-center text-xs font-semibold uppercase tracking-widest text-mist-400">
+        <p className="mb-8 text-center text-xs font-semibold uppercase tracking-widest text-subtle">
           Deploy anything, works with your stack
         </p>
       </Container>
