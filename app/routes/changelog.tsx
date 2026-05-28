@@ -7,7 +7,7 @@ import { ArrowUp } from "lucide-react";
 
 export function meta() {
   return [
-    { title: "Changelog — Rivetr" },
+    { title: "Changelog: Rivetr" },
     {
       name: "description",
       content: "Release notes and version history for Rivetr.",

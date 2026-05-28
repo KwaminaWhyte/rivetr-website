@@ -12,7 +12,7 @@ export function Positioning() {
               The open-source alternative to managed PaaS
             </h2>
             <p className="mt-3 text-base leading-relaxed text-mist-400 max-w-xl mx-auto">
-              Self-host the developer experience of Vercel, Heroku, and Railway —
+              Self-host the developer experience of Vercel, Heroku, and Railway,
               on your own servers, with zero vendor lock-in, for free.
             </p>
           </div>

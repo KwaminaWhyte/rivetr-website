@@ -6,7 +6,7 @@ import { CtaInstall } from "~/components/sections/cta-install";
 
 export function meta(_: Route.MetaArgs) {
   return [
-    { title: "Features — Rivetr" },
+    { title: "Features: Rivetr" },
     {
       name: "description",
       content:
@@ -36,8 +36,8 @@ export default function Features() {
             One binary, the <span className="text-gradient">whole platform</span>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-mist-400">
-            Rivetr bundles everything a modern self-hosted PaaS needs — deploys,
-            databases, security, observability, and scale — into a single Rust
+            Rivetr bundles everything a modern self-hosted PaaS needs: deploys,
+            databases, security, observability, and scale, into a single Rust
             binary that idles around 30&nbsp;MB of RAM.
           </p>
         </Container>

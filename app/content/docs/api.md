@@ -12,8 +12,8 @@ Authorization: Bearer rvt_your_token_here
 
 Tokens are prefixed `rvt_` and stored as SHA-256 hashes. There are two types:
 
-- **Admin token** — The `admin_token` in `rivetr.toml`. Full access.
-- **Named API tokens** — Created via `POST /api/tokens`. Can be scoped for CI/CD.
+- **Admin token**: The `admin_token` in `rivetr.toml`. Full access.
+- **Named API tokens**: Created via `POST /api/tokens`. Can be scoped for CI/CD.
 
 Create a named token from the dashboard under **Settings → API Tokens**, or via the API:
 
@@ -43,7 +43,7 @@ These endpoints do not require a token:
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `GET` | `/health` | Liveness check — returns `OK`. |
+| `GET` | `/health` | Liveness check, returns `OK`. |
 | `GET` | `/metrics` | Prometheus metrics. |
 | `POST` | `/mcp` | MCP server handler (AI assistant integration). |
 | `POST` | `/api/auth/login` | Log in. |
@@ -193,7 +193,7 @@ WebSocket endpoints authenticate via a query parameter instead of the `Authoriza
 
 ## MCP server
 
-Rivetr ships an MCP (Model Context Protocol) server at `POST /mcp`. This lets AI assistants — Claude, GitHub Copilot, and others — interact with your Rivetr instance using natural language.
+Rivetr ships an MCP (Model Context Protocol) server at `POST /mcp`. This lets AI assistants, such as Claude, GitHub Copilot, and others, interact with your Rivetr instance using natural language.
 
 The MCP server exposes tools for:
 

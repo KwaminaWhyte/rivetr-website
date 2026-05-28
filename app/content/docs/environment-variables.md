@@ -117,7 +117,7 @@ curl https://your-server/api/apps/<app_id>/linked-env-vars \
 
 ## Secrets vs Plain Variables
 
-All variables support encryption — there is no separate "secrets" type. The distinction is whether `encryption_key` is configured in `rivetr.toml`. When it is, every value is stored encrypted regardless of key name.
+All variables support encryption: there is no separate "secrets" type. The distinction is whether `encryption_key` is configured in `rivetr.toml`. When it is, every value is stored encrypted regardless of key name.
 
 For variables that contain credentials, use the encryption key and limit API token scope so only the owning app's team can read them. RBAC roles (developer and above) can read and write env vars; viewer-role members cannot.
 
@@ -127,5 +127,5 @@ For variables that contain credentials, use the encryption key and limit API tok
 
 - Set `auth.encryption_key` in production before creating any variables.
 - Keep infrastructure-wide values (e.g. `SMTP_HOST`) at team level; keep per-app secrets at app level.
-- Never commit secrets to your repository — use env vars instead.
+- Never commit secrets to your repository; use env vars instead.
 - After rotating a secret, update the variable value and redeploy the app.

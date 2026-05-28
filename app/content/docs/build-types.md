@@ -121,7 +121,7 @@ worker: node worker.js
 
 ## Static Sites
 
-Serves pre-built static files directly from the embedded proxy — no container needed.
+Serves pre-built static files directly from the embedded proxy, no container needed.
 
 **Detection:** Repository contains only static files (`index.html` with no recognized server framework).
 

@@ -1,6 +1,6 @@
 // Explicit icon map so only the icons we actually use get bundled.
-// (A namespace `import * as` from lucide-react pulls in the entire icon set —
-// ~600kB — which defeats the whole "lean" pitch.)
+// (A namespace `import * as` from lucide-react pulls in the entire icon set,
+// ~600kB, which defeats the whole "lean" pitch.)
 import {
   GitBranch,
   Package,

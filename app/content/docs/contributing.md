@@ -27,7 +27,7 @@ cargo install cargo-watch   # auto-reload backend on file changes
 git clone https://github.com/KwaminaWhyte/rivetr.git
 cd rivetr
 cp rivetr.example.toml rivetr.local.toml
-# Edit rivetr.local.toml if needed — defaults work for local dev
+# Edit rivetr.local.toml if needed - defaults work for local dev
 ```
 
 ### 2. Run the backend
@@ -118,18 +118,18 @@ frontend/app/
 
 ### Backend
 
-1. **Database first** — Add a migration in `migrations/`. Follow the numbered format.
-2. **Update models** — Add or edit structs in `src/db/models/` and re-export from `mod.rs`.
-3. **Add route handlers** — Create or extend the relevant module in `src/api/`. Register the route in `src/api/mod.rs`.
-4. **Wire up state** — If the feature needs shared state, add it to `AppState` in `src/lib.rs`.
-5. **Implement for both runtimes** — If adding container operations, implement for both `DockerRuntime` and `PodmanRuntime`.
+1. **Database first**: Add a migration in `migrations/`. Follow the numbered format.
+2. **Update models**: Add or edit structs in `src/db/models/` and re-export from `mod.rs`.
+3. **Add route handlers**: Create or extend the relevant module in `src/api/`. Register the route in `src/api/mod.rs`.
+4. **Wire up state**: If the feature needs shared state, add it to `AppState` in `src/lib.rs`.
+5. **Implement for both runtimes**: If adding container operations, implement for both `DockerRuntime` and `PodmanRuntime`.
 
 ### Frontend
 
-1. **Add types** — Add interfaces in `frontend/app/types/` and re-export from `types/index.ts`.
-2. **Add API calls** — Add fetch calls or React Query hooks in `frontend/app/lib/`.
-3. **Add components** — Use shadcn/ui primitives. Keep components small and focused.
-4. **Add routes** — New pages go in `frontend/app/routes/`.
+1. **Add types**: Add interfaces in `frontend/app/types/` and re-export from `types/index.ts`.
+2. **Add API calls**: Add fetch calls or React Query hooks in `frontend/app/lib/`.
+3. **Add components**: Use shadcn/ui primitives. Keep components small and focused.
+4. **Add routes**: New pages go in `frontend/app/routes/`.
 
 ### Adding a service template
 
@@ -182,7 +182,7 @@ Types: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`.
 
 | Label | Meaning |
 |-------|---------|
-| `good first issue` | Self-contained, well-scoped — good starting point |
+| `good first issue` | Self-contained, well-scoped, good starting point |
 | `help wanted` | Maintainer could use community input |
 | `bug` | Something not working as documented |
 | `enhancement` | New feature or improvement |

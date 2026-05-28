@@ -189,11 +189,11 @@ const SECTIONS: DocSection[] = [
 
 export function meta() {
   return [
-    { title: "Documentation — Rivetr" },
+    { title: "Documentation: Rivetr" },
     {
       name: "description",
       content:
-        "Documentation for Rivetr — the self-hosted PaaS in a single binary.",
+        "Documentation for Rivetr: the self-hosted PaaS in a single binary.",
     },
   ];
 }
@@ -211,7 +211,7 @@ export default function DocsIndex() {
         </h1>
         <p className="max-w-xl text-lg leading-relaxed text-mist-400">
           Rivetr is a self-hosted PaaS that deploys your apps from Git in a
-          single binary — no Redis, no PostgreSQL, no Traefik.
+          single binary: no Redis, no PostgreSQL, no Traefik.
         </p>
       </div>
 

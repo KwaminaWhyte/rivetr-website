@@ -49,7 +49,7 @@ export function ProductPreview() {
         <SectionHeading
           eyebrow="The dashboard"
           title="A real dashboard, not a config file"
-          blurb="Manage apps, databases, servers, deployments, and 273 one-click services from a modern web UI — or the terminal, the TUI, or the API. Everything you see here ships in the binary."
+          blurb="Manage apps, databases, servers, deployments, and 273 one-click services from a modern web UI, or the terminal, the TUI, or the API. Everything you see here ships in the binary."
         />
 
         <div className="mt-14 space-y-6">

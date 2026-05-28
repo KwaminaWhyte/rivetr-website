@@ -66,7 +66,7 @@ curl -H "Authorization: Bearer <token>" https://your-instance/api/system/update/
 curl -X POST -H "Authorization: Bearer <token>" https://your-instance/api/system/update/apply
 ```
 
-Or re-run the install script — it is idempotent and upgrades in place.
+Or re-run the install script: it is idempotent and upgrades in place.
 
 ## Development setup
 

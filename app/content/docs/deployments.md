@@ -10,11 +10,11 @@ Clone → Build → Start → Health check → Atomic proxy switch
                            fail → Rollback to previous
 ```
 
-1. **Clone** — Rivetr clones the repository at the target commit using the `git2` crate (no git CLI dependency). For large repos, it does a shallow clone.
-2. **Build** — The image is built using the configured builder (see Build types below). Build CPU and memory are capped by the `[runtime]` limits in `rivetr.toml`.
-3. **Start** — The container is started on a private port. It is not yet receiving traffic.
-4. **Health check** — Rivetr polls the configured health check endpoint until it returns 200 or the timeout expires. If the check passes, deployment continues; if it fails, the new container is stopped and the previous version stays live.
-5. **Atomic proxy switch** — The embedded reverse proxy updates its route table atomically using ArcSwap. Traffic switches to the new container with no dropped connections.
+1. **Clone**: Rivetr clones the repository at the target commit using the `git2` crate (no git CLI dependency). For large repos, it does a shallow clone.
+2. **Build**: The image is built using the configured builder (see Build types below). Build CPU and memory are capped by the `[runtime]` limits in `rivetr.toml`.
+3. **Start**: The container is started on a private port. It is not yet receiving traffic.
+4. **Health check**: Rivetr polls the configured health check endpoint until it returns 200 or the timeout expires. If the check passes, deployment continues; if it fails, the new container is stopped and the previous version stays live.
+5. **Atomic proxy switch**: The embedded reverse proxy updates its route table atomically using ArcSwap. Traffic switches to the new container with no dropped connections.
 
 ---
 

@@ -8,7 +8,7 @@ Answers to common questions about Rivetr.
 
 ### What is Rivetr?
 
-Rivetr is a self-hosted PaaS that deploys applications from Git in a single binary. It handles the full lifecycle: clone → build → start → health check → atomic proxy switch — with zero external dependencies (no Redis, no PostgreSQL, no Traefik).
+Rivetr is a self-hosted PaaS that deploys applications from Git in a single binary. It handles the full lifecycle: clone → build → start → health check → atomic proxy switch, with zero external dependencies (no Redis, no PostgreSQL, no Traefik).
 
 ### Is Rivetr production-ready?
 
@@ -36,7 +36,7 @@ The low footprint comes from using an embedded SQLite database instead of Postgr
 
 ### Does Rivetr need Docker?
 
-Docker Engine 24+ (or Podman 4+) is required on the deployment server — Rivetr uses it to build and run application containers. The Rivetr binary itself does not need to run inside Docker.
+Docker Engine 24+ (or Podman 4+) is required on the deployment server: Rivetr uses it to build and run application containers. The Rivetr binary itself does not need to run inside Docker.
 
 ---
 
@@ -139,7 +139,7 @@ Yes. Use `rivetr backup` to create a `.tar.gz` archive of the database, config, 
 
 ## Troubleshooting
 
-### The install script failed — how do I check logs?
+### The install script failed: how do I check logs?
 
 ```bash
 sudo journalctl -u rivetr -f

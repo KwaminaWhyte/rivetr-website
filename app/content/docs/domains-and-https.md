@@ -6,7 +6,7 @@ Rivetr ships with an embedded reverse proxy that handles custom domains, automat
 
 ## How the Embedded Proxy Works
 
-The proxy listens on ports 80 and 443 (configurable) and routes incoming requests to the correct container based on the `Host` header. Routes are stored in an in-memory table backed by `ArcSwap`, so switching traffic to a new container after a deployment is atomic — no reload, no dropped connections.
+The proxy listens on ports 80 and 443 (configurable) and routes incoming requests to the correct container based on the `Host` header. Routes are stored in an in-memory table backed by `ArcSwap`, so switching traffic to a new container after a deployment is atomic: no reload, no dropped connections.
 
 ```toml
 [server]
@@ -62,7 +62,7 @@ curl -X POST https://your-server/api/apps/<app_id> \
 
 ## Multiple Domains per App
 
-An app can have multiple domains — all route to the same container. Add them one at a time in the dashboard or via successive API calls. Each domain gets its own certificate.
+An app can have multiple domains, all routing to the same container. Add them one at a time in the dashboard or via successive API calls. Each domain gets its own certificate.
 
 ---
 
@@ -89,7 +89,7 @@ For quick testing without DNS configuration, enable `sslip_enabled`:
 sslip_enabled = true
 ```
 
-Each app gets an auto-generated `sslip.io` domain based on the server's IP address (e.g. `abc123.192-168-1-1.sslip.io`). These resolve through the public `sslip.io` DNS service — no DNS setup needed.
+Each app gets an auto-generated `sslip.io` domain based on the server's IP address (e.g. `abc123.192-168-1-1.sslip.io`). These resolve through the public `sslip.io` DNS service, no DNS setup needed.
 
 ---
 

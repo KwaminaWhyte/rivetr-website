@@ -54,7 +54,7 @@ The deployment pipeline runs on the remote server: clone, build, start, health c
 
 Once a server is registered, you can:
 
-- **Open a terminal** in the browser — `wss://your-server/api/servers/<id>/terminal?token=<token>`
+- **Open a terminal** in the browser: `wss://your-server/api/servers/<id>/terminal?token=<token>`
 - **Browse, read, write, and delete files** on the remote server via the dashboard or API:
 
 ```bash

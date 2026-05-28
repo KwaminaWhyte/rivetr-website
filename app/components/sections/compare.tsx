@@ -89,7 +89,7 @@ export function Compare() {
                   <th className="w-56 bg-ink-900 px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-mist-500">
                     Feature
                   </th>
-                  {/* Rivetr header — highlighted */}
+                  {/* Rivetr header: highlighted */}
                   <th className="relative bg-brand-500/[0.06] px-6 py-4 text-center">
                     <div
                       className="absolute inset-x-0 top-0 h-0.5 bg-brand-500"

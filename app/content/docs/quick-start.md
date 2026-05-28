@@ -54,17 +54,17 @@ Once created, you are logged in and on the dashboard.
 
 ## Step 3: Connect Your Git Repository
 
-### Option A — Personal Access Token (simplest)
+### Option A: Personal Access Token (simplest)
 
 1. Go to **Settings → Git Providers** and click **Add Provider**.
 2. Choose your provider (GitHub, GitLab, Gitea, or Bitbucket).
 3. Paste a personal access token with repo-read permissions.
 4. Click **Save**.
 
-### Option B — GitHub App (recommended for GitHub)
+### Option B: GitHub App (recommended for GitHub)
 
 1. Go to **Settings → GitHub Apps** and click **Create GitHub App**.
-2. Follow the manifest flow — Rivetr creates the app on your behalf.
+2. Follow the manifest flow: Rivetr creates the app on your behalf.
 3. Install it on the repositories you want to deploy.
 
 ---
@@ -78,7 +78,7 @@ Once created, you are logged in and on the dashboard.
 5. Pick a **build type** (Rivetr auto-detects if you leave it on Auto).
 6. Click **Deploy**.
 
-Rivetr will clone the repo, build it, start the container, run a health check, and switch the proxy — all in one pipeline.
+Rivetr will clone the repo, build it, start the container, run a health check, and switch the proxy, all in one pipeline.
 
 ---
 

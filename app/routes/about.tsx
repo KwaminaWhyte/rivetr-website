@@ -22,11 +22,11 @@ import {
 
 export function meta() {
   return [
-    { title: "About — Rivetr" },
+    { title: "About: Rivetr" },
     {
       name: "description",
       content:
-        "Why Rivetr exists: a self-hosted PaaS that runs in a single Rust binary with ~30MB RAM and zero external dependencies — no Redis, no PostgreSQL, no Traefik.",
+        "Why Rivetr exists: a self-hosted PaaS that runs in a single Rust binary with ~30MB RAM and zero external dependencies: no Redis, no PostgreSQL, no Traefik.",
     },
   ];
 }
@@ -36,7 +36,7 @@ const PRINCIPLES = [
   {
     icon: Zap,
     title: "Small by default",
-    body: "The control plane idles at ~30–80 MB of RAM. Not as a party trick — because it means you can run the whole platform on a $4 VPS and still have headroom for your apps.",
+    body: "The control plane idles at ~30–80 MB of RAM. Not as a party trick, because it means you can run the whole platform on a $4 VPS and still have headroom for your apps.",
   },
   {
     icon: Database,
@@ -51,7 +51,7 @@ const PRINCIPLES = [
   {
     icon: Box,
     title: "Everything included",
-    body: "Zero-downtime deploys, automatic HTTPS, managed databases, S3 backups, RBAC, SSO, multi-server, Docker Swarm, preview environments, a TUI, and a native MCP server — all in one binary.",
+    body: "Zero-downtime deploys, automatic HTTPS, managed databases, S3 backups, RBAC, SSO, multi-server, Docker Swarm, preview environments, a TUI, and a native MCP server, all in one binary.",
   },
 ] as const;
 
@@ -91,7 +91,7 @@ const TECH = [
     label: "Git ops",
     value: "git2 (libgit2)",
     detail:
-      "In-process cloning, SSH key handling, and progress callbacks — no shell.",
+      "In-process cloning, SSH key handling, and progress callbacks, no shell.",
   },
 ] as const;
 
@@ -99,7 +99,7 @@ const TECH = [
 const CAPABILITIES = [
   { icon: GitBranch, text: "GitHub, GitLab, Gitea, Bitbucket webhooks" },
   { icon: Globe, text: "Automatic HTTPS via Let's Encrypt" },
-  { icon: Database, text: "Managed databases — Postgres, MySQL, MongoDB, Redis, ClickHouse" },
+  { icon: Database, text: "Managed databases: Postgres, MySQL, MongoDB, Redis, ClickHouse" },
   { icon: Server, text: "Multi-server over SSH + Docker Swarm" },
   { icon: Box, text: "273 one-click service templates" },
   { icon: Shield, text: "RBAC + multi-tenant, SSO, 2FA, encrypted secrets" },
@@ -131,8 +131,8 @@ export default function About() {
             exists
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-mist-400">
-            Most self-hosted PaaS tools ship a constellation of containers —
-            Postgres, Redis, Traefik, and a control-plane API — that together
+            Most self-hosted PaaS tools ship a constellation of containers:
+            Postgres, Redis, Traefik, and a control-plane API, that together
             idle at 400–800&nbsp;MB of RAM. The bet behind Rivetr is simpler:
             a PaaS control plane should be small enough to run on the cheapest
             VPS you can rent.
@@ -162,7 +162,7 @@ export default function About() {
           <SectionHeading
             eyebrow="Philosophy"
             title="Four principles"
-            blurb="These aren't marketing bullets — they're the constraints that every design decision is checked against."
+            blurb="These aren't marketing bullets, they're the constraints that every design decision is checked against."
           />
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {PRINCIPLES.map(({ icon: Icon, title, body }) => (

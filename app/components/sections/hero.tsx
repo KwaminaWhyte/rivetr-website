@@ -23,7 +23,7 @@ function TerminalMock() {
         <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/70" aria-hidden="true" />
         <span className="h-2.5 w-2.5 rounded-full bg-green-500/70" aria-hidden="true" />
         <span className="ml-3 text-xs text-mist-400 font-mono select-none">
-          rivetr — bash
+          rivetr - bash
         </span>
       </div>
 

@@ -1,6 +1,6 @@
 # Rivetr Website
 
-Marketing site for [Rivetr](../rivetr) — the single-binary self-hosted PaaS.
+Marketing site for [Rivetr](../rivetr), the single-binary self-hosted PaaS.
 
 Built with [React Router v7](https://reactrouter.com/) (framework mode), React 19,
 Tailwind CSS v4, and TypeScript.
@@ -41,7 +41,7 @@ app/
     └── features.tsx         # detailed features page
 ```
 
-To edit copy or stats, change `app/lib/content.ts` — the sections render from it.
+To edit copy or stats, change `app/lib/content.ts`, the sections render from it.
 
 ## Deploy
 

@@ -14,7 +14,7 @@ export const HERO = {
   eyebrow: "Open source · MIT licensed",
   title: "Deploy from Git.\nOne binary. ~30MB RAM.",
   subtitle:
-    "Rivetr is a self-hosted platform-as-a-service that ships as a single Rust binary — embedded database, embedded reverse proxy, automatic HTTPS. No Redis. No PostgreSQL. No Traefik. Just run it.",
+    "Rivetr is a self-hosted platform-as-a-service that ships as a single Rust binary: embedded database, embedded reverse proxy, automatic HTTPS. No Redis. No PostgreSQL. No Traefik. Just run it.",
   primaryCta: { label: "Get started", href: "#install" },
   secondaryCta: { label: "Star on GitHub", href: SITE.github },
 } as const;
@@ -42,7 +42,7 @@ export type FeatureGroup = {
 export const FEATURE_GROUPS: FeatureGroup[] = [
   {
     name: "Core deployment",
-    blurb: "Git in, running app out — with zero downtime and automatic rollback.",
+    blurb: "Git in, running app out, with zero downtime and automatic rollback.",
     features: [
       {
         title: "Git-native deploys",
@@ -53,7 +53,7 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
       {
         title: "Any build type",
         description:
-          "Dockerfile, Nixpacks, Railpack, Heroku/Paketo buildpacks, or static sites — auto-detected.",
+          "Dockerfile, Nixpacks, Railpack, Heroku/Paketo buildpacks, or static sites, auto-detected.",
         icon: "Package",
       },
       {
@@ -77,7 +77,7 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
       {
         title: "Managed databases",
         description:
-          "One-click PostgreSQL, MySQL, MongoDB, Redis, DragonFlyDB, KeyDB, ClickHouse — and LibSQL.",
+          "One-click PostgreSQL, MySQL, MongoDB, Redis, DragonFlyDB, KeyDB, ClickHouse, and LibSQL.",
         icon: "Database",
       },
       {
@@ -155,7 +155,7 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
       {
         title: "Resource limits, live",
         description:
-          "Set CPU and memory caps per app and apply them live via docker update — no redeploy.",
+          "Set CPU and memory caps per app and apply them live via docker update, no redeploy.",
         icon: "Gauge",
       },
     ],
@@ -173,7 +173,7 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
       {
         title: "Terminal UI",
         description:
-          "rivetr tui — a keyboard-driven dashboard to manage apps, deploys, and servers from any terminal.",
+          "rivetr tui: a keyboard-driven dashboard to manage apps, deploys, and servers from any terminal.",
         icon: "SquareTerminal",
       },
       {
@@ -256,7 +256,7 @@ export const STEPS = [
   {
     n: "01",
     title: "Install the binary",
-    body: "One curl command drops a single binary on your server. It boots with an embedded SQLite database and reverse proxy — nothing else to install.",
+    body: "One curl command drops a single binary on your server. It boots with an embedded SQLite database and reverse proxy, nothing else to install.",
     code: "curl -fsSL https://rivetr.dev/install.sh | sh",
   },
   {
@@ -276,7 +276,7 @@ export const STEPS = [
 export const FAQS = [
   {
     q: "How is Rivetr so lightweight?",
-    a: "It's a single Rust binary with an embedded SQLite database (WAL mode), a built-in reverse proxy using lock-free route updates, and async I/O via Tokio. There's no separate database server, message queue, or proxy process to run — so the whole control plane sits around 30–80MB of RAM.",
+    a: "It's a single Rust binary with an embedded SQLite database (WAL mode), a built-in reverse proxy using lock-free route updates, and async I/O via Tokio. There's no separate database server, message queue, or proxy process to run, so the whole control plane sits around 30–80MB of RAM.",
   },
   {
     q: "Is it production-ready?",
@@ -288,7 +288,7 @@ export const FAQS = [
   },
   {
     q: "How does it compare to Coolify and Dokploy?",
-    a: "Same core idea — self-hosted, Git-driven deploys — but Rivetr runs on a fraction of the RAM with no external services, supports Podman as well as Docker, and adds unique features like a native MCP server for AI assistants, a terminal UI, and a remote filesystem browser.",
+    a: "Same core idea, self-hosted, Git-driven deploys, but Rivetr runs on a fraction of the RAM with no external services, supports Podman as well as Docker, and adds unique features like a native MCP server for AI assistants, a terminal UI, and a remote filesystem browser.",
   },
   {
     q: "What does it cost?",
@@ -300,7 +300,7 @@ export const FAQS = [
   },
 ];
 
-// Broader positioning — the platforms developers leave behind.
+// Broader positioning: the platforms developers leave behind.
 export const ALTERNATIVES = [
   "Vercel",
   "Heroku",
@@ -311,7 +311,7 @@ export const ALTERNATIVES = [
   "Dokploy",
 ] as const;
 
-// Always-true facts — no community vanity metrics required.
+// Always-true facts: no community vanity metrics required.
 export const FACTS = [
   { value: "~30MB", label: "RAM at idle" },
   { value: "1", label: "Binary, zero deps" },
@@ -321,7 +321,7 @@ export const FACTS = [
   { value: "MIT", label: "Free forever" },
 ] as const;
 
-// Supported stack — rendered as a logo/wordmark marquee.
+// Supported stack: rendered as a logo/wordmark marquee.
 export type TechItem = { name: string; slug: string };
 export type TechRow = { label: string; items: TechItem[] };
 

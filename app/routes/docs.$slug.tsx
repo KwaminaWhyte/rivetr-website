@@ -49,7 +49,7 @@ const DOCS_CONTENT: Record<string, string> = {
 const FLAT_ITEMS = DOCS_NAV.flatMap((g) => g.items);
 
 export function meta() {
-  return [{ title: "Docs — Rivetr" }];
+  return [{ title: "Docs: Rivetr" }];
 }
 
 export default function DocPage() {

@@ -41,7 +41,7 @@ export function FeatureGroups() {
       <Container>
         <SectionHeading
           eyebrow="Everything included"
-          title="One binary. Every feature you'd expect — and a few you wouldn't."
+          title="One binary. Every feature you'd expect, and a few you wouldn't."
           blurb="No add-ons. No paid tiers. No feature flags. Everything ships in the binary."
           align="center"
         />

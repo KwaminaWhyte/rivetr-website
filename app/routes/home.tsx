@@ -14,7 +14,7 @@ import { CtaInstall } from "~/components/sections/cta-install";
 
 export function meta(_: Route.MetaArgs) {
   return [
-    { title: "Rivetr — Self-hosted PaaS in a single binary" },
+    { title: "Rivetr: Self-hosted PaaS in a single binary" },
     {
       name: "description",
       content:

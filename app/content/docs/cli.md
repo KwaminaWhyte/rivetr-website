@@ -1,6 +1,6 @@
 # CLI Reference
 
-Rivetr ships a command-line interface that can control any running Rivetr instance — local or remote. All subcommands accept `--api-url` and `--token` flags, or the environment variables `RIVETR_API_URL` and `RIVETR_TOKEN`.
+Rivetr ships a command-line interface that can control any running Rivetr instance, local or remote. All subcommands accept `--api-url` and `--token` flags, or the environment variables `RIVETR_API_URL` and `RIVETR_TOKEN`.
 
 ---
 
@@ -35,10 +35,10 @@ sudo cp target/release/rivetr /usr/local/bin/
 
 | Flag | Env var | Default | Description |
 |------|---------|---------|-------------|
-| `--config <path>` | — | `rivetr.toml` | Config file (server mode only) |
+| `--config <path>` | - | `rivetr.toml` | Config file (server mode only) |
 | `--api-url <url>` | `RIVETR_API_URL` | `http://localhost:8080` | Rivetr instance URL |
-| `--token <token>` | `RIVETR_TOKEN` | — | API authentication token |
-| `--log-level <level>` | — | `info` | Log verbosity |
+| `--token <token>` | `RIVETR_TOKEN` | - | API authentication token |
+| `--log-level <level>` | - | `info` | Log verbosity |
 
 Set environment variables to avoid passing flags on every command:
 

@@ -6,7 +6,7 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
     Consolas, monospace;
 
-  /* Brand — rust/amber, nodding to Rust the language */
+  /* Brand: rust/amber, nodding to Rust the language */
   --color-brand-50: #fff7ed;
   --color-brand-100: #ffedd5;
   --color-brand-200: #fed7aa;
@@ -18,7 +18,7 @@
   --color-brand-800: #9a3412;
   --color-brand-900: #7c2d12;
 
-  /* Ink — near-black slate surfaces */
+  /* Ink: near-black slate surfaces */
   --color-ink-950: #07090d;
   --color-ink-900: #0b0e14;
   --color-ink-850: #0f131b;

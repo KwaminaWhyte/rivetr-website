@@ -40,7 +40,7 @@ curl -X POST \
 
 ## Linking a database to an app
 
-Link a database to an app and Rivetr automatically injects the connection string as environment variables into the app container — no manual copy-pasting.
+Link a database to an app and Rivetr automatically injects the connection string as environment variables into the app container, no manual copy-pasting.
 
 From the dashboard: **App → Environment → Link Database**.
 

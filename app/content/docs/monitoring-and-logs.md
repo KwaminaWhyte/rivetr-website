@@ -1,6 +1,6 @@
 # Monitoring and Logs
 
-Rivetr provides live log streaming, full-text log search, uptime and response-time tracking, Prometheus metrics, and automatic crash recovery — all built in, no external observability stack required.
+Rivetr provides live log streaming, full-text log search, uptime and response-time tracking, Prometheus metrics, and automatic crash recovery, all built in, no external observability stack required.
 
 ---
 
@@ -10,14 +10,14 @@ Rivetr provides live log streaming, full-text log search, uptime and response-ti
 
 Stream an app's stdout/stderr in real time:
 
-**SSE (Server-Sent Events)** — works in any browser and HTTP client:
+**SSE (Server-Sent Events)**: works in any browser and HTTP client:
 
 ```bash
 curl -N "https://your-server/api/apps/<app_id>/logs/stream" \
   -H "Authorization: Bearer <token>"
 ```
 
-**WebSocket** — used by the dashboard terminal:
+**WebSocket**: used by the dashboard terminal:
 
 ```
 wss://your-server/api/deployments/<deployment_id>/logs/stream?token=<token>

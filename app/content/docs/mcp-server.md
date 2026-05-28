@@ -6,7 +6,7 @@ Rivetr includes a built-in [Model Context Protocol (MCP)](https://modelcontextpr
 
 ## What Is MCP?
 
-MCP is an open protocol that lets AI assistants call tools on external systems using a structured JSON API. Rivetr's MCP server exposes deployment and monitoring operations as callable tools, so an AI assistant can list your apps, check deployment status, trigger a deploy, or fetch logs — directly from a conversation.
+MCP is an open protocol that lets AI assistants call tools on external systems using a structured JSON API. Rivetr's MCP server exposes deployment and monitoring operations as callable tools, so an AI assistant can list your apps, check deployment status, trigger a deploy, or fetch logs, directly from a conversation.
 
 ---
 
@@ -18,7 +18,7 @@ The MCP server is a single HTTP endpoint:
 POST /mcp
 ```
 
-It is public (no `Authorization` header required at the transport level). Access control is enforced at the Rivetr database level — the MCP handler queries the same SQLite database as the REST API and only returns data that exists.
+It is public (no `Authorization` header required at the transport level). Access control is enforced at the Rivetr database level: the MCP handler queries the same SQLite database as the REST API and only returns data that exists.
 
 > **Security note:** Expose `/mcp` only to trusted clients. If your Rivetr API port (8080) is publicly accessible, consider restricting `/mcp` at the firewall or reverse-proxy level.
 
@@ -28,7 +28,7 @@ It is public (no `Authorization` header required at the transport level). Access
 
 All requests are JSON `POST` bodies with a `method` field and an optional `params` object.
 
-### Discover available tools — `tools/list`
+### Discover available tools: `tools/list`
 
 ```bash
 curl -X POST https://your-server:8080/mcp \
@@ -54,7 +54,7 @@ Response:
 }
 ```
 
-### Call a tool — `tools/call`
+### Call a tool: `tools/call`
 
 ```bash
 curl -X POST https://your-server:8080/mcp \

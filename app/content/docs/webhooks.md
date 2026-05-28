@@ -51,7 +51,7 @@ If a secret is set and the signature does not match, the request is rejected wit
 
 ### GitHub App (alternative)
 
-If you set up a GitHub App via **Settings → GitHub Apps**, Rivetr receives events automatically — no per-repo webhook configuration needed.
+If you set up a GitHub App via **Settings → GitHub Apps**, Rivetr receives events automatically, with no per-repo webhook configuration needed.
 
 ---
 
@@ -120,7 +120,7 @@ Rivetr checks the commit message of the push event. If any skip marker is found,
 
 ## Watch Paths
 
-By default, any push to the tracked branch triggers a deploy. Watch paths let you narrow this — a deploy is only triggered if at least one changed file matches a path pattern.
+By default, any push to the tracked branch triggers a deploy. Watch paths let you narrow this: a deploy is only triggered if at least one changed file matches a path pattern.
 
 Configure watch paths in the Rivetr dashboard under your app's **Settings → Watch Paths**, or in `deploy.toml`:
 

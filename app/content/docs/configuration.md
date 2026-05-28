@@ -2,14 +2,14 @@
 
 Rivetr uses two configuration files:
 
-- **`rivetr.toml`** — server-level configuration (ports, auth, runtime, proxy, email, etc.)
-- **`deploy.toml`** — per-app configuration placed in each repository root
+- **`rivetr.toml`**: server-level configuration (ports, auth, runtime, proxy, email, etc.)
+- **`deploy.toml`**: per-app configuration placed in each repository root
 
 All fields are optional. Omit any field and the documented default applies.
 
 ---
 
-## `rivetr.toml` — Server configuration
+## `rivetr.toml`: Server configuration
 
 ### `[server]`
 
@@ -22,14 +22,14 @@ Network and data location settings.
 | `proxy_port` | `80` | Port for the embedded HTTP reverse proxy. |
 | `proxy_https_port` | `443` | Port for the embedded HTTPS reverse proxy. |
 | `data_dir` | `"./data"` | Directory for the SQLite database, ACME cache, and backups. |
-| `external_url` | — | Publicly reachable base URL. Required for GitHub App callbacks when behind a tunnel (e.g. ngrok). |
+| `external_url` | - | Publicly reachable base URL. Required for GitHub App callbacks when behind a tunnel (e.g. ngrok). |
 
 ### `[auth]`
 
 | Field | Default | Description |
 |-------|---------|-------------|
 | `admin_token` | auto-generated | Bearer token for API access. Set explicitly in production so it is stable across restarts. |
-| `encryption_key` | — | Secret for encrypting env vars at rest (AES-256-GCM). Use a strong random string of 32+ characters. |
+| `encryption_key` | - | Secret for encrypting env vars at rest (AES-256-GCM). Use a strong random string of 32+ characters. |
 
 ### `[runtime]`
 
@@ -46,12 +46,12 @@ Network and data location settings.
 | Field | Default | Description |
 |-------|---------|-------------|
 | `acme_enabled` | `false` | Enable automatic HTTPS via Let's Encrypt. |
-| `acme_email` | — | Email for the Let's Encrypt account (required when `acme_enabled = true`). |
+| `acme_email` | - | Email for the Let's Encrypt account (required when `acme_enabled = true`). |
 | `acme_staging` | `false` | Use the Let's Encrypt staging environment (avoids rate limits while testing). |
 | `acme_cache_dir` | `"./data/acme"` | Directory for ACME account data and certificates. |
-| `base_domain` | — | Base domain for auto-generated subdomains, e.g. `apps.example.com`. |
+| `base_domain` | - | Base domain for auto-generated subdomains, e.g. `apps.example.com`. |
 | `sslip_enabled` | `false` | Enable `sslip.io` automatic domains (e.g. `myapp.1.2.3.4.sslip.io`). |
-| `preview_domain` | — | Base domain for PR preview deployments. |
+| `preview_domain` | - | Base domain for PR preview deployments. |
 
 ### `[webhooks]`
 
@@ -101,11 +101,11 @@ Crash detection and auto-restart with exponential backoff.
 | Field | Default | Description |
 |-------|---------|-------------|
 | `enabled` | `false` | Enable email sending. |
-| `smtp_host` | — | SMTP server hostname. |
+| `smtp_host` | - | SMTP server hostname. |
 | `smtp_port` | `587` | SMTP port. |
-| `smtp_username` | — | SMTP auth username. |
-| `smtp_password` | — | SMTP auth password. |
-| `from_address` | — | From address for outgoing email. |
+| `smtp_username` | - | SMTP auth username. |
+| `smtp_password` | - | SMTP auth password. |
+| `from_address` | - | From address for outgoing email. |
 
 ### `[ai]`
 
@@ -114,7 +114,7 @@ AI-powered features: deployment diagnosis, Dockerfile suggestions, cost insights
 | Field | Default | Description |
 |-------|---------|-------------|
 | `provider` | `"claude"` | Provider: `claude`, `openai`, `gemini`, or `moonshot`. |
-| `api_key` | — | API key for the selected provider. |
+| `api_key` | - | API key for the selected provider. |
 | `model` | provider default | Model override. |
 
 ### Full example
@@ -150,7 +150,7 @@ github_secret = "your-hmac-secret"
 
 ---
 
-## `deploy.toml` — Per-app configuration
+## `deploy.toml`: Per-app configuration
 
 Place this file in the root of your repository. All fields are optional.
 
@@ -190,7 +190,7 @@ replicas = 1
 | `deploy.healthcheck` | HTTP path to check after starting the container. |
 | `deploy.healthcheck_timeout` | Seconds to wait for the health check to pass. |
 | `deploy.branch` | Branch to deploy (defaults to the repository's default branch). |
-| `deploy.watch_paths` | Glob patterns — only trigger a deploy when matching files change. |
+| `deploy.watch_paths` | Glob patterns: only trigger a deploy when matching files change. |
 
 ### Resource limits
 

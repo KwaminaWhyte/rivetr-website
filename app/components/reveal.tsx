@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 //
 // Robustness: content is VISIBLE by default (SSR + no-JS + reduced-motion all
 // render it). Only after hydration do we hide below-the-fold elements and then
-// reveal them on intersection — with a timeout fallback so nothing can get
+// reveal them on intersection, with a timeout fallback so nothing can get
 // stuck hidden if the observer never fires.
 export function Reveal({
   children,

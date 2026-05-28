@@ -54,7 +54,7 @@ curl -X PUT https://your-server/api/teams/<team_id>/members/<user_id> \
 
 ## Per-Resource Permission Overrides
 
-You can grant a member elevated permissions on a specific resource — for example, giving a developer write access to one app but not others.
+You can grant a member elevated permissions on a specific resource, for example giving a developer write access to one app but not others.
 
 ```bash
 # Set overrides for a member on specific resources

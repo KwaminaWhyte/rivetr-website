@@ -31,13 +31,13 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export const meta: Route.MetaFunction = () => [
-  { title: "Rivetr — Self-hosted PaaS in a single binary" },
+  { title: "Rivetr: Self-hosted PaaS in a single binary" },
   {
     name: "description",
     content:
       "Deploy apps from Git with one binary. ~30MB RAM idle, no Redis, no PostgreSQL, no Traefik. Docker + Podman, automatic HTTPS, zero-downtime deploys. Open source, MIT.",
   },
-  { property: "og:title", content: "Rivetr — Self-hosted PaaS in a single binary" },
+  { property: "og:title", content: "Rivetr: Self-hosted PaaS in a single binary" },
   {
     property: "og:description",
     content:

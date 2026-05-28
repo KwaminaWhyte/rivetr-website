@@ -1,5 +1,5 @@
 // The Rivetr mark: a squircle in the brand gradient with a white hex bolt head
-// and a cut-out socket — a nod to "rivet" (a fastener). Scales cleanly down to
+// and a cut-out socket, a nod to "rivet" (a fastener). Scales cleanly down to
 // favicon sizes. Keep this in sync with public/favicon.svg.
 export function RivetrLogo({
   size = 28,
@@ -34,7 +34,7 @@ export function RivetrLogo({
         d="M16 7.2 L23.6 11.6 L23.6 20.4 L16 24.8 L8.4 20.4 L8.4 11.6 Z"
         fill="#fff"
       />
-      {/* socket — reveals the gradient through the head */}
+      {/* socket: reveals the gradient through the head */}
       <circle cx="16" cy="16" r="3.4" fill="url(#rivetr-g)" />
     </svg>
   );

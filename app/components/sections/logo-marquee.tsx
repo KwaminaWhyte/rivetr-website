@@ -98,7 +98,7 @@ export function LogoMarquee() {
     <div className="overflow-hidden border-b border-ink-700 bg-ink-950 py-12">
       <Container>
         <p className="mb-8 text-center text-xs font-semibold uppercase tracking-widest text-mist-400">
-          Deploy anything — works with your stack
+          Deploy anything, works with your stack
         </p>
       </Container>
       <div className="flex flex-col gap-4">

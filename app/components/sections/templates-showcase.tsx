@@ -63,7 +63,7 @@ export function TemplatesShowcase() {
               <span className="text-gradient">ready to deploy</span>
             </>
           }
-          blurb="Databases, AI models, analytics, monitoring, CMS, and more — plus community-submitted templates. No configuration files required."
+          blurb="Databases, AI models, analytics, monitoring, CMS, and more, plus community-submitted templates. No configuration files required."
         />
 
         {/* Big count emphasis */}

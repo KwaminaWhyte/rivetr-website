@@ -61,7 +61,7 @@ export default function DocsLayout() {
 
   return (
     <div className="min-h-screen bg-ink-950">
-      {/* Top bar — same height as site-nav to account for fixed nav */}
+      {/* Top bar: same height as site-nav to account for fixed nav */}
       <div className="h-14" aria-hidden="true" />
 
       <div className="mx-auto flex w-full max-w-7xl px-4 sm:px-8">
