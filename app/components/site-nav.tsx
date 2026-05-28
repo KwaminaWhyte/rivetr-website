@@ -67,43 +67,55 @@ export function SiteNav() {
 
   return (
     <>
-      <header
+      {/* Chromeless top region: no bar of its own — the pill IS the nav.
+          A faint scrim fades in on scroll just for legibility of the edges. */}
+      <div
         className={[
-          "fixed inset-x-0 top-0 z-50 transition-all duration-200",
+          "pointer-events-none fixed inset-x-0 top-0 z-40 h-20 transition-opacity duration-200",
           scrolled
-            ? "border-b border-ink-700 bg-ink-950/80 backdrop-blur-md"
-            : "border-b border-transparent bg-transparent",
+            ? "bg-gradient-to-b from-ink-950 to-transparent opacity-100"
+            : "opacity-0",
         ].join(" ")}
-      >
+        aria-hidden
+      />
+      <header className="pointer-events-none fixed inset-x-0 top-0 z-50">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5 sm:px-8">
           {/* Wordmark */}
           <Link
             to="/"
-            className="flex items-center gap-2 rounded text-base font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
+            className="pointer-events-auto flex items-center gap-2 rounded text-base font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
             aria-label="Rivetr home"
           >
             <RivetrMark />
             {SITE.name}
           </Link>
 
-          {/* Center pill — desktop only */}
-          <div className="hidden md:block">
+          {/* The nav itself — a floating tube-light pill (desktop). */}
+          <div className="pointer-events-auto hidden md:block">
             <TubeLightNavBar items={NAV_ITEMS} />
           </div>
 
           {/* Right CTAs */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="pointer-events-auto flex items-center gap-2 sm:gap-3">
             <GithubStarButton />
-            <Button href="/docs" variant="primary" size="md" className="hidden sm:inline-flex">
+            <Button
+              href="/docs"
+              variant="primary"
+              size="md"
+              className="hidden sm:inline-flex"
+            >
               Get started
             </Button>
           </div>
         </div>
       </header>
 
-      {/* Mobile bottom floating pill — the signature tube-light placement */}
-      <div className="fixed inset-x-0 bottom-0 z-50 mb-5 flex justify-center md:hidden">
-        <TubeLightNavBar items={NAV_ITEMS} className="shadow-lg shadow-black/40" />
+      {/* Mobile: the signature bottom floating pill. */}
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 mb-5 flex justify-center md:hidden">
+        <TubeLightNavBar
+          items={NAV_ITEMS}
+          className="pointer-events-auto shadow-lg shadow-black/40"
+        />
       </div>
     </>
   );
