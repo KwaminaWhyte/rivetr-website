@@ -1,8 +1,13 @@
 import type { Route } from "./+types/home";
+import { Reveal } from "~/components/reveal";
 import { Hero } from "~/components/sections/hero";
-import { StatStrip } from "~/components/sections/stat-strip";
+import { Positioning } from "~/components/sections/positioning";
+import { LogoMarquee } from "~/components/sections/logo-marquee";
+import { ProductPreview } from "~/components/sections/product-preview";
 import { FeatureGroups } from "~/components/sections/feature-groups";
+import { TemplatesShowcase } from "~/components/sections/templates-showcase";
 import { HowItWorks } from "~/components/sections/how-it-works";
+import { FactsBand } from "~/components/sections/facts-band";
 import { Compare } from "~/components/sections/compare";
 import { Faq } from "~/components/sections/faq";
 import { CtaInstall } from "~/components/sections/cta-install";
@@ -22,12 +27,30 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <StatStrip />
-      <FeatureGroups />
-      <HowItWorks />
-      <Compare />
-      <Faq />
-      <CtaInstall />
+      <Positioning />
+      <LogoMarquee />
+      <Reveal>
+        <ProductPreview />
+      </Reveal>
+      <Reveal>
+        <FeatureGroups />
+      </Reveal>
+      <Reveal>
+        <TemplatesShowcase />
+      </Reveal>
+      <Reveal>
+        <HowItWorks />
+      </Reveal>
+      <FactsBand />
+      <Reveal>
+        <Compare />
+      </Reveal>
+      <Reveal>
+        <Faq />
+      </Reveal>
+      <Reveal>
+        <CtaInstall />
+      </Reveal>
     </>
   );
 }

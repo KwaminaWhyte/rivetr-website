@@ -104,3 +104,99 @@ body {
 .animate-float-up {
   animation: float-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* Marquee for the tech-logo strip */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+@keyframes marquee-reverse {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.animate-marquee-reverse {
+  animation: marquee-reverse 40s linear infinite;
+}
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+}
+
+/* Markdown prose styling for docs + changelog (dark) */
+.prose-rivetr {
+  @apply text-mist-300 leading-relaxed;
+}
+.prose-rivetr h1 {
+  @apply mt-0 mb-4 text-3xl font-bold tracking-tight text-white;
+}
+.prose-rivetr h2 {
+  @apply mt-10 mb-3 border-b border-ink-700 pb-2 text-2xl font-semibold tracking-tight text-white scroll-mt-24;
+}
+.prose-rivetr h3 {
+  @apply mt-7 mb-2 text-lg font-semibold text-white scroll-mt-24;
+}
+.prose-rivetr p {
+  @apply my-4;
+}
+.prose-rivetr a {
+  @apply font-medium text-brand-400 underline-offset-4 hover:underline;
+}
+.prose-rivetr ul {
+  @apply my-4 list-disc space-y-1.5 pl-6 marker:text-ink-600;
+}
+.prose-rivetr ol {
+  @apply my-4 list-decimal space-y-1.5 pl-6 marker:text-mist-400;
+}
+.prose-rivetr li {
+  @apply pl-1;
+}
+.prose-rivetr strong {
+  @apply font-semibold text-white;
+}
+.prose-rivetr code {
+  @apply rounded-md border border-ink-700 bg-ink-900 px-1.5 py-0.5 font-mono text-[0.85em] text-brand-300;
+}
+.prose-rivetr pre {
+  @apply my-5 overflow-x-auto rounded-xl border border-ink-700 bg-ink-900 p-4 text-sm;
+}
+.prose-rivetr pre code {
+  @apply border-0 bg-transparent p-0 text-mist-200;
+}
+.prose-rivetr blockquote {
+  @apply my-5 border-l-2 border-brand-500/50 pl-4 text-mist-400 italic;
+}
+.prose-rivetr table {
+  @apply my-5 w-full border-collapse overflow-hidden rounded-lg text-sm;
+}
+.prose-rivetr th {
+  @apply border-b border-ink-700 bg-ink-900 px-3 py-2 text-left font-semibold text-white;
+}
+.prose-rivetr td {
+  @apply border-b border-ink-800 px-3 py-2 align-top;
+}
+.prose-rivetr hr {
+  @apply my-8 border-ink-700;
+}

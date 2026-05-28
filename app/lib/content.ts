@@ -300,6 +300,94 @@ export const FAQS = [
   },
 ];
 
+// Broader positioning — the platforms developers leave behind.
+export const ALTERNATIVES = [
+  "Vercel",
+  "Heroku",
+  "Netlify",
+  "Railway",
+  "Render",
+  "Coolify",
+  "Dokploy",
+] as const;
+
+// Always-true facts — no community vanity metrics required.
+export const FACTS = [
+  { value: "~30MB", label: "RAM at idle" },
+  { value: "1", label: "Binary, zero deps" },
+  { value: "273", label: "One-click services" },
+  { value: "4", label: "Git providers" },
+  { value: "7+", label: "Managed databases" },
+  { value: "MIT", label: "Free forever" },
+] as const;
+
+// Supported stack — rendered as a logo/wordmark marquee.
+export type TechItem = { name: string; slug: string };
+export type TechRow = { label: string; items: TechItem[] };
+
+export const TECH_STACK: TechRow[] = [
+  {
+    label: "Runtimes & languages",
+    items: [
+      { name: "Docker", slug: "docker" },
+      { name: "Podman", slug: "podman" },
+      { name: "Node.js", slug: "nodedotjs" },
+      { name: "Python", slug: "python" },
+      { name: "Go", slug: "go" },
+      { name: "Rust", slug: "rust" },
+      { name: "Ruby", slug: "ruby" },
+      { name: "PHP", slug: "php" },
+      { name: "Bun", slug: "bun" },
+      { name: "Deno", slug: "deno" },
+    ],
+  },
+  {
+    label: "Databases",
+    items: [
+      { name: "PostgreSQL", slug: "postgresql" },
+      { name: "MySQL", slug: "mysql" },
+      { name: "MongoDB", slug: "mongodb" },
+      { name: "Redis", slug: "redis" },
+      { name: "ClickHouse", slug: "clickhouse" },
+      { name: "MariaDB", slug: "mariadb" },
+    ],
+  },
+  {
+    label: "Git & registries",
+    items: [
+      { name: "GitHub", slug: "github" },
+      { name: "GitLab", slug: "gitlab" },
+      { name: "Gitea", slug: "gitea" },
+      { name: "Bitbucket", slug: "bitbucket" },
+      { name: "Docker Hub", slug: "docker" },
+    ],
+  },
+];
+
+// The 273-template gallery, summarized by category.
+export type TemplateCategory = {
+  name: string;
+  icon: string; // lucide name
+  examples: string[];
+};
+
+export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
+  { name: "AI / ML", icon: "Bot", examples: ["Ollama", "Open WebUI", "LiteLLM"] },
+  { name: "Analytics", icon: "BarChart3", examples: ["Plausible", "Umami", "PostHog"] },
+  { name: "CMS", icon: "FileText", examples: ["WordPress", "Ghost", "Strapi"] },
+  { name: "Databases", icon: "Database", examples: ["PostgreSQL", "MongoDB", "Redis"] },
+  { name: "Dev tools", icon: "Wrench", examples: ["Gitea", "Drone", "Vault"] },
+  { name: "Monitoring", icon: "Activity", examples: ["Grafana", "Uptime Kuma", "Prometheus"] },
+  { name: "Automation", icon: "Workflow", examples: ["n8n", "Node-RED", "Huginn"] },
+  { name: "Communication", icon: "MessagesSquare", examples: ["Rocket.Chat", "Mattermost"] },
+  { name: "File & media", icon: "FolderOpen", examples: ["Nextcloud", "Jellyfin", "MinIO"] },
+  { name: "Search", icon: "Search", examples: ["Meilisearch", "Typesense"] },
+  { name: "Security", icon: "ShieldCheck", examples: ["Vaultwarden", "Authelia"] },
+  { name: "Project mgmt", icon: "KanbanSquare", examples: ["Plane", "Vikunja", "Focalboard"] },
+];
+
+export const TEMPLATE_COUNT = 273;
+
 export const NAV_LINKS = [
   { label: "Features", href: "/features" },
   { label: "Compare", href: "/#compare" },
