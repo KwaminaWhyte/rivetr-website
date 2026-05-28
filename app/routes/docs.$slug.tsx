@@ -10,6 +10,18 @@ import deploymentsMd from "~/content/docs/deployments.md?raw";
 import databasesMd from "~/content/docs/databases.md?raw";
 import apiMd from "~/content/docs/api.md?raw";
 import contributingMd from "~/content/docs/contributing.md?raw";
+import quickStartMd from "~/content/docs/quick-start.md?raw";
+import buildTypesMd from "~/content/docs/build-types.md?raw";
+import webhooksMd from "~/content/docs/webhooks.md?raw";
+import environmentVariablesMd from "~/content/docs/environment-variables.md?raw";
+import domainsAndHttpsMd from "~/content/docs/domains-and-https.md?raw";
+import backupsMd from "~/content/docs/backups.md?raw";
+import monitoringAndLogsMd from "~/content/docs/monitoring-and-logs.md?raw";
+import teamsAndRbacMd from "~/content/docs/teams-and-rbac.md?raw";
+import multiServerAndScaleMd from "~/content/docs/multi-server-and-scale.md?raw";
+import cliMd from "~/content/docs/cli.md?raw";
+import mcpServerMd from "~/content/docs/mcp-server.md?raw";
+import faqMd from "~/content/docs/faq.md?raw";
 
 const DOCS_CONTENT: Record<string, string> = {
   introduction: introductionMd,
@@ -19,6 +31,18 @@ const DOCS_CONTENT: Record<string, string> = {
   databases: databasesMd,
   api: apiMd,
   contributing: contributingMd,
+  "quick-start": quickStartMd,
+  "build-types": buildTypesMd,
+  webhooks: webhooksMd,
+  "environment-variables": environmentVariablesMd,
+  "domains-and-https": domainsAndHttpsMd,
+  backups: backupsMd,
+  "monitoring-and-logs": monitoringAndLogsMd,
+  "teams-and-rbac": teamsAndRbacMd,
+  "multi-server-and-scale": multiServerAndScaleMd,
+  cli: cliMd,
+  "mcp-server": mcpServerMd,
+  faq: faqMd,
 };
 
 /** Flat list of all slugs + titles for prev/next navigation. */

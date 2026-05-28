@@ -36,7 +36,7 @@ export function Button({
   className,
 }: ButtonProps) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60";
+    "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60";
   const sizes = {
     md: "px-4 py-2 text-sm",
     lg: "px-6 py-3 text-base",

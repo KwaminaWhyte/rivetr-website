@@ -4,6 +4,7 @@ import { Home, Layers, BookOpen, ScrollText, Info, Star } from "lucide-react";
 import { Button } from "~/components/ui";
 import { GithubIcon } from "~/components/icons/github";
 import { TubeLightNavBar, type NavItem } from "~/components/tube-light-navbar";
+import { RivetrLogo } from "~/components/icons/logo";
 import { SITE } from "~/lib/content";
 import { useGithubStars, formatCount } from "~/lib/use-github-stars";
 
@@ -14,22 +15,6 @@ const NAV_ITEMS: NavItem[] = [
   { name: "Changelog", url: "/changelog", icon: ScrollText },
   { name: "About", url: "/about", icon: Info },
 ];
-
-function RivetrMark() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-      <polygon
-        points="11,1 20,6 20,16 11,21 2,16 2,6"
-        fill="none"
-        stroke="var(--color-brand-500)"
-        strokeWidth="1.5"
-      />
-      <circle cx="11" cy="11" r="3.5" fill="var(--color-brand-500)" />
-      <line x1="11" y1="4.5" x2="11" y2="7.5" stroke="var(--color-brand-400)" strokeWidth="1.5" strokeLinecap="round" />
-      <line x1="11" y1="14.5" x2="11" y2="17.5" stroke="var(--color-brand-400)" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 function GithubStarButton() {
   const data = useGithubStars();
@@ -79,7 +64,7 @@ export function SiteNav() {
           className="flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
           aria-label="Rivetr home"
         >
-          <RivetrMark />
+          <RivetrLogo size={22} />
           <span className="hidden sm:inline">{SITE.name}</span>
         </Link>
 

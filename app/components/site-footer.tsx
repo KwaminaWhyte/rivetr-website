@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { GithubIcon } from "~/components/icons/github";
+import { RivetrLogo } from "~/components/icons/logo";
 import { SITE } from "~/lib/content";
 
 const COLUMNS = [
@@ -60,8 +61,9 @@ export function SiteFooter() {
           <div className="lg:col-span-1">
             <Link
               to="/"
-              className="text-white font-bold text-base hover:text-brand-300 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60 rounded"
+              className="inline-flex items-center gap-2 rounded text-base font-bold text-white transition-colors hover:text-brand-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
             >
+              <RivetrLogo size={22} />
               {SITE.name}
             </Link>
             <p className="mt-2 text-sm text-mist-400 leading-relaxed">

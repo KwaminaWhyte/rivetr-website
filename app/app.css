@@ -178,6 +178,13 @@ body {
 }
 .prose-rivetr code {
   @apply rounded-md border border-ink-700 bg-ink-900 px-1.5 py-0.5 font-mono text-[0.85em] text-brand-300;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+/* Never let long inline code or tokens force horizontal overflow */
+.prose-rivetr {
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 .prose-rivetr pre {
   @apply my-5 overflow-x-auto rounded-xl border border-ink-700 bg-ink-900 p-4 text-sm;
