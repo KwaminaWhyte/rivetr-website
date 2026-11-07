@@ -1,4 +1,7 @@
 // Shared design-system primitives for the Rivetr site.
+//
+// Editorial layout: a 12-column grid, hairline rules, one accent. Hierarchy
+// comes from type size and space, not from gradients, glows, or tinted cards.
 import { Link } from "react-router";
 import type { ReactNode } from "react";
 
@@ -14,7 +17,7 @@ export function Container({
   children: ReactNode;
 }) {
   return (
-    <div className={cx("mx-auto w-full max-w-6xl px-5 sm:px-8", className)}>
+    <div className={cx("mx-auto w-full max-w-[1180px] px-6 sm:px-8", className)}>
       {children}
     </div>
   );
@@ -23,7 +26,7 @@ export function Container({
 type ButtonProps = {
   href: string;
   children: ReactNode;
-  variant?: "primary" | "ghost" | "outline";
+  variant?: "primary" | "outline" | "ghost";
   size?: "md" | "lg";
   className?: string;
 };
@@ -36,18 +39,16 @@ export function Button({
   className,
 }: ButtonProps) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60";
+    "inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]";
   const sizes = {
-    md: "px-4 py-2 text-sm",
-    lg: "px-6 py-3 text-base",
+    md: "h-9 px-3.5 text-sm",
+    lg: "h-10 px-4 text-sm",
   };
   const variants = {
-    // Primary stays brand-on-white; readable in both themes.
-    primary:
-      "bg-brand-500 text-white hover:bg-brand-400 hover:-translate-y-0.5 shadow-[0_8px_30px_-8px_rgba(99,102,241,0.7)]",
+    primary: "bg-brand-600 text-white hover:bg-brand-700",
     outline:
-      "border border-border-strong text-fg hover:border-brand-500/60 hover:text-strong hover:bg-surface-strong/60",
-    ghost: "text-muted hover:text-strong hover:bg-surface-strong/60",
+      "border border-border-strong bg-surface text-fg-strong hover:bg-surface-strong",
+    ghost: "text-fg-muted hover:bg-surface-strong hover:text-fg-strong",
   };
   const cls = cx(base, sizes[size], variants[variant], className);
   const external = href.startsWith("http");
@@ -65,6 +66,7 @@ export function Button({
   );
 }
 
+/** A quiet inline label. Not a pill, not a chip: a dot and small mono type. */
 export function Badge({
   children,
   className,
@@ -75,10 +77,11 @@ export function Badge({
   return (
     <span
       className={cx(
-        "inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-3 py-1 text-xs font-medium text-brand-300",
+        "inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-fg-subtle",
         className,
       )}
     >
+      <span className="size-1.5 rounded-full bg-brand-400" aria-hidden="true" />
       {children}
     </span>
   );
@@ -88,36 +91,48 @@ export function SectionHeading({
   eyebrow,
   title,
   blurb,
-  align = "center",
+  align = "left",
 }: {
   eyebrow?: string;
   title: ReactNode;
   blurb?: ReactNode;
   align?: "center" | "left";
 }) {
+  if (align === "center") {
+    return (
+      <div className="mx-auto max-w-2xl text-center">
+        {eyebrow && <p className="label-mono mb-4">{eyebrow}</p>}
+        <h2 className="text-[1.75rem] font-semibold leading-[1.15] tracking-[-0.02em] text-strong sm:text-[2.25rem]">
+          {title}
+        </h2>
+        {blurb && (
+          <p className="mt-4 text-[15px] leading-7 text-muted">{blurb}</p>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div
-      className={cx(
-        "max-w-2xl",
-        align === "center" ? "mx-auto text-center" : "text-left",
-      )}
-    >
-      {eyebrow && (
-        <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-brand-400">
-          {eyebrow}
-        </p>
-      )}
-      <h2 className="text-3xl font-bold tracking-tight text-strong sm:text-4xl">
-        {title}
-      </h2>
-      {blurb && (
-        <p className="mt-4 text-lg leading-relaxed text-subtle">{blurb}</p>
-      )}
+    <div className="border-t border-border pt-8">
+      <div className="grid gap-x-10 gap-y-5 lg:grid-cols-12">
+        <div className="lg:col-span-3">
+          {eyebrow && <p className="label-mono pt-1">{eyebrow}</p>}
+        </div>
+        <div className="lg:col-span-9">
+          <h2 className="max-w-3xl text-[1.75rem] font-semibold leading-[1.15] tracking-[-0.02em] text-strong sm:text-[2.25rem]">
+            {title}
+          </h2>
+          {blurb && (
+            <p className="mt-4 max-w-2xl text-[15px] leading-7 text-muted">
+              {blurb}
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
 
-// Section wrapper with consistent vertical rhythm + optional id anchor.
 export function Section({
   id,
   className,
@@ -128,8 +143,38 @@ export function Section({
   children: ReactNode;
 }) {
   return (
-    <section id={id} className={cx("py-20 sm:py-28", className)}>
+    <section id={id} className={cx("py-20 sm:py-24", className)}>
       {children}
     </section>
+  );
+}
+
+/** Page header used by Features, Changelog, and About. */
+export function PageHeader({
+  label,
+  title,
+  blurb,
+  actions,
+}: {
+  label: string;
+  title: ReactNode;
+  blurb?: ReactNode;
+  actions?: ReactNode;
+}) {
+  return (
+    <header className="border-b border-border pb-14 pt-16 sm:pt-20">
+      <Container>
+        <p className="label-mono">{label}</p>
+        <h1 className="mt-5 max-w-3xl text-[2.25rem] font-semibold leading-[1.08] tracking-[-0.03em] text-strong sm:text-[3.25rem]">
+          {title}
+        </h1>
+        {blurb && (
+          <p className="mt-5 max-w-3xl text-[17px] leading-8 text-muted">
+            {blurb}
+          </p>
+        )}
+        {actions && <div className="mt-8 flex flex-wrap gap-3">{actions}</div>}
+      </Container>
+    </header>
   );
 }

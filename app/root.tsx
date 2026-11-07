@@ -1,5 +1,4 @@
 import {
-  data,
   isRouteErrorResponse,
   Links,
   Meta,
@@ -13,7 +12,7 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import { SiteNav } from "./components/site-nav";
 import { SiteFooter } from "./components/site-footer";
-import { getTheme, themeCookie } from "./cookies.server";
+import { getTheme } from "./cookies.server";
 import { themeColorFor, type Theme } from "./lib/theme";
 
 export const links: Route.LinksFunction = () => [
@@ -66,22 +65,8 @@ const JSON_LD = {
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const theme = await getTheme(request);
+  const theme = getTheme(request);
   return { theme, origin: new URL(request.url).origin };
-}
-
-export async function action({ request }: Route.ActionArgs) {
-  const formData = await request.formData();
-  const raw = formData.get("theme");
-  const theme: Theme = raw === "light" ? "light" : "dark";
-  return data(
-    { theme },
-    {
-      headers: {
-        "Set-Cookie": await themeCookie.serialize(theme),
-      },
-    },
-  );
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {

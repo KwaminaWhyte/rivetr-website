@@ -248,37 +248,35 @@ export default function DocsIndex() {
   return (
     <div className="mx-auto max-w-4xl">
       <div className="mb-10">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-brand-300">
-          Documentation · v{SITE.version}
-        </p>
-        <h1 className="mb-3 text-3xl font-bold tracking-tight text-strong sm:text-4xl">
+        <p className="label-mono mb-4">Documentation · v{SITE.version}</p>
+        <h1 className="mb-3 text-3xl font-semibold tracking-[-0.02em] text-strong sm:text-[2.5rem]">
           Get started with Rivetr
         </h1>
-        <p className="max-w-xl text-lg leading-relaxed text-subtle">
+        <p className="max-w-xl text-[15px] leading-7 text-fg-muted">
           Rivetr deploys your apps from Git in a single binary: no Redis, no
           PostgreSQL, and no Traefik. These pages cover 1.0.0.
         </p>
       </div>
 
-      <div className="mb-10 rounded-xl border border-brand-500/20 bg-brand-500/[0.06] p-5">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <p className="text-sm font-semibold text-strong">Quick start</p>
-          <span className="rounded-full border border-brand-500/25 px-2 py-0.5 font-mono text-[10px] text-brand-300">
+      <div className="mb-10 overflow-hidden rounded-lg border border-border bg-surface">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-2.5">
+          <p className="text-[13px] font-medium text-strong">Quick start</p>
+          <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-fg-subtle">
             Linux + Docker or Podman
           </span>
         </div>
-        <pre className="whitespace-pre-wrap break-words rounded-lg border border-border bg-bg p-4 font-mono text-xs text-fg sm:text-sm">
+        <pre className="whitespace-pre-wrap break-words p-4 font-mono text-xs text-fg-muted sm:text-[13px]">
           <code>{SITE.installCmd}</code>
         </pre>
-        <p className="mt-3 text-sm text-subtle">
+        <p className="px-4 pb-4 text-[13px] text-fg-muted">
           Then open{" "}
-          <code className="rounded border border-border bg-surface px-1.5 py-0.5 text-xs text-brand-300">
+          <code className="rounded border border-border bg-bg px-1.5 py-0.5 font-mono text-xs text-fg-strong">
             http://your-server:8080
           </code>{" "}
           and create your admin account.{" "}
           <Link
             to="/docs/quick-start"
-            className="font-medium text-brand-300 underline-offset-4 hover:underline"
+            className="font-medium text-brand-400 underline-offset-4 hover:underline"
           >
             Full quick start
           </Link>
@@ -288,24 +286,22 @@ export default function DocsIndex() {
       <div className="space-y-10">
         {SECTIONS.map((section) => (
           <div key={section.label}>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-subtle">
-              {section.label}
-            </p>
+            <p className="label-mono mb-3">{section.label}</p>
             <div className="grid gap-4 sm:grid-cols-2">
               {section.cards.map((card) => (
                 <Link
                   key={card.slug}
                   to={`/docs/${card.slug}`}
-                  className="group flex gap-4 rounded-xl border border-border bg-surface/60 p-5 transition-all duration-200 hover:border-brand-500/40 hover:bg-surface"
+                  className="group flex gap-4 rounded-md border border-border bg-surface p-4 transition-colors hover:border-border-strong"
                 >
-                  <div className="mt-0.5 shrink-0 text-brand-300 transition-colors group-hover:text-brand-200">
+                  <div className="mt-0.5 shrink-0 text-fg-subtle transition-colors group-hover:text-fg-strong">
                     {card.icon}
                   </div>
                   <div>
-                    <p className="mb-1 font-semibold text-strong">
+                    <p className="mb-1 text-sm font-medium text-strong">
                       {card.title}
                     </p>
-                    <p className="text-sm leading-relaxed text-subtle">
+                    <p className="text-[13px] leading-6 text-fg-muted">
                       {card.description}
                     </p>
                   </div>
@@ -316,12 +312,12 @@ export default function DocsIndex() {
         ))}
       </div>
 
-      <div className="mt-10 flex flex-wrap gap-4 border-t border-border pt-6 text-sm text-subtle">
+      <div className="mt-10 flex flex-wrap gap-6 border-t border-border pt-6 text-[13px] text-fg-subtle">
         <a
           href={SITE.github}
           target="_blank"
           rel="noreferrer"
-          className="transition-colors hover:text-strong"
+          className="transition-colors hover:text-fg-strong"
         >
           GitHub →
         </a>
@@ -329,11 +325,11 @@ export default function DocsIndex() {
           href={`${SITE.github}/issues`}
           target="_blank"
           rel="noreferrer"
-          className="transition-colors hover:text-strong"
+          className="transition-colors hover:text-fg-strong"
         >
           Report an issue →
         </a>
-        <Link to="/changelog" className="transition-colors hover:text-strong">
+        <Link to="/changelog" className="transition-colors hover:text-fg-strong">
           Changelog →
         </Link>
       </div>

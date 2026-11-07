@@ -1,36 +1,33 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
-import { Home, Layers, BookOpen, ScrollText, Info, Star, Menu, X } from "lucide-react";
-import { Button } from "~/components/ui";
+import { Menu, X } from "lucide-react";
+import { Button, Container } from "~/components/ui";
 import { GithubIcon } from "~/components/icons/github";
-import { TubeLightNavBar, type NavItem } from "~/components/tube-light-navbar";
 import { RivetrLogo } from "~/components/icons/logo";
 import { ThemeToggle } from "~/components/theme-toggle";
 import { SITE } from "~/lib/content";
 import { useGithubStars, formatCount } from "~/lib/use-github-stars";
 
-const NAV_ITEMS: NavItem[] = [
-  { name: "Home", url: "/", icon: Home },
-  { name: "Features", url: "/features", icon: Layers },
-  { name: "Docs", url: "/docs", icon: BookOpen },
-  { name: "Changelog", url: "/changelog", icon: ScrollText },
-  { name: "About", url: "/about", icon: Info },
+const NAV_ITEMS = [
+  { name: "Features", url: "/features" },
+  { name: "Docs", url: "/docs" },
+  { name: "Changelog", url: "/changelog" },
+  { name: "About", url: "/about" },
 ];
 
-function GithubStarButton() {
+function GithubLink({ className = "" }: { className?: string }) {
   const data = useGithubStars();
   return (
     <a
       href={SITE.github}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm text-muted transition-colors hover:bg-surface-strong/70 hover:text-strong focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
       aria-label="Rivetr on GitHub"
+      className={`inline-flex h-8 items-center gap-1.5 rounded-md px-2 text-sm text-fg-subtle transition-colors hover:bg-surface-strong hover:text-fg-strong focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 ${className}`}
     >
       <GithubIcon size={15} />
       {data && (
-        <span className="inline-flex items-center gap-1 text-subtle">
-          <Star size={12} className="fill-brand-400 text-brand-400" />
+        <span className="font-mono text-xs tabular-nums">
           {formatCount(data.stars)}
         </span>
       )}
@@ -39,20 +36,9 @@ function GithubStarButton() {
 }
 
 export function SiteNav() {
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { pathname } = useLocation();
 
-  useEffect(() => {
-    function onScroll() {
-      setScrolled(window.scrollY > 12);
-    }
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Close the mobile menu after navigation.
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
@@ -65,103 +51,107 @@ export function SiteNav() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  const isActive = (url: string) =>
+    url === "/" ? pathname === "/" : pathname.startsWith(url);
+
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex flex-col items-center px-3 pt-4">
-      {/* One pill holds everything: wordmark, nav (with lamp), and actions. */}
-      <div
-        className={[
-          "pointer-events-auto relative flex max-w-full items-center gap-1 rounded-full border border-border bg-surface/75 p-1.5 backdrop-blur-xl transition-shadow duration-200",
-          scrolled ? "shadow-lg shadow-black/30" : "",
-        ].join(" ")}
-      >
-        {/* Wordmark */}
-        <Link
-          to="/"
-          className="flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-bold text-strong focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
-          aria-label="Rivetr home"
-        >
-          <RivetrLogo size={22} />
-          <span className="hidden sm:inline">{SITE.name}</span>
-          <span className="hidden rounded-full border border-brand-500/30 bg-brand-500/10 px-1.5 py-0.5 font-mono text-[10px] font-medium text-brand-300 md:inline">
-            v{SITE.version}
-          </span>
-        </Link>
-
-        <span className="mx-1 hidden h-5 w-px shrink-0 bg-border sm:block" aria-hidden />
-
-        {/* Nav links with the tube-light lamp */}
-        <div className="hidden sm:block">
-          <TubeLightNavBar items={NAV_ITEMS} bare />
-        </div>
-
-        <span className="mx-1 hidden h-5 w-px shrink-0 bg-border sm:block" aria-hidden />
-
-        <div className="flex items-center gap-1">
-          <ThemeToggle />
-          <div className="hidden items-center gap-1 sm:flex">
-            <GithubStarButton />
-            <Button href="/docs/quick-start" variant="primary" className="rounded-full">
-              Get started
-            </Button>
-          </div>
-
-          {/* Mobile menu */}
-          <button
-            type="button"
-            onClick={() => setMenuOpen((open) => !open)}
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface-strong/70 hover:text-strong focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60 sm:hidden"
+    <header className="sticky top-0 z-50 border-b border-border bg-bg/85 backdrop-blur-md">
+      <Container>
+        <div className="flex h-14 items-center gap-8">
+          <Link
+            to="/"
+            aria-label="Rivetr home"
+            className="flex shrink-0 items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
           >
-            {menuOpen ? <X size={17} /> : <Menu size={17} />}
-          </button>
-        </div>
+            <RivetrLogo size={20} />
+            <span className="text-[15px] font-semibold tracking-[-0.01em] text-strong">
+              {SITE.name}
+            </span>
+            <span className="hidden font-mono text-[11px] text-fg-subtle sm:inline">
+              v{SITE.version}
+            </span>
+          </Link>
 
-        {/* Mobile dropdown */}
-        {menuOpen && (
-          <div
-            id="mobile-menu"
-            className="absolute left-1/2 top-[calc(100%+0.5rem)] w-[calc(100vw-1.5rem)] max-w-sm -translate-x-1/2 rounded-2xl border border-border bg-surface/95 p-2 shadow-2xl shadow-black/40 backdrop-blur-xl sm:hidden"
-          >
+          <nav aria-label="Primary" className="hidden items-center gap-1 md:flex">
             {NAV_ITEMS.map((item) => {
-              const Icon = item.icon;
-              const active =
-                item.url === "/" ? pathname === "/" : pathname.startsWith(item.url);
+              const active = isActive(item.url);
               return (
                 <Link
                   key={item.name}
                   to={item.url}
                   aria-current={active ? "page" : undefined}
                   className={[
-                    "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                    "rounded-md px-2.5 py-1.5 text-[13.5px] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400",
                     active
-                      ? "bg-brand-500/10 text-brand-300"
-                      : "text-muted hover:bg-surface-strong hover:text-strong",
+                      ? "font-medium text-fg-strong"
+                      : "text-fg-muted hover:text-fg-strong",
                   ].join(" ")}
                 >
-                  <Icon size={16} aria-hidden />
                   {item.name}
                 </Link>
               );
             })}
-            <div className="mt-2 flex items-center gap-2 border-t border-border pt-2">
-              <a
-                href={SITE.github}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-surface-strong hover:text-strong"
-              >
-                <GithubIcon size={16} />
-                GitHub
-              </a>
-              <Button href="/docs/quick-start" className="flex-1 justify-center">
-                Get started
-              </Button>
-            </div>
+          </nav>
+
+          <div className="ml-auto flex items-center gap-1.5">
+            <ThemeToggle />
+            <span className="hidden sm:block">
+              <GithubLink />
+            </span>
+            <span className="ml-1 hidden sm:block">
+              <Button href="/docs/quick-start">Get started</Button>
+            </span>
+            <button
+              type="button"
+              onClick={() => setMenuOpen((open) => !open)}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              className="inline-flex size-8 items-center justify-center rounded-md text-fg-muted transition-colors hover:bg-surface-strong hover:text-fg-strong focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 md:hidden"
+            >
+              {menuOpen ? <X size={17} /> : <Menu size={17} />}
+            </button>
           </div>
-        )}
-      </div>
+        </div>
+      </Container>
+
+      {menuOpen && (
+        <div id="mobile-menu" className="border-t border-border md:hidden">
+          <Container>
+            <nav aria-label="Mobile" className="flex flex-col py-3">
+              {NAV_ITEMS.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.url}
+                  aria-current={isActive(item.url) ? "page" : undefined}
+                  className={[
+                    "rounded-md px-2 py-2.5 text-sm transition-colors",
+                    isActive(item.url)
+                      ? "font-medium text-fg-strong"
+                      : "text-fg-muted hover:bg-surface-strong hover:text-fg-strong",
+                  ].join(" ")}
+                >
+                  {item.name}
+                </Link>
+              ))}
+              <div className="mt-3 flex items-center gap-2 border-t border-border pt-3">
+                <Button href="/docs/quick-start" className="flex-1 justify-center">
+                  Get started
+                </Button>
+                <a
+                  href={SITE.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex h-9 items-center gap-2 rounded-md border border-border-strong px-3 text-sm text-fg-muted transition-colors hover:text-fg-strong"
+                >
+                  <GithubIcon size={15} />
+                  GitHub
+                </a>
+              </div>
+            </nav>
+          </Container>
+        </div>
+      )}
     </header>
   );
 }

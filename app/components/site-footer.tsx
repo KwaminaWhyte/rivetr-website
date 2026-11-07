@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { GithubIcon } from "~/components/icons/github";
 import { RivetrLogo } from "~/components/icons/logo";
+import { Container } from "~/components/ui";
 import { SITE } from "~/lib/content";
 
 const COLUMNS = [
@@ -34,11 +35,9 @@ const COLUMNS = [
 ];
 
 function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
-  const external = href.startsWith("http");
   const cls =
-    "text-sm text-subtle hover:text-strong transition-colors duration-150 focus:outline-none focus-visible:text-strong";
-
-  if (external) {
+    "text-sm text-fg-muted transition-colors hover:text-fg-strong focus:outline-none focus-visible:text-fg-strong";
+  if (href.startsWith("http")) {
     return (
       <a href={href} target="_blank" rel="noreferrer" className={cls}>
         {children}
@@ -56,39 +55,29 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border bg-elevated">
-      <div className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-8">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="lg:col-span-1">
+    <footer className="border-t border-border">
+      <Container>
+        <div className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-6">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 rounded text-base font-bold text-strong transition-colors hover:text-brand-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
+              className="inline-flex items-center gap-2 text-[15px] font-semibold text-strong focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
             >
-              <RivetrLogo size={22} />
+              <RivetrLogo size={20} />
               {SITE.name}
-              <span className="rounded-full border border-border-strong px-1.5 py-0.5 font-mono text-[10px] font-medium text-subtle">
-                v{SITE.version}
-              </span>
             </Link>
-            <p className="mt-2 text-sm text-subtle leading-relaxed">
-              {SITE.tagline}
+            <p className="mt-3 max-w-xs text-sm leading-6 text-fg-muted">
+              {SITE.tagline}.
             </p>
-            <div className="mt-4 inline-flex max-w-full items-center rounded-md border border-border-strong bg-surface-strong px-3 py-1.5">
-              <code className="truncate font-mono text-xs text-brand-300 select-all">
-                {SITE.installCmd}
-              </code>
-            </div>
-            <p className="mt-3 text-xs text-subtle">
-              Released {SITE.released}. MIT licensed.
+            <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.12em] text-fg-subtle">
+              v{SITE.version} · MIT licensed · No telemetry
             </p>
           </div>
 
           {COLUMNS.map((col) => (
-            <div key={col.heading}>
-              <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest text-muted">
-                {col.heading}
-              </h3>
-              <ul className="space-y-3" role="list">
+            <div key={col.heading} className="lg:col-span-2">
+              <h3 className="label-mono mb-4">{col.heading}</h3>
+              <ul className="space-y-2.5" role="list">
                 {col.links.map((link) => (
                   <li key={link.href}>
                     <FooterLink href={link.href}>{link.label}</FooterLink>
@@ -98,23 +87,25 @@ export function SiteFooter() {
             </div>
           ))}
         </div>
-      </div>
+      </Container>
 
       <div className="border-t border-border">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
-          <p className="text-xs text-subtle">
-            &copy; {year} {SITE.name} &middot; MIT licensed &middot; No telemetry
-          </p>
-          <a
-            href={SITE.github}
-            target="_blank"
-            rel="noreferrer"
-            className="text-subtle hover:text-strong transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60 rounded"
-            aria-label="Rivetr on GitHub"
-          >
-            <GithubIcon size={16} />
-          </a>
-        </div>
+        <Container>
+          <div className="flex h-14 items-center justify-between gap-4">
+            <p className="font-mono text-[11px] text-fg-subtle">
+              © {year} {SITE.name}
+            </p>
+            <a
+              href={SITE.github}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Rivetr on GitHub"
+              className="text-fg-subtle transition-colors hover:text-fg-strong focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+            >
+              <GithubIcon size={15} />
+            </a>
+          </div>
+        </Container>
       </div>
     </footer>
   );

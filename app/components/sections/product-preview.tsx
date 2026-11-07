@@ -46,11 +46,7 @@ export function ProductPreview() {
   const shot = SHOTS.find((item) => item.id === active) ?? SHOTS[0];
 
   return (
-    <Section id="product" className="relative overflow-hidden">
-      <div
-        className="aurora pointer-events-none absolute inset-x-0 top-10 -z-10 h-72"
-        aria-hidden
-      />
+    <Section id="product">
       <Container>
         <SectionHeading
           eyebrow="The dashboard"
@@ -58,70 +54,74 @@ export function ProductPreview() {
           blurb="Apps, databases, services, servers, deployments, and 365 templates from one UI. Or use the CLI, the TUI, the API, or the MCP server. Everything ships in the binary."
         />
 
-        <div
-          className="mt-12 flex flex-wrap justify-center gap-2"
-          role="tablist"
-          aria-label="Dashboard screenshots"
-        >
-          {SHOTS.map((item) => {
-            const isActive = item.id === active;
-            return (
-              <button
-                key={item.id}
-                id={`shot-tab-${item.id}`}
-                type="button"
-                role="tab"
-                aria-selected={isActive}
-                aria-controls="shot-panel"
-                onClick={() => setActive(item.id)}
-                className={[
-                  "rounded-full border px-4 py-1.5 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60",
-                  isActive
-                    ? "border-brand-500/50 bg-brand-500/10 text-brand-300"
-                    : "border-border bg-surface text-subtle hover:border-border-strong hover:text-strong",
-                ].join(" ")}
-              >
-                {item.label}
-              </button>
-            );
-          })}
+        <div className="mt-10">
+          <div
+            className="flex gap-6 border-b border-border"
+            role="tablist"
+            aria-label="Dashboard screenshots"
+          >
+            {SHOTS.map((item) => {
+              const isActive = item.id === active;
+              return (
+                <button
+                  key={item.id}
+                  id={`shot-tab-${item.id}`}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls="shot-panel"
+                  onClick={() => setActive(item.id)}
+                  className={[
+                    "-mb-px border-b-2 pb-3 text-[13.5px] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400",
+                    isActive
+                      ? "border-fg-strong font-medium text-fg-strong"
+                      : "border-transparent text-fg-subtle hover:text-fg-strong",
+                  ].join(" ")}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="mt-8 grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
+        <div className="mt-8 grid gap-8 lg:grid-cols-12 lg:gap-10">
           <div
             id="shot-panel"
             role="tabpanel"
             aria-labelledby={`shot-tab-${shot.id}`}
             tabIndex={0}
-            className="min-w-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
+            className="min-w-0 lg:col-span-9 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
           >
-            <BrowserFrame
-              src={shot.src}
-              alt={shot.alt}
-              url={shot.url}
-              className="shadow-brand-900/30"
-            />
+            <BrowserFrame src={shot.src} alt={shot.alt} url={shot.url} />
           </div>
 
-          <div className="lg:pl-2">
-            <p className="text-xs font-semibold uppercase tracking-widest text-brand-400">
-              {String(SHOTS.indexOf(shot) + 1).padStart(2, "0")} / {String(SHOTS.length).padStart(2, "0")}
+          <div className="lg:col-span-3">
+            <p className="font-mono text-xs text-fg-subtle">
+              {String(SHOTS.indexOf(shot) + 1).padStart(2, "0")} /{" "}
+              {String(SHOTS.length).padStart(2, "0")}
             </p>
-            <h3 className="mt-2 text-xl font-semibold text-strong">{shot.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-subtle">{shot.body}</p>
-            <dl className="mt-6 space-y-3 border-t border-border pt-4 text-sm">
-              <div className="flex items-center justify-between gap-3">
-                <dt className="text-subtle">Available in</dt>
-                <dd className="font-medium text-fg">1.0.0</dd>
-              </div>
-              <div className="flex items-center justify-between gap-3">
-                <dt className="text-subtle">Needs</dt>
-                <dd className="font-medium text-fg">Docker or Podman</dd>
-              </div>
-              <div className="flex items-center justify-between gap-3">
-                <dt className="text-subtle">External services</dt>
-                <dd className="font-medium text-fg">None</dd>
-              </div>
+            <h3 className="mt-3 text-lg font-medium tracking-[-0.01em] text-strong">
+              {shot.title}
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-fg-muted">{shot.body}</p>
+            <dl className="mt-6 border-t border-border text-[13px]">
+              {[
+                ["Available in", "1.0.0"],
+                ["Needs", "Docker or Podman"],
+                ["External services", "None"],
+              ].map(([label, value], i) => (
+                <div
+                  key={label}
+                  className={[
+                    "flex items-baseline justify-between gap-4 py-2.5",
+                    i > 0 ? "border-t border-border" : "",
+                  ].join(" ")}
+                >
+                  <dt className="text-fg-subtle">{label}</dt>
+                  <dd className="text-right font-medium text-fg-strong">{value}</dd>
+                </div>
+              ))}
             </dl>
           </div>
         </div>

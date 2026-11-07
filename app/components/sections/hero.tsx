@@ -1,145 +1,75 @@
-import { ArrowRight, GitCommitHorizontal, Star } from "lucide-react";
-import { Badge, Button, Container } from "~/components/ui";
+import { ArrowRight } from "lucide-react";
+import { Button, Container } from "~/components/ui";
 import { BrowserFrame } from "~/components/browser-frame";
-import { HERO, SITE, STATS } from "~/lib/content";
+import { GithubIcon } from "~/components/icons/github";
+import { HERO, SITE } from "~/lib/content";
 
-const DEPLOY_LINES = [
-  { icon: "✓", color: "text-success", text: "cloned main in 0.8s" },
-  { icon: "✓", color: "text-success", text: "built image in 14s" },
-  { icon: "✓", color: "text-success", text: "health check passed (200)" },
-  { icon: "→", color: "text-brand-300", text: "live at shop.example.com" },
+const SPECS = [
+  { label: "Measured memory", value: "52 MB RSS" },
+  { label: "External services", value: "0" },
+  { label: "Service templates", value: "365" },
+  { label: "License", value: "MIT" },
 ];
 
-function DeployCard() {
-  return (
-    <div className="pointer-events-none absolute -bottom-8 left-6 hidden w-72 rounded-xl border border-border-strong bg-surface/95 p-4 shadow-2xl shadow-black/50 backdrop-blur-xl lg:block">
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <span className="flex items-center gap-1.5 text-xs font-semibold text-strong">
-          <GitCommitHorizontal size={13} className="text-brand-300" aria-hidden />
-          Deployment #1042
-        </span>
-        <span className="rounded-full bg-success-soft px-2 py-0.5 text-[10px] font-medium text-success">
-          Live
-        </span>
-      </div>
-      <div className="space-y-1.5 font-mono text-[11px] leading-relaxed" aria-hidden>
-        {DEPLOY_LINES.map((line) => (
-          <div key={line.text} className="flex items-start gap-2">
-            <span className={`shrink-0 ${line.color}`}>{line.icon}</span>
-            <span className={line.color}>{line.text}</span>
-          </div>
-        ))}
-      </div>
-      <p className="mt-3 border-t border-border pt-2 text-[10px] text-subtle">
-        Old container drained after the switch
-      </p>
-    </div>
-  );
-}
-
-function StatCard({
-  value,
-  label,
-  sub,
-}: {
-  value: string;
-  label: string;
-  sub: string;
-}) {
-  return (
-    <div className="rounded-xl border border-border bg-surface/80 px-5 py-4 backdrop-blur-sm">
-      <p className="text-2xl font-bold tracking-tight text-strong sm:text-3xl">{value}</p>
-      <p className="mt-1 text-sm font-medium text-fg">{label}</p>
-      <p className="mt-0.5 text-xs text-subtle">{sub}</p>
-    </div>
-  );
-}
-
 export function Hero() {
-  const titleLines = HERO.title.split("\n");
-
   return (
-    <section
-      className="relative w-full overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-24"
-      aria-label="Hero"
-    >
-      <div
-        className="aurora pointer-events-none absolute inset-x-0 -top-56 -z-10 mx-auto h-[680px] w-[1000px] max-w-full rounded-full opacity-70"
-        aria-hidden="true"
-      />
-      <div
-        className="bg-grid mask-fade-b pointer-events-none absolute inset-0 -z-10"
-        aria-hidden="true"
-      />
-
+    <section aria-label="Hero" className="border-b border-border">
       <Container>
-        <div className="animate-float-up mx-auto flex max-w-3xl flex-col items-center text-center">
-          <Badge className="mb-6">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-brand-400" aria-hidden="true" />
-            {HERO.eyebrow}
-          </Badge>
+        <div className="grid gap-12 pt-16 pb-14 sm:pt-24 lg:grid-cols-12 lg:gap-10">
+          <div className="animate-fade-in lg:col-span-7">
+            <p className="label-mono">
+              v{SITE.version} · released {SITE.released}
+            </p>
 
-          <h1 className="mb-6 max-w-3xl text-balance text-[2rem] font-bold leading-[1.12] tracking-tight sm:text-6xl sm:leading-none lg:text-7xl">
-            {titleLines.map((line, i) => {
-              // Keep the unit together so "52 MB." never splits across lines.
-              const [before, after] = line.split("52 MB.");
-              return (
-                <span key={i} className={i === 1 ? "text-gradient block" : "text-strong block"}>
-                  {after === undefined ? (
-                    line
-                  ) : (
-                    <>
-                      {before}
-                      <span className="whitespace-nowrap">52 MB.</span>
-                      {after}
-                    </>
-                  )}
+            <h1 className="mt-6 text-[2.125rem] font-semibold leading-[1.04] tracking-[-0.035em] text-strong sm:text-[3.25rem] lg:text-[4.25rem]">
+              {HERO.title.split("\n").map((line) => (
+                <span key={line} className="block">
+                  {line}
                 </span>
-              );
-            })}
-          </h1>
+              ))}
+            </h1>
 
-          <p className="mb-8 max-w-2xl text-base leading-relaxed text-subtle sm:text-lg">
-            {HERO.subtitle}
-          </p>
+            <p className="mt-7 max-w-xl text-[16px] leading-7 text-fg-muted sm:text-[17px] sm:leading-8">
+              {HERO.subtitle}
+            </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <Button href={HERO.primaryCta.href} variant="primary" size="lg">
-              {HERO.primaryCta.label}
-              <ArrowRight size={16} aria-hidden="true" />
-            </Button>
-            <Button href={HERO.secondaryCta.href} variant="outline" size="lg">
-              <Star size={16} aria-hidden="true" />
-              {HERO.secondaryCta.label}
-            </Button>
-            <Button href={HERO.tertiaryCta.href} variant="ghost" size="lg">
-              {HERO.tertiaryCta.label}
-            </Button>
+            <div className="mt-9 flex flex-wrap items-center gap-3">
+              <Button href={HERO.primaryCta.href} size="lg">
+                Get started
+                <ArrowRight size={15} aria-hidden="true" />
+              </Button>
+              <Button href={HERO.secondaryCta.href} variant="outline" size="lg">
+                <GithubIcon size={15} />
+                Star on GitHub
+              </Button>
+            </div>
           </div>
 
-          <p className="mt-4 text-xs text-subtle">
-            v{SITE.version} shipped {SITE.released}. Measured, not estimated.
-          </p>
+          <dl className="animate-fade-in self-start overflow-hidden rounded-lg border border-border lg:col-span-5 lg:mt-1">
+            {SPECS.map((spec, i) => (
+              <div
+                key={spec.label}
+                className={[
+                  "flex items-baseline justify-between gap-6 px-5 py-4",
+                  i > 0 ? "border-t border-border" : "",
+                ].join(" ")}
+              >
+                <dt className="text-[13px] text-fg-subtle">{spec.label}</dt>
+                <dd className="font-mono text-sm tabular-nums text-fg-strong">
+                  {spec.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
 
-        <div className="animate-float-up relative mx-auto mt-14 max-w-5xl [animation-delay:120ms]">
-          <div
-            className="pointer-events-none absolute inset-x-12 -bottom-10 -z-10 h-48 rounded-full bg-brand-500/25 blur-3xl"
-            aria-hidden="true"
-          />
+        <div className="pb-16 sm:pb-24">
           <BrowserFrame
             src="/screenshots/dashboard.png"
-            alt="Rivetr 1.0 dashboard: a metric strip with running resources, CPU, memory, disk and uptime above a zoomable projects canvas with live deployment status"
+            alt="Rivetr dashboard: a metric strip with running resources, CPU, memory, disk, and uptime above a zoomable projects canvas with live deployment status"
             url="rivetr.example.com/dashboard"
             priority
           />
-          <DeployCard />
-        </div>
-
-        <div className="mt-16 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          {STATS.map((stat) => (
-            <StatCard key={stat.label} value={stat.value} label={stat.label} sub={stat.sub} />
-          ))}
         </div>
       </Container>
     </section>

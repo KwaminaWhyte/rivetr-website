@@ -1,4 +1,4 @@
-import { Check, ShieldCheck } from "lucide-react";
+import { Check } from "lucide-react";
 import { Link } from "react-router";
 import { Container, Section } from "~/components/ui";
 import { SECURITY_FACTS } from "~/lib/content";
@@ -7,49 +7,46 @@ export function SecurityBand() {
   return (
     <Section id="security" className="border-y border-border bg-bg-elevated">
       <Container>
-        <div className="grid items-start gap-10 lg:grid-cols-[22rem_minmax(0,1fr)]">
-          <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-brand-400">
-              Security
-            </p>
-            <h2 className="text-3xl font-bold tracking-tight text-strong sm:text-4xl">
+        <div className="grid gap-x-10 gap-y-8 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <p className="label-mono">Security</p>
+            <h2 className="mt-4 text-[1.75rem] font-semibold leading-[1.15] tracking-[-0.02em] text-strong">
               Built to face the internet
             </h2>
-            <p className="mt-4 text-base leading-relaxed text-subtle">
+            <p className="mt-4 text-[15px] leading-7 text-fg-muted">
               A deployment platform holds your SSH keys, registry credentials,
               database passwords, and every secret your apps need. Rivetr treats
               them that way.
             </p>
             <Link
               to="/docs/security"
-              className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-brand-300 underline-offset-4 hover:underline"
+              className="mt-5 inline-flex text-[13px] font-medium text-brand-400 hover:underline hover:underline-offset-4"
             >
               Read the security notes
             </Link>
           </div>
 
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {SECURITY_FACTS.map((fact) => (
-              <li
-                key={fact}
-                className="flex items-start gap-3 rounded-xl border border-border bg-surface px-4 py-3.5"
-              >
-                <span className="mt-0.5 inline-flex shrink-0 rounded-full bg-success-soft p-1">
-                  <Check className="h-3.5 w-3.5 text-success" aria-hidden />
-                </span>
-                <span className="text-sm leading-relaxed text-fg">{fact}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="mt-10 flex items-center gap-3 rounded-xl border border-brand-500/20 bg-brand-500/[0.06] px-5 py-4">
-          <ShieldCheck className="h-5 w-5 shrink-0 text-brand-300" aria-hidden />
-          <p className="text-sm leading-relaxed text-muted">
-            Rivetr also includes an audit log for user and team actions, SSH
-            host key pinning for managed servers, and trusted-proxy-aware rate
-            limiting with per-account lockout.
-          </p>
+          <div className="lg:col-span-8">
+            <ul className="grid gap-x-10 sm:grid-cols-2">
+              {SECURITY_FACTS.map((fact) => (
+                <li
+                  key={fact}
+                  className="flex items-start gap-3 border-t border-border py-3.5 text-sm text-fg-muted"
+                >
+                  <Check
+                    className="mt-1 h-3.5 w-3.5 shrink-0 text-fg-subtle"
+                    aria-hidden="true"
+                  />
+                  {fact}
+                </li>
+              ))}
+            </ul>
+            <p className="border-t border-border pt-4 text-[13px] leading-6 text-fg-subtle">
+              Rivetr also includes an audit log for user and team actions, SSH
+              host key pinning for managed servers, and trusted-proxy-aware rate
+              limiting with per-account lockout.
+            </p>
+          </div>
         </div>
       </Container>
     </Section>

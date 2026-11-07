@@ -1,112 +1,45 @@
-import {
-  Bot,
-  BarChart3,
-  FileText,
-  Database,
-  Wrench,
-  Activity,
-  Workflow,
-  MessagesSquare,
-  FolderOpen,
-  Search,
-  ShieldCheck,
-  KanbanSquare,
-  Box,
-  type LucideIcon,
-} from "lucide-react";
 import { Container, Section, SectionHeading } from "~/components/ui";
 import {
   TEMPLATE_CATEGORIES,
   TEMPLATE_CATEGORY_COUNT,
   TEMPLATE_COUNT,
-  type TemplateCategory,
 } from "~/lib/content";
-
-const ICON_MAP: Record<string, LucideIcon> = {
-  Bot,
-  BarChart3,
-  FileText,
-  Database,
-  Wrench,
-  Activity,
-  Workflow,
-  MessagesSquare,
-  FolderOpen,
-  Search,
-  ShieldCheck,
-  KanbanSquare,
-};
-
-function CategoryCard({ category }: { category: TemplateCategory }) {
-  const Icon = ICON_MAP[category.icon] ?? Box;
-
-  return (
-    <div className="group rounded-xl border border-border bg-surface p-5 transition-colors duration-200 hover:border-brand-500/40">
-      <div className="mb-3 flex items-center gap-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-500/10 text-brand-400">
-          <Icon size={18} aria-hidden="true" />
-        </div>
-        <h3 className="font-semibold text-strong">{category.name}</h3>
-      </div>
-      <p className="text-xs text-subtle leading-relaxed">
-        {category.examples.join(" · ")}
-      </p>
-    </div>
-  );
-}
 
 export function TemplatesShowcase() {
   return (
     <Section id="templates">
       <Container>
-        {/* Section heading */}
         <SectionHeading
-          eyebrow="Service gallery"
-          title={
-            <>
-              One-click services,{" "}
-              <span className="text-gradient">ready to deploy</span>
-            </>
-          }
+          eyebrow="Service templates"
+          title={`${TEMPLATE_COUNT} one-click services across ${TEMPLATE_CATEGORY_COUNT} categories`}
           blurb="Databases, AI models, analytics, monitoring, CMS, and more. Every template is a reviewed compose definition with encrypted variables, ready to deploy."
         />
 
-        {/* Big count emphasis */}
-        <div className="mt-10 mb-12 flex flex-col items-center">
-          <p
-            className="text-[6rem] font-bold leading-none tracking-tight text-gradient sm:text-[8rem]"
-            aria-label={`${TEMPLATE_COUNT} services`}
-          >
-            {TEMPLATE_COUNT}
-          </p>
-          <p className="mt-1 text-sm font-semibold uppercase tracking-widest text-subtle">
-            one-click services across {TEMPLATE_CATEGORY_COUNT} categories
-          </p>
-        </div>
-
-        {/* Category grid */}
-        <div
-          className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4"
-          aria-label="Template categories"
-        >
-          {TEMPLATE_CATEGORIES.map((cat) => (
-            <CategoryCard key={cat.name} category={cat} />
+        <ul className="mt-10 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
+          {TEMPLATE_CATEGORIES.map((category) => (
+            <li
+              key={category.name}
+              className="flex items-baseline justify-between gap-4 border-t border-border py-3.5"
+            >
+              <span className="text-sm text-fg-strong">{category.name}</span>
+              <span className="truncate text-right text-xs text-fg-subtle">
+                {category.examples.join(" · ")}
+              </span>
+            </li>
           ))}
-        </div>
+        </ul>
 
-        {/* Contributing note */}
-        <p className="mt-8 text-center text-sm text-subtle">
+        <p className="mt-8 border-t border-border pt-5 text-[13px] text-fg-subtle">
           Templates ship in the binary and are maintained in the repository. New
           ones are welcome as pull requests.{" "}
           <a
             href="https://github.com/KwaminaWhyte/rivetr"
             target="_blank"
             rel="noreferrer"
-            className="font-medium text-brand-300 underline-offset-2 hover:underline"
+            className="text-brand-400 hover:underline hover:underline-offset-4"
           >
             Contribute on GitHub
           </a>
-          .
         </p>
       </Container>
     </Section>

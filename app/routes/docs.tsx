@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router";
-import { Menu, X, BookOpen, ExternalLink } from "lucide-react";
+import { Menu, X, ExternalLink } from "lucide-react";
 import { DOCS_NAV } from "~/lib/docs-nav";
 import { DocsSearch } from "~/components/docs-search";
 
@@ -18,9 +18,7 @@ function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
       {!searching &&
         DOCS_NAV.map((group) => (
         <div key={group.group}>
-          <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-widest text-subtle">
-            {group.group}
-          </p>
+          <p className="label-mono mb-2 px-3">{group.group}</p>
           <ul className="space-y-0.5">
             {group.items.map((item) => {
               const to = `/docs/${item.slug}`;
@@ -33,8 +31,8 @@ function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
                     className={[
                       "block rounded-md px-3 py-1.5 text-sm transition-colors duration-150",
                       active
-                        ? "bg-brand-500/10 text-brand-400 font-medium"
-                        : "text-muted hover:bg-surface-strong hover:text-strong",
+                        ? "bg-surface-strong font-medium text-fg-strong"
+                        : "text-fg-muted hover:bg-surface-strong hover:text-fg-strong",
                     ].join(" ")}
                   >
                     {item.title}
@@ -66,20 +64,14 @@ export default function DocsLayout() {
 
   return (
     <div className="min-h-screen bg-bg">
-      {/* Top bar: clears the fixed site nav */}
-      <div className="h-[72px]" aria-hidden="true" />
-
-      <div className="mx-auto flex w-full max-w-7xl px-4 sm:px-8">
+      <div className="mx-auto flex w-full max-w-[1180px] px-6 sm:px-8">
         {/* Desktop sidebar */}
         <aside className="hidden w-56 shrink-0 lg:block xl:w-64">
-          <div className="sticky top-[72px] max-h-[calc(100vh-72px)] overflow-y-auto py-8 pr-6">
+          <div className="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto py-8 pr-6">
             {/* Docs label */}
-            <div className="mb-6 flex items-center gap-2 text-strong">
-              <BookOpen size={16} className="text-brand-300" />
-              <span className="text-sm font-semibold">Docs</span>
-              <span className="rounded-full border border-border-strong px-1.5 py-0.5 font-mono text-[10px] text-subtle">
-                v1.0
-              </span>
+            <div className="mb-6 flex items-baseline gap-2 px-3">
+              <span className="text-[13px] font-medium text-fg-strong">Docs</span>
+              <span className="font-mono text-[10px] text-fg-subtle">v1.0</span>
             </div>
             <SidebarContent />
           </div>
@@ -90,7 +82,7 @@ export default function DocsLayout() {
           <button
             aria-label={sidebarOpen ? "Close navigation" : "Open navigation"}
             onClick={() => setSidebarOpen((v) => !v)}
-            className="flex h-12 w-12 items-center justify-center rounded-full border border-border-strong bg-surface text-fg shadow-lg transition-colors hover:border-brand-500/60 hover:text-strong"
+            className="flex size-11 items-center justify-center rounded-lg border border-border-strong bg-surface text-fg-muted shadow-lg transition-colors hover:text-fg-strong"
           >
             {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -105,9 +97,9 @@ export default function DocsLayout() {
               onClick={() => setSidebarOpen(false)}
             />
             <aside className="fixed inset-y-0 left-0 z-40 w-64 overflow-y-auto border-r border-border bg-surface p-6 lg:hidden">
-              <div className="mb-6 flex items-center gap-2 text-strong">
-                <BookOpen size={16} className="text-brand-300" />
-                <span className="text-sm font-semibold">Docs</span>
+              <div className="mb-6 flex items-baseline gap-2">
+                <span className="text-[13px] font-medium text-fg-strong">Docs</span>
+                <span className="font-mono text-[10px] text-fg-subtle">v1.0</span>
               </div>
               <SidebarContent onLinkClick={() => setSidebarOpen(false)} />
             </aside>

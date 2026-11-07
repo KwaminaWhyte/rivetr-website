@@ -105,7 +105,7 @@ function PrevNext({ slug }: { slug: string }) {
         {prev && (
           <Link
             to={`/docs/${prev.slug}`}
-            className="group flex h-full flex-col rounded-xl border border-border bg-surface px-4 py-3 transition-colors hover:border-brand-500/40 hover:bg-surface-strong"
+            className="group flex h-full flex-col rounded-md border border-border bg-surface px-4 py-3 transition-colors hover:border-border-strong hover:bg-surface-strong"
           >
             <span className="mb-1 inline-flex items-center gap-1 text-xs text-subtle">
               <ArrowLeft size={12} aria-hidden />
@@ -121,7 +121,7 @@ function PrevNext({ slug }: { slug: string }) {
         {next && (
           <Link
             to={`/docs/${next.slug}`}
-            className="group flex h-full flex-col items-end rounded-xl border border-border bg-surface px-4 py-3 text-right transition-colors hover:border-brand-500/40 hover:bg-surface-strong"
+            className="group flex h-full flex-col items-end rounded-md border border-border bg-surface px-4 py-3 text-right transition-colors hover:border-border-strong hover:bg-surface-strong"
           >
             <span className="mb-1 inline-flex items-center gap-1 text-xs text-subtle">
               Next
@@ -149,14 +149,14 @@ export default function DocPage() {
         </p>
         <p className="mb-8 text-subtle">
           No documentation page exists for{" "}
-          <code className="rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-sm text-brand-300">
+          <code className="rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-sm text-fg-strong">
             {slug}
           </code>
           .
         </p>
         <Link
           to="/docs"
-          className="text-sm font-medium text-brand-300 underline-offset-4 hover:underline"
+          className="text-sm font-medium text-brand-400 underline-offset-4 hover:underline"
         >
           Back to docs
         </Link>
@@ -180,7 +180,7 @@ export default function DocPage() {
 
         {/* Mobile table of contents */}
         {toc.length > 0 && (
-          <details className="mb-6 rounded-xl border border-border bg-surface px-4 py-3 xl:hidden">
+          <details className="mb-6 rounded-md border border-border bg-surface px-4 py-3 xl:hidden">
             <summary className="cursor-pointer text-sm font-medium text-strong">
               On this page
             </summary>
@@ -211,10 +211,8 @@ export default function DocPage() {
 
       {/* Desktop table of contents */}
       <aside className="hidden xl:block">
-        <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pb-8 pl-4">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-subtle">
-            On this page
-          </p>
+        <div className="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto pb-8 pl-4">
+          <p className="label-mono mb-3">On this page</p>
           <ul className="space-y-1.5 border-l border-border">
             {toc.map((item) => (
               <li key={item.id}>

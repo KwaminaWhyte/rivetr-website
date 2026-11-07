@@ -11,61 +11,44 @@ function CellValue({
   isRivetr: boolean;
 }) {
   if (value === true) {
-    return (
-      <Check
-        className="mx-auto h-5 w-5 text-success"
-        aria-label="Supported"
-      />
-    );
+    return <Check className="mx-auto h-4 w-4 text-fg-strong" aria-label="Supported" />;
   }
   if (value === false) {
     return (
-      <Minus
-        className="mx-auto h-5 w-5 text-fg-subtle/60"
-        aria-label="Not supported"
-      />
+      <Minus className="mx-auto h-4 w-4 text-fg-subtle" aria-label="Not supported" />
     );
   }
   return (
-    <span className={isRivetr ? "text-strong font-medium" : "text-fg"}>
+    <span
+      className={
+        isRivetr ? "font-medium text-fg-strong" : "text-fg-muted"
+      }
+    >
       {value}
     </span>
   );
 }
 
-function MobileCard({ row }: { row: CompareRow }) {
+function MobileRow({ row }: { row: CompareRow }) {
   return (
-    <div className="rounded-xl border border-border overflow-hidden">
-      <div className="bg-surface-strong/60 px-4 py-2.5">
-        <span className="text-sm font-medium text-fg">{row.feature}</span>
-      </div>
-      <div className="grid grid-cols-3 divide-x divide-[var(--border)]">
-        {(
-          [
-            { label: "Rivetr", value: row.rivetr, isRivetr: true },
-            { label: "Coolify", value: row.coolify, isRivetr: false },
-            { label: "Dokploy", value: row.dokploy, isRivetr: false },
-          ] as const
-        ).map(({ label, value, isRivetr }) => (
-          <div
-            key={label}
-            className={
-              isRivetr
-                ? "flex flex-col items-center gap-1.5 px-3 py-3 bg-brand-500/[0.06]"
-                : "flex flex-col items-center gap-1.5 px-3 py-3"
-            }
-          >
-            <span
-              className={`text-xs font-semibold uppercase tracking-wider ${isRivetr ? "text-brand-400" : "text-subtle"}`}
-            >
+    <div className="border-t border-border py-4">
+      <p className="text-sm font-medium text-strong">{row.feature}</p>
+      <dl className="mt-2 grid grid-cols-3 gap-3">
+        {[
+          { label: "Rivetr", value: row.rivetr, isRivetr: true },
+          { label: "Coolify", value: row.coolify, isRivetr: false },
+          { label: "Dokploy", value: row.dokploy, isRivetr: false },
+        ].map(({ label, value, isRivetr }) => (
+          <div key={label}>
+            <dt className="font-mono text-[10px] uppercase tracking-[0.1em] text-fg-subtle">
               {label}
-            </span>
-            <div className="text-center text-sm">
+            </dt>
+            <dd className="mt-1 text-[13px]">
               <CellValue value={value} isRivetr={isRivetr} />
-            </div>
+            </dd>
           </div>
         ))}
-      </div>
+      </dl>
     </div>
   );
 }
@@ -75,81 +58,69 @@ export function Compare() {
     <Section id="compare">
       <Container>
         <SectionHeading
-          eyebrow="How it compares"
+          eyebrow="Comparison"
           title="Same idea. A fraction of the footprint."
           blurb="Coolify and Dokploy are the two best-known self-hosted PaaS alternatives. Rows below were checked against their docs and releases on 7 November 2026 (Coolify v4.6.0, Dokploy v0.31.0)."
         />
 
-        {/* Desktop table */}
-        <div className="mt-14 hidden md:block">
-          <div className="overflow-hidden rounded-xl border border-border">
-            <table className="w-full border-collapse text-sm">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="w-56 bg-surface px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-subtle">
-                    Feature
-                  </th>
-                  {/* Rivetr header: highlighted */}
-                  <th className="relative bg-brand-500/[0.06] px-6 py-4 text-center">
-                    <div
-                      className="absolute inset-x-0 top-0 h-0.5 bg-brand-500"
+        <div className="mt-10 hidden overflow-x-auto md:block">
+          <table className="w-full min-w-[640px] border-collapse text-sm">
+            <thead>
+              <tr className="border-y border-border">
+                <th className="w-[28%] py-3 pr-4 text-left font-normal">
+                  <span className="label-mono">Feature</span>
+                </th>
+                <th className="px-4 py-3 text-center">
+                  <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-fg-strong">
+                    <span
+                      className="size-1.5 rounded-full bg-brand-400"
                       aria-hidden="true"
                     />
-                    <span className="text-sm font-bold text-strong">Rivetr</span>
-                  </th>
-                  <th className="bg-surface px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-subtle">
-                    Coolify
-                  </th>
-                  <th className="bg-surface px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-subtle">
-                    Dokploy
-                  </th>
+                    Rivetr
+                  </span>
+                </th>
+                <th className="px-4 py-3 text-center font-normal">
+                  <span className="label-mono">Coolify</span>
+                </th>
+                <th className="px-4 py-3 text-center font-normal">
+                  <span className="label-mono">Dokploy</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {COMPARE.map((row) => (
+                <tr key={row.feature} className="border-b border-border">
+                  <td className="py-3 pr-4 text-fg-muted">{row.feature}</td>
+                  <td className="px-4 py-3 text-center">
+                    <CellValue value={row.rivetr} isRivetr />
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <CellValue value={row.coolify} isRivetr={false} />
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <CellValue value={row.dokploy} isRivetr={false} />
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {COMPARE.map((row, i) => (
-                  <tr
-                    key={row.feature}
-                    className={
-                      i % 2 === 0
-                        ? "border-b border-border/60"
-                        : "border-b border-border/60 bg-surface/40"
-                    }
-                  >
-                    <td className="px-6 py-4 font-medium text-muted">
-                      {row.feature}
-                    </td>
-                    <td className="bg-brand-500/[0.06] px-6 py-4 text-center">
-                      <CellValue value={row.rivetr} isRivetr={true} />
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <CellValue value={row.coolify} isRivetr={false} />
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <CellValue value={row.dokploy} isRivetr={false} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
 
-        {/* Mobile card list */}
-        <div className="mt-10 flex flex-col gap-4 md:hidden">
+        <div className="mt-8 md:hidden">
           {COMPARE.map((row) => (
-            <MobileCard key={row.feature} row={row} />
+            <MobileRow key={row.feature} row={row} />
           ))}
         </div>
 
-        <p className="mt-4 text-center text-xs text-subtle">
+        <p className="mt-6 max-w-2xl text-[13px] leading-6 text-fg-subtle">
           Rivetr memory is a measured RSS figure with 30 containers on 1.0.0.
           Competitor figures are from their published documentation, not
           measurements by us. See the{" "}
           <a
-            href={`https://github.com/KwaminaWhyte/rivetr#why-rivetr`}
+            href="https://github.com/KwaminaWhyte/rivetr#why-rivetr"
             target="_blank"
             rel="noreferrer"
-            className="font-medium text-brand-300 underline-offset-4 hover:underline"
+            className="text-brand-400 hover:underline hover:underline-offset-4"
           >
             comparison notes
           </a>{" "}

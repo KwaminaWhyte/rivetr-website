@@ -18,38 +18,12 @@ export const SITE = {
 } as const;
 
 export const HERO = {
-  eyebrow: "v1.0.0 · Open source · MIT licensed",
   title: "Deploy from Git.\nOne binary. 52 MB.",
   subtitle:
     "Rivetr is a self-hosted platform as a service in a single Rust binary: embedded SQLite, embedded reverse proxy, automatic HTTPS, and 365 one-click services. No Redis. No PostgreSQL. No Traefik. Just Docker or Podman.",
   primaryCta: { label: "Get started", href: "/docs/quick-start" },
   secondaryCta: { label: "Star on GitHub", href: SITE.github },
-  tertiaryCta: { label: "See how it compares", href: "#compare" },
 } as const;
-
-// Measured on Rivetr 1.0.0, Ubuntu 24.04 x86_64. Process RSS with 30 containers.
-export const STATS = [
-  {
-    value: "52 MB",
-    label: "RSS with 30 containers",
-    sub: "8 threads, measured on 1.0.0",
-  },
-  {
-    value: "0",
-    label: "External services",
-    sub: "no Redis, Postgres, or Traefik",
-  },
-  {
-    value: "365",
-    label: "Service templates",
-    sub: "one-click, across 26 categories",
-  },
-  {
-    value: "9",
-    label: "Managed databases",
-    sub: "Postgres, MySQL, Redis, ClickHouse",
-  },
-] as const;
 
 // What shipped in 1.0.0. Kept short; the changelog has the full list.
 export const RELEASE_HIGHLIGHTS = [
@@ -430,15 +404,6 @@ export const ALTERNATIVES = [
   "Render",
   "Coolify",
   "Dokploy",
-] as const;
-
-export const FACTS = [
-  { value: "52 MB", label: "RSS, 30 containers" },
-  { value: "47 MB", label: "Release binary" },
-  { value: "365", label: "One-click services" },
-  { value: "9", label: "Managed databases" },
-  { value: "4", label: "Git providers" },
-  { value: "MIT", label: "Free forever" },
 ] as const;
 
 export type TechItem = { name: string; slug: string };

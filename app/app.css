@@ -9,116 +9,76 @@
   --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, "SF Mono",
     Menlo, Consolas, monospace;
 
-  /* Brand: indigo, matching the Rivetr mark and dashboard accent. */
+  /* Accent: indigo, used for links, focus rings, and the primary button.
+     Nothing else. */
   --color-brand-50: #eef2ff;
   --color-brand-100: #e0e7ff;
   --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-400: #818cf8;
   --color-brand-500: #4f46e5;
   --color-brand-600: #4338ca;
   --color-brand-700: #3730a3;
   --color-brand-800: #312e81;
   --color-brand-900: #1e1b4b;
-
-  /* Ink: near-black indigo surfaces (legacy aliases). Prefer the semantic
-     tokens below. */
-  --color-ink-950: #06070d;
-  --color-ink-900: #0a0c14;
-  --color-ink-850: #0f1220;
-  --color-ink-800: #141829;
-  --color-ink-700: #1c2138;
-  --color-ink-600: #29304d;
-
-  --color-mist-400: #8189a6;
-  --color-mist-300: #a9b0c9;
-  --color-mist-200: #cdd2e3;
 }
 
-/* ── Semantic theme tokens ────────────────────────────────────────────────
-   Source of truth lives on :root (dark) and [data-theme="light"]. The
-   inline @theme block below republishes them as Tailwind colour utilities
-   (`bg-bg`, `text-fg`, `border-border`, …) so component code doesn't have
-   to type `var(--...)` everywhere. */
+/* ── Semantic tokens ──────────────────────────────────────────────────────
+   A neutral surface stack, one accent, two line weights. No tinted bands,
+   no glows: hierarchy comes from type size and hairlines. */
 
 :root {
   color-scheme: dark;
 
-  /* Adaptive brand inks: light indigo on dark, deep indigo on light. */
-  --brand-300: #a5b4fc;
-  --brand-400: #818cf8;
-  --gradient-a: #a5b4fc;
-  --gradient-b: #6366f1;
+  --brand-300: #b4b4ff;
+  --brand-400: #a5a5ff;
 
-  /* Surfaces */
-  --bg: #06070d;          /* page */
-  --bg-elevated: #0a0c14; /* footer / wide bands */
-  --surface: #0c0e18;     /* cards, frames */
-  --surface-strong: #141829;
+  --bg: #0a0a0b;
+  --bg-elevated: #0d0d0f;
+  --surface: #111113;
+  --surface-strong: #18181b;
 
-  /* Text */
-  --fg-strong: #ffffff;
-  --fg: #cdd2e3;          /* default body */
-  --fg-muted: #a9b0c9;
-  --fg-subtle: #8189a6;
+  --fg-strong: #fafafa;
+  --fg: #c9c9cf;
+  --fg-muted: #a2a2ab;
+  --fg-subtle: #85858e;
 
-  /* Lines */
-  --border: #1c2138;
-  --border-strong: #2c3352;
+  --border: #232326;
+  --border-strong: #35353b;
 
-  /* Decorative */
-  --grid-dot: rgba(148, 163, 220, 0.10);
-  --aurora-a: rgba(99, 102, 241, 0.20);
-  --aurora-b: rgba(76, 29, 149, 0.10);
-  --aurora-c: rgba(129, 140, 248, 0.16);
-  --shadow-glow: 0 0 0 1px rgba(99, 102, 241, 0.22),
-    0 24px 80px -24px rgba(79, 70, 229, 0.55);
-  --selection-bg: rgba(99, 102, 241, 0.35);
+  --selection-bg: #4f46e5;
   --selection-fg: #ffffff;
   --success: #4ade80;
-  --success-soft: rgba(34, 197, 94, 0.12);
 
-  /* Backdrops & overlays */
-  --overlay-soft: rgba(20, 24, 41, 0.6);
-  --overlay-scrim: rgba(6, 7, 13, 0.8);
+  --frame-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.04) inset,
+    0 30px 60px -30px rgba(0, 0, 0, 0.9);
 }
 
 [data-theme="light"] {
   color-scheme: light;
 
-  --brand-300: #4338ca;
-  --brand-400: #4f46e5;
-  --gradient-a: #6366f1;
-  --gradient-b: #4338ca;
+  --brand-300: #3730a3;
+  --brand-400: #4338ca;
 
-  /* Cool off-white surfaces */
-  --bg: #f7f7fb;
-  --bg-elevated: #efeff6;
+  --bg: #fcfcfb;
+  --bg-elevated: #f5f5f3;
   --surface: #ffffff;
-  --surface-strong: #efeff6;
+  --surface-strong: #f2f2f0;
 
-  /* Indigo-slate ink, tuned for >=4.5:1 against --bg */
-  --fg-strong: #0b0d17;
-  --fg: #2b3048;
-  --fg-muted: #4b5270;
-  --fg-subtle: #696f8a;
+  --fg-strong: #0e0e10;
+  --fg: #3a3a41;
+  --fg-muted: #55555e;
+  --fg-subtle: #74747d;
 
-  /* Cool-tinted borders */
-  --border: #e2e2ee;
-  --border-strong: #c4c5d8;
+  --border: #e6e6e2;
+  --border-strong: #d1d1cc;
 
-  /* Decorative */
-  --grid-dot: rgba(79, 70, 229, 0.10);
-  --aurora-a: rgba(99, 102, 241, 0.14);
-  --aurora-b: rgba(79, 70, 229, 0.06);
-  --aurora-c: rgba(165, 180, 252, 0.20);
-  --shadow-glow: 0 0 0 1px rgba(99, 102, 241, 0.20),
-    0 24px 80px -24px rgba(79, 70, 229, 0.35);
-  --selection-bg: rgba(99, 102, 241, 0.25);
-  --selection-fg: #0b0d17;
+  --selection-bg: #c7d2fe;
+  --selection-fg: #0e0e10;
   --success: #15803d;
-  --success-soft: rgba(22, 163, 74, 0.10);
 
-  --overlay-soft: rgba(255, 255, 255, 0.7);
-  --overlay-scrim: rgba(11, 13, 23, 0.4);
+  --frame-shadow: 0 1px 2px rgba(16, 16, 20, 0.06),
+    0 24px 48px -32px rgba(16, 16, 20, 0.35);
 }
 
 @theme inline {
@@ -139,6 +99,8 @@
 html,
 body {
   @apply bg-bg text-fg antialiased;
+  font-feature-settings: "ss01", "cv01";
+  text-rendering: optimizeLegibility;
 }
 
 ::selection {
@@ -146,118 +108,43 @@ body {
   color: var(--selection-fg);
 }
 
-/* Thin scrollbar tuned to whatever surface is current. */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--border-strong) transparent;
 }
 
-/* Theme-aware text colour shortcuts. Defined as plain rules (not @layer
-   utilities) so they can be referenced by other utility classes via @apply
-   in v4, utilities defined inside @layer utilities can't always be
-   re-@applied from outside that layer. */
 .text-strong { color: var(--fg-strong); }
 .text-muted { color: var(--fg-muted); }
 .text-subtle { color: var(--fg-subtle); }
 .text-success { color: var(--success); }
-.bg-success-soft { background-color: var(--success-soft); }
-
-/* Theme-aware surface shortcut. */
+.bg-success-soft { background-color: color-mix(in srgb, var(--success) 12%, transparent); }
 .bg-elevated { background-color: var(--bg-elevated); }
 
 @layer utilities {
-
-  /* Dotted grid backdrop for hero/section depth */
-  .bg-grid {
-    background-image: radial-gradient(
-      var(--grid-dot) 1px,
-      transparent 1px
-    );
-    background-size: 22px 22px;
+  .frame-shadow {
+    box-shadow: var(--frame-shadow);
   }
 
-  /* Radial fade mask, top-down */
-  .mask-fade-b {
-    -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
-    mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
-  }
-
-  .text-gradient {
-    background: linear-gradient(120deg, var(--fg-strong) 0%, var(--gradient-a) 52%, var(--gradient-b) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .glow-ring {
-    box-shadow: var(--shadow-glow);
-  }
-
-  /* Animated conic glow behind hero, theme-aware stops */
-  .aurora {
-    background: conic-gradient(
-      from 180deg at 50% 50%,
-      var(--aurora-a),
-      var(--aurora-b),
-      var(--aurora-c)
-    );
-    filter: blur(70px);
+  /* Small uppercase technical label. Used for section indexes and table
+     headers, never as decoration. */
+  .label-mono {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
   }
 }
 
-@keyframes float-up {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* A single, short fade for the hero. Everything else is static. */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.animate-float-up {
-  animation: float-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* Marquee for the tech-logo strip */
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-.animate-marquee {
-  animation: marquee 40s linear infinite;
-}
-@keyframes marquee-reverse {
-  from {
-    transform: translateX(-50%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-.animate-marquee-reverse {
-  animation: marquee-reverse 40s linear infinite;
-}
-.marquee-mask {
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent,
-    black 8%,
-    black 92%,
-    transparent
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    black 8%,
-    black 92%,
-    transparent
-  );
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out both;
 }
 
 /* Markdown prose styling for docs + changelog */
@@ -265,7 +152,7 @@ body {
   @apply text-fg-muted leading-relaxed;
 }
 .prose-rivetr h1 {
-  @apply mt-0 mb-4 text-3xl font-bold tracking-tight text-fg-strong;
+  @apply mt-0 mb-4 text-3xl font-semibold tracking-tight text-fg-strong;
 }
 .prose-rivetr h2 {
   @apply mt-10 mb-3 border-b border-border pb-2 text-2xl font-semibold tracking-tight text-fg-strong scroll-mt-24;
@@ -299,7 +186,7 @@ body {
   @apply font-semibold text-fg-strong;
 }
 .prose-rivetr code {
-  @apply rounded-md border border-border bg-surface px-1.5 py-0.5 font-mono text-[0.85em] text-brand-300;
+  @apply rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-[0.85em] text-brand-300;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
@@ -309,13 +196,13 @@ body {
   min-width: 0;
 }
 .prose-rivetr pre {
-  @apply my-5 overflow-x-auto rounded-xl border border-border bg-surface p-4 text-sm;
+  @apply my-5 overflow-x-auto rounded-lg border border-border bg-surface p-4 text-sm;
 }
 .prose-rivetr pre code {
   @apply border-0 bg-transparent p-0 text-fg;
 }
 .prose-rivetr blockquote {
-  @apply my-5 border-l-2 border-brand-500/50 pl-4 italic;
+  @apply my-5 border-l-2 border-border-strong pl-4 italic;
   color: var(--fg-subtle);
 }
 .prose-rivetr table {
