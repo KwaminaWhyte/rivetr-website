@@ -1,161 +1,143 @@
-# FAQ
+# Frequently Asked Questions
 
-Answers to common questions about Rivetr.
+## What is Rivetr?
 
----
+Rivetr is a self-hosted platform as a service. It deploys applications from Git and runs them in Docker or Podman containers. The control plane is a single Rust binary: the REST API, React dashboard, deployment engine, reverse proxy with automatic HTTPS, and an embedded SQLite database all live in that one process. It does not need Redis, PostgreSQL, or Traefik.
 
-## General
+It handles webhooks from GitHub, GitLab, Gitea, Bitbucket, and Docker Hub, and does zero-downtime deployments with health checks and automatic rollback. It also provisions 365 service templates and 9 managed database engines.
 
-### What is Rivetr?
+## Is Rivetr production ready?
 
-Rivetr is a self-hosted PaaS that deploys applications from Git in a single binary. It handles the full lifecycle: clone → build → start → health check → atomic proxy switch, with zero external dependencies (no Redis, no PostgreSQL, no Traefik).
+Version 1.0.0, released 2026-11-05, is the first 1.0 release. It changed dashboard URLs; API paths stayed the same, and old dashboard URLs redirect.
 
-### Is Rivetr production-ready?
+The features you need for production are present: health checks, rollback, deployment freeze windows, instance and database backups, audit logs, teams and RBAC, TOTP 2FA and passkeys, and automatic TLS. As with any self-hosted control plane, keep backups, test upgrades on a staging instance, and do not treat a release number as a substitute for your own risk assessment.
 
-Yes. Rivetr includes the features expected of a production deployment platform: zero-downtime deploys, automatic rollback, TLS with auto-renewal, crash recovery, RBAC, audit logging, and S3 backups. It is MIT-licensed and actively maintained.
+## Which operating systems are supported?
 
-### What operating systems does Rivetr support?
+| Target | Support |
+|--------|---------|
+| Production | Linux x86_64 or aarch64 |
+| Development | macOS and Windows |
+| Installer | Ubuntu, Debian, Fedora, CentOS, RHEL |
+| Container runtime | Docker Engine or Podman |
+| Host memory | 512 MB minimum, 1 GB or more recommended |
 
-Rivetr runs on Linux (x86_64 and aarch64) in production. macOS and Windows are supported for development (building from source and running the CLI/TUI against a remote instance).
+Ports 80 and 443 serve proxied apps, and 8080 serves the API and dashboard. A host that only runs the Rivetr process still needs room for application containers, images, and builds.
 
----
+## How much memory does Rivetr use?
 
-## Resource Usage
+Measured on Ubuntu 24.04 x86_64 with Rivetr 1.0.0 managing 30 containers: 52 MB RSS across 8 threads. The release binary is 47 MB. Those figures cover the Rivetr process, not the containers it manages.
 
-### How much RAM does Rivetr use?
+This is the main difference from control planes that ship PostgreSQL, Redis, and Traefik as separate services. Memory use grows with deployments, builds, and log volume, but the idle control plane is small.
 
-Rivetr uses approximately 30–80 MB of RAM at idle. This is significantly less than alternatives:
+## Do I need Redis, PostgreSQL, or Traefik?
 
-| | RAM idle |
-|---|---|
-| Rivetr | ~30–80 MB |
-| Coolify | 400–800 MB |
-| Dokploy | ~300 MB |
+No. Rivetr embeds SQLite in WAL mode for state, an in-process Tokio queue for deployments, and a Hyper/rustls proxy for HTTP and HTTPS. Automatic HTTPS is handled by the embedded proxy with per-domain certificates. Managed PostgreSQL, MySQL, MariaDB, MongoDB, Redis, DragonflyDB, KeyDB, ClickHouse, and LibSQL databases are optional, and run as containers when you create them.
 
-The low footprint comes from using an embedded SQLite database instead of PostgreSQL, and Rust's efficient async runtime instead of Node.js or a JVM.
+## Docker or Podman?
 
-### Does Rivetr need Docker?
-
-Docker Engine 24+ (or Podman 4+) is required on the deployment server: Rivetr uses it to build and run application containers. The Rivetr binary itself does not need to run inside Docker.
-
----
-
-## Docker vs Podman
-
-### Can I use Podman instead of Docker?
-
-Yes. Rivetr supports both Docker (via the Bollard crate for socket API calls) and Podman (via a CLI wrapper). Set `runtime_type` in `rivetr.toml`:
+Both are supported, and the runtime is detected at startup. Force one in `rivetr.toml`:
 
 ```toml
 [runtime]
-runtime_type = "podman"    # "docker", "podman", or "auto"
+runtime_type = "auto"   # auto, docker, or podman
 ```
 
-`auto` (the default) tries Docker first, then falls back to Podman.
+Docker talks to the daemon over its socket using Bollard. Podman is driven through the `podman` command line, so the binary must be installed and on the `PATH` of the user running Rivetr. With `auto`, Docker is preferred when both are available; set `runtime_type = "podman"` to force Podman.
 
-### Why would I choose Podman over Docker?
+## How does Rivetr compare with Coolify and Dokploy?
 
-Podman runs daemonless and rootless, which is useful in security-hardened environments. The trade-off is that some Bollard-based features (such as real-time event streaming) are not available in the Podman CLI wrapper mode.
+| | Rivetr | Coolify | Dokploy |
+|---|---|---|---|
+| Control plane memory | 52 MB RSS with 30 containers | No published figure; docs ask for 2 GB RAM | No published figure; docs ask for 2 GB RAM |
+| Services it runs | None besides the binary | PostgreSQL, Redis, Traefik or Caddy | PostgreSQL, Traefik on Docker Swarm |
+| Single binary | Yes | No | No |
+| Container runtimes | Docker, Podman | Docker | Docker |
+| Preview deployments | All four Git providers | All four Git providers | GitHub only |
+| MCP server | Built in | Built in | Separate `@dokploy/mcp` package |
+| Web terminal | Containers and servers | Containers and servers (v4.0+) | Containers and servers |
+| License | MIT | Apache 2.0 | Apache 2.0, with source-available `/proprietary` features |
 
----
+Details checked against vendor docs and releases on 2026-11-07: Coolify v4.6.0 and Dokploy v0.31.0. All three deploy from Git, run previews, and provide a dashboard terminal. Coolify and Dokploy have larger feature surfaces in some areas; Rivetr's difference is the single-binary footprint and the absence of supporting services.
 
-## Comparison to Coolify and Dokploy
+## What does Rivetr cost?
 
-### How does Rivetr compare to Coolify?
+Rivetr is MIT licensed and free to self-host. There is no paid edition or license key. You pay for the server and any external services you choose, such as S3 storage or a Git provider.
 
-| | Rivetr | Coolify |
-|---|---|---|
-| RAM idle | ~30–80 MB | 400–800 MB |
-| External dependencies | None | PostgreSQL, Redis, Traefik |
-| Single binary | Yes | No |
-| Container runtimes | Docker + Podman | Docker |
-| MCP server | Yes | No |
-| Terminal UI (TUI) | Yes | No |
-| Remote filesystem browser | Yes | No |
-| License | MIT | Apache 2.0 |
+## Can I migrate from Coolify or Dokploy?
 
-### How does Rivetr compare to Dokploy?
+There is no automatic importer. Migration means rebuilding the deployment on Rivetr:
 
-| | Rivetr | Dokploy |
-|---|---|---|
-| RAM idle | ~30–80 MB | ~300 MB |
-| External dependencies | None | PostgreSQL |
-| Single binary | Yes | No |
-| Container runtimes | Docker + Podman | Docker |
-| Preview deployments | Yes | No |
-| MCP server | Yes | No |
-| Gitea support | Yes | No |
-| License | MIT | MIT |
+1. Install Rivetr on a clean host, or stop the old platform first if you must reuse ports 80 and 443.
+2. Create projects and apps from the same Git repositories. Pick the build type: Dockerfile, Nixpacks, Railpack, Cloud Native Buildpacks, static site, or prebuilt image.
+3. Copy environment variables and re-enter secrets. Secret values are not exported from the old platform.
+4. Recreate Docker Compose stacks as Compose services.
+5. Dump each database with its native tool and restore it into a Rivetr-managed database.
+6. Deploy, verify health and domains, then move DNS.
 
----
+Between Rivetr instances, `GET /api/projects/{id}/export` and `POST /api/projects/{id}/import` move project and app configuration. The export excludes secrets, so re-enter them after import. To move a whole instance, use the backup and restore commands instead.
 
-## Cost and Licensing
+## How do backups work?
 
-### What does Rivetr cost?
+Rivetr has three backup layers:
 
-Rivetr is free and open-source under the MIT license. You pay only for the server(s) you run it on. There is no hosted SaaS version, no per-seat fee, and no feature gating.
+| Layer | What it covers |
+|-------|----------------|
+| Instance backup | SQLite database, `rivetr.toml`, TLS/ACME certificates, and dumps from Compose service databases |
+| Managed database backup | A single PostgreSQL, MySQL, MariaDB, MongoDB, Redis, DragonflyDB, KeyDB, ClickHouse, or LibSQL database |
+| Volume backup | An app or service volume, live or with the app stopped |
 
-### Can I use Rivetr commercially?
-
-Yes. The MIT license permits commercial use, modification, and redistribution without restriction.
-
----
-
-## Configuration
-
-### Where is the config file?
-
-The production install script writes `/opt/rivetr/rivetr.toml`. You can override the path with `--config`:
+Instance and database backups can run on a schedule, be kept locally, copied to S3-compatible storage, and pruned by retention. Restore from the dashboard or the CLI. A CLI backup and restore looks like this:
 
 ```bash
-rivetr --config /etc/rivetr/rivetr.toml
+rivetr --config /opt/rivetr/rivetr.toml backup --output ./rivetr-backup.tar.gz
+sudo systemctl stop rivetr
+rivetr --config /opt/rivetr/rivetr.toml restore ./rivetr-backup.tar.gz
+sudo systemctl start rivetr
 ```
 
-### Do I need to set an encryption key?
+The instance archive does not include the encryption key. Copy `.encryption_key` and `.encryption_salt` separately; without them, encrypted values cannot be recovered. See [Backups](/docs/backups) for schedules and S3 setup.
 
-It is strongly recommended for production. Without `auth.encryption_key`, environment variable values are stored in plaintext in the SQLite database. See the [Environment Variables](/docs/environment-variables) page.
+## Does Rivetr send telemetry?
 
----
+No. Rivetr does not collect usage data, metrics, or analytics about your instance. Its update check asks the GitHub releases API for the latest version every 6 hours by default. Disable it in `rivetr.toml`:
 
-## Migration
+```toml
+[auto_update]
+enabled = false
+```
 
-### Can I migrate from Coolify or Dokploy to Rivetr?
+You can also turn it off under **Settings > Updates**. The check sends no application data; it only asks GitHub for the latest release tag.
 
-There is no automated migration tool. The typical steps are:
+## Where does configuration live?
 
-1. Install Rivetr on the same or a new server.
-2. Recreate apps by connecting your Git repositories.
-3. Copy environment variables from the old platform.
-4. Update DNS records to point to Rivetr's proxy.
-5. Provision managed databases via Rivetr's one-click templates.
-
-Rivetr supports exporting and importing project configurations as JSON (`GET /api/projects/:id/export`) which can speed up recreating app settings.
-
-### Can I back up Rivetr and restore it on a new server?
-
-Yes. Use `rivetr backup` to create a `.tar.gz` archive of the database, config, and SSL certificates, then `rivetr restore` on the new server. See the [Backups](/docs/backups) page.
-
----
-
-## Troubleshooting
-
-### The install script failed: how do I check logs?
+The installer writes `/opt/rivetr/rivetr.toml` and stores data in `/var/lib/rivetr`. The SQLite database is `/var/lib/rivetr/rivetr.db`. Server settings such as ports, the data directory, proxy and ACME, runtime limits, rate limits and retention come from `rivetr.toml`. Instance settings changed in the dashboard, such as registration, API access, updates, email, AI and branding, are stored in the database. Restart the systemd service after editing the file:
 
 ```bash
+sudo systemctl restart rivetr
 sudo journalctl -u rivetr -f
 ```
 
-### Rivetr is running but the dashboard is blank.
+Configuration keys are documented in [Configuration](/docs/configuration). Per-app settings live in the dashboard or the API.
 
-Check that port 8080 is open in your firewall:
+## What is the encryption key and where is it stored?
 
-```bash
-sudo ufw allow 8080/tcp
-```
+The encryption key protects secrets at rest: environment variables, SSH keys and passwords, S3 keys, TOTP secrets, and GitHub App secrets. Resolution order:
 
-### My app deployed but I can't reach it.
+1. `[auth] encryption_key` in `rivetr.toml`, if set.
+2. `<data_dir>/.encryption_key`, if the file exists.
+3. On a fresh install with no existing users or secrets, Rivetr generates a random 256-bit key and writes it to `<data_dir>/.encryption_key` with mode `0600`.
 
-1. Confirm the app's health check passed in the deployment logs.
-2. Check that the domain or generated subdomain is correct in **App → Settings → Domains**.
-3. Verify port 80/443 are open and the DNS A record points to the server.
-4. Check the proxy route: `GET /api/routes/<domain>`.
+A `.encryption_salt` file sits next to it. Back up both files with the database and store them off the server. If the key is lost, encrypted values cannot be decrypted. If you upgraded from a version that stored secrets in plaintext, `rivetr db encrypt-secrets --execute` encrypts them in place after a dry run.
+
+## Where can I get help?
+
+- Read the docs starting at [Introduction](/docs/introduction), then [Troubleshooting](/docs/troubleshooting).
+- Search or open an issue at [github.com/KwaminaWhyte/rivetr/issues](https://github.com/KwaminaWhyte/rivetr/issues).
+- Report security vulnerabilities privately through [GitHub Security Advisories](https://github.com/KwaminaWhyte/rivetr/security/advisories/new), not a public issue.
+
+## Related pages
+
+- [Installation](/docs/installation) for the install script and manual setup.
+- [Upgrading](/docs/upgrading) for backups, version pinning, and rollback.
+- [Security](/docs/security) for auth, TLS, and hardening.

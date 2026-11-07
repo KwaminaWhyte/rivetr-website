@@ -15,7 +15,12 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Container, Section, SectionHeading } from "~/components/ui";
-import { TEMPLATE_CATEGORIES, TEMPLATE_COUNT, type TemplateCategory } from "~/lib/content";
+import {
+  TEMPLATE_CATEGORIES,
+  TEMPLATE_CATEGORY_COUNT,
+  TEMPLATE_COUNT,
+  type TemplateCategory,
+} from "~/lib/content";
 
 const ICON_MAP: Record<string, LucideIcon> = {
   Bot,
@@ -63,7 +68,7 @@ export function TemplatesShowcase() {
               <span className="text-gradient">ready to deploy</span>
             </>
           }
-          blurb="Databases, AI models, analytics, monitoring, CMS, and more, plus community-submitted templates. No configuration files required."
+          blurb="Databases, AI models, analytics, monitoring, CMS, and more. Every template is a reviewed compose definition with encrypted variables, ready to deploy."
         />
 
         {/* Big count emphasis */}
@@ -75,7 +80,7 @@ export function TemplatesShowcase() {
             {TEMPLATE_COUNT}
           </p>
           <p className="mt-1 text-sm font-semibold uppercase tracking-widest text-subtle">
-            one-click services across 12 categories
+            one-click services across {TEMPLATE_CATEGORY_COUNT} categories
           </p>
         </div>
 
@@ -89,14 +94,15 @@ export function TemplatesShowcase() {
           ))}
         </div>
 
-        {/* Community note */}
+        {/* Contributing note */}
         <p className="mt-8 text-center text-sm text-subtle">
-          Community-submitted templates accepted via pull request.{" "}
+          Templates ship in the binary and are maintained in the repository. New
+          ones are welcome as pull requests.{" "}
           <a
             href="https://github.com/KwaminaWhyte/rivetr"
             target="_blank"
             rel="noreferrer"
-            className="font-medium text-brand-400 underline-offset-2 hover:underline"
+            className="font-medium text-brand-300 underline-offset-2 hover:underline"
           >
             Contribute on GitHub
           </a>

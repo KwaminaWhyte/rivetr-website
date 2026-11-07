@@ -18,42 +18,39 @@ export function CtaInstall() {
     <Section id="install">
       <Container>
         <div className="relative overflow-hidden rounded-2xl border border-border bg-surface glow-ring">
-          {/* Aurora glow */}
           <div
             className="aurora pointer-events-none absolute inset-0 opacity-30"
             aria-hidden="true"
           />
-
-          {/* Grid texture */}
           <div
-            className="bg-grid pointer-events-none absolute inset-0 opacity-[0.04] mask-fade-b"
+            className="bg-grid mask-fade-b pointer-events-none absolute inset-0 opacity-[0.04]"
             aria-hidden="true"
           />
 
-          <div className="relative z-10 px-8 py-16 text-center sm:px-16 sm:py-20">
+          <div className="relative z-10 px-6 py-14 text-center sm:px-16 sm:py-20">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-300">
+              Rivetr {SITE.version} · MIT licensed
+            </p>
             <h2 className="text-3xl font-bold tracking-tight text-strong sm:text-4xl lg:text-5xl">
               Ship your first app{" "}
               <span className="text-gradient">in minutes</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-subtle">
-              Open source, MIT licensed, and entirely self-hosted. No seat
-              limits, no feature gates, no cloud bill.
+              One command installs Docker, the build tools, the binary, a
+              systemd unit, and a generated admin token. Linux with Docker or
+              Podman is all you need.
             </p>
 
-            {/* Install command block */}
-            <div className="mx-auto mt-10 flex max-w-xl items-center justify-between gap-3 rounded-xl border border-border-strong bg-elevated px-4 py-3">
-              <div className="flex min-w-0 items-center gap-2">
-                <span
-                  className="shrink-0 font-mono text-sm text-brand-400"
-                  aria-hidden="true"
-                >
-                  $
-                </span>
-                <code className="truncate font-mono text-sm text-fg">
-                  {SITE.installCmd}
-                </code>
-              </div>
-
+            <div className="mx-auto mt-10 flex max-w-2xl items-center gap-3 rounded-xl border border-border-strong bg-bg px-4 py-3">
+              <span
+                className="shrink-0 font-mono text-sm text-brand-300"
+                aria-hidden="true"
+              >
+                $
+              </span>
+              <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap text-left font-mono text-xs text-fg sm:text-sm">
+                {SITE.installCmd}
+              </code>
               <button
                 type="button"
                 onClick={handleCopy}
@@ -61,17 +58,16 @@ export function CtaInstall() {
                 className="shrink-0 rounded-md p-1.5 text-subtle transition-colors hover:bg-surface-strong hover:text-strong focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60"
               >
                 {copied ? (
-                  <Check className="h-4 w-4 text-green-400" />
+                  <Check className="h-4 w-4 text-success" />
                 ) : (
                   <Copy className="h-4 w-4" />
                 )}
               </button>
             </div>
 
-            {/* CTAs */}
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-              <Button href={SITE.docs} variant="primary" size="lg">
-                Read the docs
+              <Button href="/docs/quick-start" variant="primary" size="lg">
+                Read the quick start
               </Button>
               <Button href={SITE.github} variant="outline" size="lg">
                 <GithubIcon size={16} />

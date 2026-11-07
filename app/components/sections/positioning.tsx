@@ -9,11 +9,11 @@ export function Positioning() {
           {/* Heading block */}
           <div className="mb-6 text-center">
             <h2 className="text-2xl font-bold tracking-tight text-strong sm:text-3xl">
-              The open-source alternative to managed PaaS
+              The open-source alternative to managed platforms
             </h2>
             <p className="mt-3 text-base leading-relaxed text-subtle max-w-xl mx-auto">
-              Self-host the developer experience of Vercel, Heroku, and Railway,
-              on your own servers, with zero vendor lock-in, for free.
+              Self-host the developer experience of Vercel, Heroku, and Railway
+              on your own servers, with no vendor lock-in and no bill per seat.
             </p>
           </div>
 

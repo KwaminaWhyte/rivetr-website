@@ -4,15 +4,16 @@ import { GithubIcon } from "~/components/icons/github";
 import { SITE } from "~/lib/content";
 import changelog from "~/content/changelog.md?raw";
 import { ArrowUp } from "lucide-react";
+import { pageMeta, siteOrigin } from "~/lib/meta";
+import type { Route } from "./+types/changelog";
 
-export function meta() {
-  return [
-    { title: "Changelog: Rivetr" },
-    {
-      name: "description",
-      content: "Release notes and version history for Rivetr.",
-    },
-  ];
+export function meta({ matches }: Route.MetaArgs) {
+  return pageMeta({
+    title: "Changelog: Rivetr",
+    description:
+      "Release notes for Rivetr, starting with the 1.0.0 release on 5 November 2026.",
+    origin: siteOrigin(matches),
+  });
 }
 
 export default function Changelog() {
@@ -31,13 +32,14 @@ export default function Changelog() {
         <Container className="text-center">
           <Badge>
             <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
-            All releases · Semantic versioning
+            v{SITE.version} · released {SITE.released}
           </Badge>
           <h1 className="mx-auto mt-6 max-w-2xl text-4xl font-bold tracking-tight text-strong sm:text-5xl">
             Changelog
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-subtle">
-            Every release, in detail.
+            Release notes from 1.0.0 onward. The full history lives in the
+            repository.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Button

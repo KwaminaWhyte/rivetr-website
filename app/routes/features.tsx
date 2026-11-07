@@ -2,17 +2,17 @@ import type { Route } from "./+types/features";
 import { Container, Badge, Section } from "~/components/ui";
 import { FeatureGroups } from "~/components/sections/feature-groups";
 import { Compare } from "~/components/sections/compare";
+import { SecurityBand } from "~/components/sections/security-band";
 import { CtaInstall } from "~/components/sections/cta-install";
+import { pageMeta, siteOrigin } from "~/lib/meta";
 
-export function meta(_: Route.MetaArgs) {
-  return [
-    { title: "Features: Rivetr" },
-    {
-      name: "description",
-      content:
-        "The full Rivetr feature set: Git-native deploys, managed databases, 273 service templates, SSO & RBAC, live logs and metrics, multi-server and Swarm, S3 backups, an MCP server, and more.",
-    },
-  ];
+export function meta({ matches }: Route.MetaArgs) {
+  return pageMeta({
+    title: "Features: Rivetr",
+    description:
+      "The full Rivetr 1.0 feature set: Git-native deploys, 9 managed databases, 365 service templates, passkeys, SSO and RBAC, traffic analytics, multi-server and Swarm, checksum-verified S3 backups, a TUI, and a built-in MCP server.",
+    origin: siteOrigin(matches),
+  });
 }
 
 export default function Features() {
@@ -36,15 +36,16 @@ export default function Features() {
             One binary, the <span className="text-gradient">whole platform</span>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-subtle">
-            Rivetr bundles everything a modern self-hosted PaaS needs: deploys,
-            databases, security, observability, and scale, into a single Rust
-            binary that idles around 30&nbsp;MB of RAM.
+            Deploys, databases, services, security, observability, and scale in a
+            single Rust binary. 52 MB RSS with 30 containers, and no Redis,
+            PostgreSQL, or Traefik to run alongside it.
           </p>
         </Container>
       </Section>
 
       <FeatureGroups />
       <Compare />
+      <SecurityBand />
       <CtaInstall />
     </>
   );

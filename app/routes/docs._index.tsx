@@ -17,7 +17,15 @@ import {
   Webhook,
   KeyRound,
   Cpu,
+  Boxes,
+  ShieldCheck,
+  LifeBuoy,
+  ArrowUpCircle,
+  Layers,
 } from "lucide-react";
+import { SITE } from "~/lib/content";
+import { pageMeta, siteOrigin } from "~/lib/meta";
+import type { Route } from "./+types/docs._index";
 
 interface DocCard {
   icon: React.ReactNode;
@@ -39,104 +47,130 @@ const SECTIONS: DocSection[] = [
         icon: <BookOpen size={20} />,
         title: "Introduction",
         description:
-          "What Rivetr is, how it compares to Coolify and Dokploy, and the single-binary design.",
+          "What Rivetr is, how the single-binary design works, and how it compares to Coolify and Dokploy.",
         slug: "introduction",
       },
       {
         icon: <Zap size={20} />,
         title: "Quick Start",
         description:
-          "Install → create admin → connect a repo → first deploy. Everything you need to be live in under 10 minutes.",
+          "Install, create an admin, connect a repository, and deploy your first app in under ten minutes.",
         slug: "quick-start",
       },
       {
         icon: <Terminal size={20} />,
         title: "Installation",
         description:
-          "One-line install script. Handles Docker, systemd, and firewall config automatically.",
+          "Requirements, the one-line installer, systemd, manual and development setup, and Ansible provisioning.",
         slug: "installation",
+      },
+      {
+        icon: <ArrowUpCircle size={20} />,
+        title: "Upgrading",
+        description:
+          "Update checks, applying a release, backups first, version pinning, and what to know before a downgrade.",
+        slug: "upgrading",
       },
     ],
   },
   {
-    label: "Guides",
+    label: "Deploy",
     cards: [
       {
         icon: <GitBranch size={20} />,
         title: "Deployments",
         description:
-          "The clone → build → health check → atomic swap pipeline. Previews, rollbacks, approvals.",
+          "The clone, build, health check, and atomic switch pipeline. Previews, approvals, freeze windows, rollback, and data snapshots.",
         slug: "deployments",
       },
       {
         icon: <Cpu size={20} />,
         title: "Build Types",
         description:
-          "Dockerfile, Nixpacks, Railpack, Heroku/Paketo buildpacks, and static sites. Auto-detection and deploy.toml hints.",
+          "Dockerfile, Nixpacks, Railpack, Cloud Native Buildpacks, static sites, and prebuilt images.",
         slug: "build-types",
       },
       {
         icon: <Webhook size={20} />,
         title: "Webhooks",
         description:
-          "GitHub, GitLab, Gitea, Bitbucket, and Docker Hub. Signature verification, skip markers, watch paths.",
+          "GitHub, GitLab, Gitea, Bitbucket, and Docker Hub. Signature verification, skip markers, and watch paths.",
         slug: "webhooks",
+      },
+      {
+        icon: <Boxes size={20} />,
+        title: "Compose Services",
+        description:
+          "Docker Compose deployments with build sources, hooks, image digests, per-container terminals, and rollback.",
+        slug: "services",
       },
       {
         icon: <KeyRound size={20} />,
         title: "Environment Variables",
         description:
-          "Per-app env vars with AES-256-GCM encryption, and shared inheritance from team → project → environment → app.",
+          "AES-256-GCM encryption, shared inheritance from team to app, and database link injection.",
         slug: "environment-variables",
       },
       {
         icon: <Globe size={20} />,
         title: "Domains and HTTPS",
         description:
-          "Custom domains, automatic Let's Encrypt certificates, the embedded reverse proxy, and preview URLs.",
+          "Per-domain certificates, DNS-01 wildcards, HTTP/2, preview URLs, and the embedded proxy.",
         slug: "domains-and-https",
       },
       {
         icon: <Database size={20} />,
         title: "Databases",
         description:
-          "One-click Postgres, MySQL, MongoDB, Redis, and more. Automatic env var injection and S3 backups.",
+          "Nine managed engines, app linking, extensions, live resource limits, and engine-specific notes.",
         slug: "databases",
       },
       {
         icon: <Archive size={20} />,
         title: "Backups",
         description:
-          "S3-compatible destinations, volume and database backups, scheduled retention, full instance backup/restore.",
+          "Database, volume, and instance backups to local disk or S3, with retention, checksums, and tested restore.",
         slug: "backups",
       },
+      {
+        icon: <ShieldCheck size={20} />,
+        title: "Secret Managers",
+        description:
+          "Resolve secret:// references from Vault, OpenBao, Infisical, Doppler, and AWS Secrets Manager at deploy time.",
+        slug: "secret-managers",
+      },
+    ],
+  },
+  {
+    label: "Operate",
+    cards: [
       {
         icon: <BarChart2 size={20} />,
         title: "Monitoring and Logs",
         description:
-          "Live log streaming, full-text search, uptime tracking, Prometheus /metrics, crash recovery.",
+          "Live streams, search and retention, host metrics, Prometheus, traffic analytics, and log drains.",
         slug: "monitoring-and-logs",
       },
       {
         icon: <Users size={20} />,
         title: "Teams and RBAC",
         description:
-          "Multi-tenant isolation, owner/admin/developer/viewer roles, per-resource overrides, 2FA enforcement, audit logging.",
+          "Role presets and 24 abilities, custom roles, resource overrides, 2FA enforcement, and audit logs.",
         slug: "teams-and-rbac",
       },
       {
         icon: <Server size={20} />,
-        title: "Multi-Server and Scale",
+        title: "Remote Servers and Scale",
         description:
-          "Register remote servers, build servers, Docker Swarm, replica load balancing, container registry push.",
+          "SSH servers, multi-server app placements, build servers, Docker Swarm, replicas, and server maintenance.",
         slug: "multi-server-and-scale",
       },
       {
-        icon: <Settings size={20} />,
-        title: "Configuration",
+        icon: <ShieldCheck size={20} />,
+        title: "Security",
         description:
-          "Full reference for rivetr.toml (server config) and deploy.toml (per-app config in your repo).",
-        slug: "configuration",
+          "Encryption at rest, token scopes, SSH host key pinning, rate limiting, CSP, and a hardening checklist.",
+        slug: "security",
       },
     ],
   },
@@ -144,24 +178,31 @@ const SECTIONS: DocSection[] = [
     label: "Reference",
     cards: [
       {
+        icon: <Settings size={20} />,
+        title: "Configuration",
+        description:
+          "Every rivetr.toml table and the important defaults, plus a minimal production example.",
+        slug: "configuration",
+      },
+      {
         icon: <Code2 size={20} />,
         title: "REST API",
         description:
-          "Authentication, full endpoint catalog, WebSocket streams, and rate-limit tiers.",
+          "Authentication, scoped tokens, the endpoint catalog, streams, rate limits, and curl examples.",
         slug: "api",
       },
       {
         icon: <Terminal size={20} />,
         title: "CLI",
         description:
-          "The rivetr CLI: status, apps, deploy, logs, backup/restore, config check, and the TUI.",
+          "Remote commands, local maintenance commands, and the optional terminal UI.",
         slug: "cli",
       },
       {
-        icon: <Zap size={20} />,
+        icon: <Layers size={20} />,
         title: "MCP Server",
         description:
-          "The built-in Model Context Protocol server. Connect Claude Desktop or any MCP client to manage deployments with AI.",
+          "The built-in Model Context Protocol server and its 11 tools for AI assistants.",
         slug: "mcp-server",
       },
     ],
@@ -173,53 +214,61 @@ const SECTIONS: DocSection[] = [
         icon: <HelpCircle size={20} />,
         title: "FAQ",
         description:
-          "Resource usage, production-readiness, Docker vs Podman, comparison to Coolify/Dokploy, cost, migration.",
+          "Footprint, production readiness, Docker vs Podman, licensing, telemetry, and migration.",
         slug: "faq",
+      },
+      {
+        icon: <LifeBuoy size={20} />,
+        title: "Troubleshooting",
+        description:
+          "Install, startup, DNS, certificates, builds, webhooks, databases, SSH, updates, and disk.",
+        slug: "troubleshooting",
       },
       {
         icon: <Rocket size={20} />,
         title: "Contributing",
         description:
-          "Dev setup, code organization, PR checklist, and branch/commit conventions.",
+          "Development setup, tests, migrations, templates, pull request checklist, and conventions.",
         slug: "contributing",
       },
     ],
   },
 ];
 
-export function meta() {
-  return [
-    { title: "Documentation: Rivetr" },
-    {
-      name: "description",
-      content:
-        "Documentation for Rivetr: the self-hosted PaaS in a single binary.",
-    },
-  ];
+export function meta({ matches }: Route.MetaArgs) {
+  return pageMeta({
+    title: "Documentation: Rivetr",
+    description:
+      "Rivetr 1.0 documentation: install, deploy, databases, services, domains, backups, security, API, CLI, and MCP.",
+    origin: siteOrigin(matches),
+  });
 }
 
 export default function DocsIndex() {
   return (
-    <div>
-      {/* Header */}
+    <div className="mx-auto max-w-4xl">
       <div className="mb-10">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-brand-400">
-          Documentation
+        <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-brand-300">
+          Documentation · v{SITE.version}
         </p>
         <h1 className="mb-3 text-3xl font-bold tracking-tight text-strong sm:text-4xl">
           Get started with Rivetr
         </h1>
         <p className="max-w-xl text-lg leading-relaxed text-subtle">
-          Rivetr is a self-hosted PaaS that deploys your apps from Git in a
-          single binary: no Redis, no PostgreSQL, no Traefik.
+          Rivetr deploys your apps from Git in a single binary: no Redis, no
+          PostgreSQL, and no Traefik. These pages cover 1.0.0.
         </p>
       </div>
 
-      {/* Quick start strip */}
-      <div className="mb-10 rounded-xl border border-brand-500/20 bg-brand-500/5 p-5">
-        <p className="mb-3 text-sm font-semibold text-strong">Quick start</p>
-        <pre className="overflow-x-auto rounded-lg border border-border bg-surface p-4 font-mono text-sm text-fg">
-          <code>curl -fsSL https://rivetr.dev/install.sh | sh</code>
+      <div className="mb-10 rounded-xl border border-brand-500/20 bg-brand-500/[0.06] p-5">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm font-semibold text-strong">Quick start</p>
+          <span className="rounded-full border border-brand-500/25 px-2 py-0.5 font-mono text-[10px] text-brand-300">
+            Linux + Docker or Podman
+          </span>
+        </div>
+        <pre className="whitespace-pre-wrap break-words rounded-lg border border-border bg-bg p-4 font-mono text-xs text-fg sm:text-sm">
+          <code>{SITE.installCmd}</code>
         </pre>
         <p className="mt-3 text-sm text-subtle">
           Then open{" "}
@@ -228,15 +277,14 @@ export default function DocsIndex() {
           </code>{" "}
           and create your admin account.{" "}
           <Link
-            to="/docs/installation"
-            className="text-brand-400 underline-offset-4 hover:underline"
+            to="/docs/quick-start"
+            className="font-medium text-brand-300 underline-offset-4 hover:underline"
           >
-            Full install guide →
+            Full quick start
           </Link>
         </p>
       </div>
 
-      {/* Doc sections */}
       <div className="space-y-10">
         {SECTIONS.map((section) => (
           <div key={section.label}>
@@ -250,11 +298,11 @@ export default function DocsIndex() {
                   to={`/docs/${card.slug}`}
                   className="group flex gap-4 rounded-xl border border-border bg-surface/60 p-5 transition-all duration-200 hover:border-brand-500/40 hover:bg-surface"
                 >
-                  <div className="mt-0.5 shrink-0 text-brand-400 transition-colors group-hover:text-brand-300">
+                  <div className="mt-0.5 shrink-0 text-brand-300 transition-colors group-hover:text-brand-200">
                     {card.icon}
                   </div>
                   <div>
-                    <p className="mb-1 font-semibold text-strong transition-colors group-hover:text-strong">
+                    <p className="mb-1 font-semibold text-strong">
                       {card.title}
                     </p>
                     <p className="text-sm leading-relaxed text-subtle">
@@ -268,10 +316,9 @@ export default function DocsIndex() {
         ))}
       </div>
 
-      {/* Footer links */}
       <div className="mt-10 flex flex-wrap gap-4 border-t border-border pt-6 text-sm text-subtle">
         <a
-          href="https://github.com/KwaminaWhyte/rivetr"
+          href={SITE.github}
           target="_blank"
           rel="noreferrer"
           className="transition-colors hover:text-strong"
@@ -279,21 +326,16 @@ export default function DocsIndex() {
           GitHub →
         </a>
         <a
-          href="https://github.com/KwaminaWhyte/rivetr/issues"
+          href={`${SITE.github}/issues`}
           target="_blank"
           rel="noreferrer"
           className="transition-colors hover:text-strong"
         >
           Report an issue →
         </a>
-        <a
-          href="https://github.com/KwaminaWhyte/rivetr/releases"
-          target="_blank"
-          rel="noreferrer"
-          className="transition-colors hover:text-strong"
-        >
+        <Link to="/changelog" className="transition-colors hover:text-strong">
           Changelog →
-        </a>
+        </Link>
       </div>
     </div>
   );

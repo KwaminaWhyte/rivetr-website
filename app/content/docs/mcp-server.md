@@ -1,42 +1,59 @@
 # MCP Server
 
-Rivetr includes a built-in [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that exposes infrastructure management tools to AI assistants such as Claude Desktop, Claude Code, and any other MCP-compatible client.
+Rivetr has a built-in MCP server for AI assistants. It exposes 11 tools over HTTP at `POST /mcp`, so an assistant can list resources, inspect deployments, read logs, trigger a deploy, or restart an app. The server is part of the same binary as the API and dashboard.
 
----
+## Enable and disable
 
-## What Is MCP?
+The MCP server is controlled by the `mcp_enabled` instance setting under **Settings > Advanced**. Fresh installs start with it off. Installations upgraded from a pre-1.0 release keep it on.
 
-MCP is an open protocol that lets AI assistants call tools on external systems using a structured JSON API. Rivetr's MCP server exposes deployment and monitoring operations as callable tools, so an AI assistant can list your apps, check deployment status, trigger a deploy, or fetch logs, directly from a conversation.
+Enable it from the dashboard, or with the settings API as an admin:
 
----
-
-## The `/mcp` Endpoint
-
-The MCP server is a single HTTP endpoint:
-
-```
-POST /mcp
+```bash
+curl -X PUT https://rivetr.example.com/api/settings/advanced \
+  -H "Authorization: Bearer $RIVETR_ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"mcp_enabled": true}'
 ```
 
-It is public (no `Authorization` header required at the transport level). Access control is enforced at the Rivetr database level: the MCP handler queries the same SQLite database as the REST API and only returns data that exists.
+While it is off, `POST /mcp` returns `404`:
 
-> **Security note:** Expose `/mcp` only to trusted clients. If your Rivetr API port (8080) is publicly accessible, consider restricting `/mcp` at the firewall or reverse-proxy level.
+```json
+{"error":{"code":"mcp_disabled","message":"The MCP server is disabled. An admin can turn it on in Settings > Advanced."}}
+```
 
----
+## Endpoint and authentication
+
+```text
+POST https://rivetr.example.com/mcp
+Authorization: Bearer rvt_...
+Content-Type: application/json
+```
+
+Authentication is required. Send a personal API token (`rvt_...`), the admin token from `rivetr.toml`, or a dashboard session token as `Authorization: Bearer`. `X-API-Key` is also accepted. The API access policy (on/off and IP allowlist) applies to the MCP endpoint.
+
+A personal API token needs these scopes:
+
+| Tools | Scope |
+|-------|-------|
+| `list_apps`, `get_app_status`, `get_deployment_logs`, `list_deployments`, `get_deployment_status`, `list_services`, `list_databases`, `list_tags`, `list_projects` | `read` |
+| `deploy_app`, `restart_app` | `deploy` |
+
+`admin` implies every scope. `tools/list` only returns the tools the caller's token may use. A call to a tool without the needed scope returns an error for that tool. Tokens restricted to a team or to specific resources cannot use MCP at all.
 
 ## Protocol
 
-All requests are JSON `POST` bodies with a `method` field and an optional `params` object.
+Requests are JSON `POST` bodies with a `method` and optional `params`.
 
-### Discover available tools: `tools/list`
+Discover tools:
 
 ```bash
-curl -X POST https://your-server:8080/mcp \
+curl -s -X POST https://rivetr.example.com/mcp \
+  -H "Authorization: Bearer $RIVETR_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"method": "tools/list"}'
+  -d '{"method":"tools/list"}'
 ```
 
-Response:
+The response lists each tool with `name`, `description`, and `input_schema`:
 
 ```json
 {
@@ -44,165 +61,111 @@ Response:
     "tools": [
       {
         "name": "list_apps",
-        "description": "List all deployed applications",
-        "input_schema": { ... }
-      },
-      ...
+        "description": "List all deployed applications with their tags",
+        "input_schema": {"type": "object", "properties": {}}
+      }
     ]
   },
   "error": null
 }
 ```
 
-### Call a tool: `tools/call`
-
-```bash
-curl -X POST https://your-server:8080/mcp \
-  -H "Content-Type: application/json" \
-  -d '{
-    "method": "tools/call",
-    "params": {
-      "name": "list_apps",
-      "input": {}
-    }
-  }'
-```
-
----
-
-## Available Tools
-
-| Tool | Description | Required input |
-|------|-------------|----------------|
-| `list_apps` | List all deployed applications (up to 50) | `project_id` (optional filter) |
-| `get_app_status` | Get the current status of an application | `app_id` |
-| `deploy_app` | Trigger a deployment for an application | `app_id` |
-| `get_deployment_logs` | Get logs for a specific deployment (up to 500 lines) | `deployment_id` |
-
-### `list_apps`
+Call a tool:
 
 ```json
 {
   "method": "tools/call",
   "params": {
     "name": "list_apps",
-    "input": {
-      "project_id": "optional-project-id"
-    }
+    "input": {"project_id": "project-uuid"}
   }
 }
 ```
 
-### `get_app_status`
+`result` holds the tool output. On failure, `result` is `null` and `error` is a message. Unknown methods and tool names return an error in the same envelope.
+
+## Tools
+
+| Tool | Purpose | Input | Scope |
+|------|---------|-------|-------|
+| `list_apps` | List apps with their tags, up to 50. | `project_id`, `tag` (optional filters) | `read` |
+| `deploy_app` | Queue a deployment for an app. | `app_id` (required) | `deploy` |
+| `get_app_status` | Get an app record. | `app_id` (required) | `read` |
+| `get_deployment_logs` | Get the last 500 log entries for a deployment. | `deployment_id` (required) | `read` |
+| `list_deployments` | List recent deployments, newest first. | `app_id` (optional), `limit` (default 20, max 100) | `read` |
+| `get_deployment_status` | Get a deployment record. | `deployment_id` (required) | `read` |
+| `list_services` | List Docker Compose and template services with tags, up to 100. | `project_id`, `tag` (optional filters) | `read` |
+| `list_databases` | List managed databases with tags, up to 100. Credentials are masked. | `project_id`, `tag` (optional filters) | `read` |
+| `list_tags` | List tags with the number of resources carrying each. | none | `read` |
+| `list_projects` | List projects, up to 100. | none | `read` |
+| `restart_app` | Queue a fresh deployment of the app's current config. | `app_id` (required) | `deploy` |
+
+`deploy_app` and `restart_app` both enqueue a deployment and return immediately:
 
 ```json
-{
-  "method": "tools/call",
-  "params": {
-    "name": "get_app_status",
-    "input": {
-      "app_id": "app-uuid-here"
-    }
-  }
-}
+{"result":{"deployment_id":"uuid","status":"queued"},"error":null}
 ```
 
-### `deploy_app`
+Poll `get_deployment_status` or `get_deployment_logs` to follow the result. Deployments are subject to the same queue, health checks, freeze windows, and rollback behavior as a dashboard deploy.
 
-Queues a new deployment for the given app. Returns a `deployment_id` you can use to poll logs.
-
-```json
-{
-  "method": "tools/call",
-  "params": {
-    "name": "deploy_app",
-    "input": {
-      "app_id": "app-uuid-here"
-    }
-  }
-}
-```
-
-Response:
-
-```json
-{
-  "result": {
-    "deployment_id": "uuid",
-    "status": "queued"
-  }
-}
-```
-
-### `get_deployment_logs`
-
-```json
-{
-  "method": "tools/call",
-  "params": {
-    "name": "get_deployment_logs",
-    "input": {
-      "deployment_id": "deployment-uuid-here"
-    }
-  }
-}
-```
-
----
-
-## Connecting Claude Desktop
-
-Add Rivetr as an MCP server in your Claude Desktop configuration (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
-
-```json
-{
-  "mcpServers": {
-    "rivetr": {
-      "url": "https://your-server:8080/mcp"
-    }
-  }
-}
-```
-
-Restart Claude Desktop. You can now ask Claude things like:
-
-- "List my Rivetr apps"
-- "Deploy the `my-api` app"
-- "Show me the logs for the last deployment of `my-api`"
-
----
-
-## Connecting Claude Code
-
-In a project where you work with Rivetr, add to `.claude/settings.json`:
-
-```json
-{
-  "mcpServers": {
-    "rivetr": {
-      "url": "https://your-server:8080/mcp"
-    }
-  }
-}
-```
-
-Or use the CLI:
+## Example session
 
 ```bash
-claude mcp add rivetr https://your-server:8080/mcp
+# List the tools this token can call
+curl -s -X POST https://rivetr.example.com/mcp \
+  -H "Authorization: Bearer $RIVETR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"method":"tools/list"}'
+
+# Find an app
+curl -s -X POST https://rivetr.example.com/mcp \
+  -H "Authorization: Bearer $RIVETR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"method":"tools/call","params":{"name":"list_apps","input":{}}}'
+
+# Deploy it
+curl -s -X POST https://rivetr.example.com/mcp \
+  -H "Authorization: Bearer $RIVETR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"method":"tools/call","params":{"name":"deploy_app","input":{"app_id":"APP_UUID"}}}'
+
+# Follow the deployment
+curl -s -X POST https://rivetr.example.com/mcp \
+  -H "Authorization: Bearer $RIVETR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"method":"tools/call","params":{"name":"get_deployment_status","input":{"deployment_id":"DEPLOYMENT_UUID"}}}'
 ```
 
----
+## Client configuration
 
-## Error Handling
-
-If a tool call fails (e.g. app not found), the response has a non-null `error` field:
+A generic remote MCP client entry looks like this. Field names vary by client; the endpoint needs the URL and an `Authorization` header.
 
 ```json
 {
-  "result": null,
-  "error": "App not found: bad-id"
+  "mcpServers": {
+    "rivetr": {
+      "url": "https://rivetr.example.com/mcp",
+      "headers": {
+        "Authorization": "Bearer rvt_your_token_here"
+      }
+    }
+  }
 }
 ```
 
-Unknown methods or tool names also return a descriptive error in the `error` field.
+The endpoint reads `method` and `params` from the JSON body. A `jsonrpc` field and an `id` are ignored, and responses use the `{result, error}` envelope above rather than JSON-RPC framing. If your client only launches stdio servers, use its HTTP bridge and point it at `/mcp`; the request body must reach Rivetr unchanged.
+
+## Security notes
+
+- MCP is a control plane. A credential that can use it can list every app, service, database, project, and tag in the instance, and with `deploy` can deploy or restart any app. Tool results are not team-scoped. Treat MCP access as instance-level access.
+- Use a dedicated token with the minimum scopes. A read-only assistant needs `read`; add `deploy` only when it should deploy. Team- and resource-restricted tokens cannot use MCP.
+- Keep port `8080` on a private network or behind a VPN. If the API is reachable from the internet, terminate TLS at the proxy and restrict `/mcp` at the firewall or proxy.
+- Turn the MCP server off when it is not in use. The toggle takes effect immediately.
+- The token secret is shown once at creation. Rolling a token invalidates the old secret after the grace period.
+- Rivetr sends no telemetry. The only update-related outbound call is the optional release check against GitHub.
+
+## Related pages
+
+- [REST API](/docs/api) for the same operations over typed HTTP routes.
+- [API tokens](/docs/api) for scopes, restrictions, expiry, and rolling.
+- [Teams and RBAC](/docs/teams-and-rbac) for team roles and resource overrides.

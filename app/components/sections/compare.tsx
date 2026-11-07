@@ -13,7 +13,7 @@ function CellValue({
   if (value === true) {
     return (
       <Check
-        className="mx-auto h-5 w-5 text-green-400"
+        className="mx-auto h-5 w-5 text-success"
         aria-label="Supported"
       />
     );
@@ -77,7 +77,7 @@ export function Compare() {
         <SectionHeading
           eyebrow="How it compares"
           title="Same idea. A fraction of the footprint."
-          blurb="Coolify and Dokploy are the two best-known self-hosted PaaS alternatives. Here's how Rivetr stacks up."
+          blurb="Coolify and Dokploy are the two best-known self-hosted PaaS alternatives. Rows below were checked against their docs and releases on 7 November 2026 (Coolify v4.6.0, Dokploy v0.31.0)."
         />
 
         {/* Desktop table */}
@@ -142,7 +142,18 @@ export function Compare() {
         </div>
 
         <p className="mt-4 text-center text-xs text-subtle">
-          Figures from public docs and our own measurements, 2026.
+          Rivetr memory is a measured RSS figure with 30 containers on 1.0.0.
+          Competitor figures are from their published documentation, not
+          measurements by us. See the{" "}
+          <a
+            href={`https://github.com/KwaminaWhyte/rivetr#why-rivetr`}
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium text-brand-300 underline-offset-4 hover:underline"
+          >
+            comparison notes
+          </a>{" "}
+          for sources.
         </p>
       </Container>
     </Section>

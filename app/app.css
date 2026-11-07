@@ -1,35 +1,36 @@
 @import "tailwindcss";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
-    Consolas, monospace;
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
+  --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, "SF Mono",
+    Menlo, Consolas, monospace;
 
-  /* Brand: rust/amber, nodding to Rust the language. Stable across themes. */
-  --color-brand-50: #fff7ed;
-  --color-brand-100: #ffedd5;
-  --color-brand-200: #fed7aa;
-  --color-brand-300: #fdba74;
-  --color-brand-400: #fb923c;
-  --color-brand-500: #f97316;
-  --color-brand-600: #ea580c;
-  --color-brand-700: #c2410c;
-  --color-brand-800: #9a3412;
-  --color-brand-900: #7c2d12;
+  /* Brand: indigo, matching the Rivetr mark and dashboard accent. */
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-500: #4f46e5;
+  --color-brand-600: #4338ca;
+  --color-brand-700: #3730a3;
+  --color-brand-800: #312e81;
+  --color-brand-900: #1e1b4b;
 
-  /* Ink: near-black slate surfaces (legacy, still referenced by a handful
-     of brand chrome accents). Prefer the semantic tokens below. */
-  --color-ink-950: #07090d;
-  --color-ink-900: #0b0e14;
-  --color-ink-850: #0f131b;
-  --color-ink-800: #141925;
-  --color-ink-700: #1d2433;
-  --color-ink-600: #2a3344;
+  /* Ink: near-black indigo surfaces (legacy aliases). Prefer the semantic
+     tokens below. */
+  --color-ink-950: #06070d;
+  --color-ink-900: #0a0c14;
+  --color-ink-850: #0f1220;
+  --color-ink-800: #141829;
+  --color-ink-700: #1c2138;
+  --color-ink-600: #29304d;
 
-  --color-mist-400: #8b95a7;
-  --color-mist-300: #aab3c2;
-  --color-mist-200: #c9d0db;
+  --color-mist-400: #8189a6;
+  --color-mist-300: #a9b0c9;
+  --color-mist-200: #cdd2e3;
 }
 
 /* ── Semantic theme tokens ────────────────────────────────────────────────
@@ -41,72 +42,88 @@
 :root {
   color-scheme: dark;
 
+  /* Adaptive brand inks: light indigo on dark, deep indigo on light. */
+  --brand-300: #a5b4fc;
+  --brand-400: #818cf8;
+  --gradient-a: #a5b4fc;
+  --gradient-b: #6366f1;
+
   /* Surfaces */
-  --bg: #07090d;          /* page */
-  --bg-elevated: #0b0e14; /* footer / wide bands */
-  --surface: #0b0e14;     /* cards, frames */
-  --surface-strong: #141925;
+  --bg: #06070d;          /* page */
+  --bg-elevated: #0a0c14; /* footer / wide bands */
+  --surface: #0c0e18;     /* cards, frames */
+  --surface-strong: #141829;
 
   /* Text */
   --fg-strong: #ffffff;
-  --fg: #c9d0db;          /* default body */
-  --fg-muted: #aab3c2;
-  --fg-subtle: #8b95a7;
+  --fg: #cdd2e3;          /* default body */
+  --fg-muted: #a9b0c9;
+  --fg-subtle: #8189a6;
 
   /* Lines */
-  --border: #1d2433;
-  --border-strong: #2a3344;
+  --border: #1c2138;
+  --border-strong: #2c3352;
 
   /* Decorative */
-  --grid-dot: rgba(148, 163, 184, 0.09);
-  --aurora-a: rgba(249, 115, 22, 0.12);
-  --aurora-b: rgba(124, 45, 18, 0.06);
-  --aurora-c: rgba(249, 115, 22, 0.12);
-  --shadow-glow: 0 0 0 1px rgba(249, 115, 22, 0.18),
-    0 18px 60px -18px rgba(249, 115, 22, 0.45);
-  --selection-bg: rgba(249, 115, 22, 0.3);
+  --grid-dot: rgba(148, 163, 220, 0.10);
+  --aurora-a: rgba(99, 102, 241, 0.20);
+  --aurora-b: rgba(76, 29, 149, 0.10);
+  --aurora-c: rgba(129, 140, 248, 0.16);
+  --shadow-glow: 0 0 0 1px rgba(99, 102, 241, 0.22),
+    0 24px 80px -24px rgba(79, 70, 229, 0.55);
+  --selection-bg: rgba(99, 102, 241, 0.35);
   --selection-fg: #ffffff;
+  --success: #4ade80;
+  --success-soft: rgba(34, 197, 94, 0.12);
 
-  /* Backdrops & overlays — components reference these for translucent
-     surfaces that need to invert with the theme. */
-  --overlay-soft: rgba(20, 25, 37, 0.6);   /* dark tinted pane */
-  --overlay-scrim: rgba(7, 9, 13, 0.8);    /* drawer scrim */
+  /* Backdrops & overlays */
+  --overlay-soft: rgba(20, 24, 41, 0.6);
+  --overlay-scrim: rgba(6, 7, 13, 0.8);
 }
 
 [data-theme="light"] {
   color-scheme: light;
 
-  /* Warm cream surfaces */
-  --bg: #faf7f2;
-  --bg-elevated: #f5efe5;
+  --brand-300: #4338ca;
+  --brand-400: #4f46e5;
+  --gradient-a: #6366f1;
+  --gradient-b: #4338ca;
+
+  /* Cool off-white surfaces */
+  --bg: #f7f7fb;
+  --bg-elevated: #efeff6;
   --surface: #ffffff;
-  --surface-strong: #f5efe5;
+  --surface-strong: #efeff6;
 
-  /* Slate ink text on cream — tuned for ≥4.5:1 against --bg */
-  --fg-strong: #0b0e14;
-  --fg: #2a3344;
-  --fg-muted: #4b5568;
-  --fg-subtle: #6b7280;
+  /* Indigo-slate ink, tuned for >=4.5:1 against --bg */
+  --fg-strong: #0b0d17;
+  --fg: #2b3048;
+  --fg-muted: #4b5270;
+  --fg-subtle: #696f8a;
 
-  /* Warm-tinted borders */
-  --border: #e5dccc;
-  --border-strong: #c2b7a3;
+  /* Cool-tinted borders */
+  --border: #e2e2ee;
+  --border-strong: #c4c5d8;
 
   /* Decorative */
-  --grid-dot: rgba(120, 90, 40, 0.10);
-  --aurora-a: rgba(249, 115, 22, 0.16);
-  --aurora-b: rgba(194, 65, 12, 0.08);
-  --aurora-c: rgba(253, 186, 116, 0.18);
-  --shadow-glow: 0 0 0 1px rgba(249, 115, 22, 0.22),
-    0 18px 60px -18px rgba(249, 115, 22, 0.35);
-  --selection-bg: rgba(249, 115, 22, 0.28);
-  --selection-fg: #0b0e14;
+  --grid-dot: rgba(79, 70, 229, 0.10);
+  --aurora-a: rgba(99, 102, 241, 0.14);
+  --aurora-b: rgba(79, 70, 229, 0.06);
+  --aurora-c: rgba(165, 180, 252, 0.20);
+  --shadow-glow: 0 0 0 1px rgba(99, 102, 241, 0.20),
+    0 24px 80px -24px rgba(79, 70, 229, 0.35);
+  --selection-bg: rgba(99, 102, 241, 0.25);
+  --selection-fg: #0b0d17;
+  --success: #15803d;
+  --success-soft: rgba(22, 163, 74, 0.10);
 
   --overlay-soft: rgba(255, 255, 255, 0.7);
-  --overlay-scrim: rgba(11, 14, 20, 0.4);
+  --overlay-scrim: rgba(11, 13, 23, 0.4);
 }
 
 @theme inline {
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
   --color-bg: var(--bg);
   --color-bg-elevated: var(--bg-elevated);
   --color-surface: var(--surface);
@@ -137,11 +154,13 @@ body {
 
 /* Theme-aware text colour shortcuts. Defined as plain rules (not @layer
    utilities) so they can be referenced by other utility classes via @apply
-   in v4 — utilities defined inside @layer utilities can't always be
+   in v4, utilities defined inside @layer utilities can't always be
    re-@applied from outside that layer. */
 .text-strong { color: var(--fg-strong); }
 .text-muted { color: var(--fg-muted); }
 .text-subtle { color: var(--fg-subtle); }
+.text-success { color: var(--success); }
+.bg-success-soft { background-color: var(--success-soft); }
 
 /* Theme-aware surface shortcut. */
 .bg-elevated { background-color: var(--bg-elevated); }
@@ -164,7 +183,7 @@ body {
   }
 
   .text-gradient {
-    background: linear-gradient(120deg, var(--fg-strong) 0%, #fdba74 55%, #f97316 100%);
+    background: linear-gradient(120deg, var(--fg-strong) 0%, var(--gradient-a) 52%, var(--gradient-b) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -174,7 +193,7 @@ body {
     box-shadow: var(--shadow-glow);
   }
 
-  /* Animated conic glow behind hero — theme-aware stops */
+  /* Animated conic glow behind hero, theme-aware stops */
   .aurora {
     background: conic-gradient(
       from 180deg at 50% 50%,
@@ -300,13 +319,24 @@ body {
   color: var(--fg-subtle);
 }
 .prose-rivetr table {
-  @apply my-5 w-full border-collapse overflow-hidden rounded-lg text-sm;
+  @apply my-0 w-full border-collapse text-sm;
 }
 .prose-rivetr th {
   @apply border-b border-border bg-surface px-3 py-2 text-left font-semibold text-fg-strong;
 }
 .prose-rivetr td {
   @apply border-b border-border px-3 py-2 align-top;
+}
+/* Keep field names and code tokens intact; the wrapper scrolls if needed. */
+.prose-rivetr th:first-child,
+.prose-rivetr td:first-child {
+  white-space: nowrap;
+}
+.prose-rivetr td code,
+.prose-rivetr th code {
+  overflow-wrap: normal;
+  word-break: normal;
+  white-space: nowrap;
 }
 .prose-rivetr hr {
   @apply my-8 border-border;

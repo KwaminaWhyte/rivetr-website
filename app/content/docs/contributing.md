@@ -1,50 +1,38 @@
 # Contributing
 
-Contributions are welcome. This page covers prerequisites, development setup, code organization, and the PR process.
+Rivetr is MIT licensed and open to contributions. This page covers the development setup, the commands CI runs, and the conventions for patches. The repository's `CONTRIBUTING.md` and `SECURITY.md` are the source of truth if they differ from this summary.
 
 ## Prerequisites
 
 | Tool | Version | Notes |
 |------|---------|-------|
-| [Rust](https://rustup.rs/) | 1.75+ | Install via rustup |
-| [Node.js](https://nodejs.org/) | 20+ | For frontend development |
-| Docker or Podman | Docker 24+ / Podman 4+ | Required for testing deployments |
+| Rust | 1.95+ | Install with rustup |
+| Node.js | 22.22+ | React Router 8 requires it |
+| Docker or Podman | A current Docker Engine or Podman release | Needed to test deployments |
 | Git | Any recent version | |
+| `cargo-watch` | Optional | Auto-reload the backend |
 
-Optional but recommended:
-
-```bash
-cargo install cargo-watch   # auto-reload backend on file changes
-```
-
----
+You also need ports 8080 for the API and dashboard, and 5173 for the Vite dev server. Ports 80 and 443 are only needed when you test the proxy.
 
 ## Development setup
-
-### 1. Clone and configure
 
 ```bash
 git clone https://github.com/KwaminaWhyte/rivetr.git
 cd rivetr
 cp rivetr.example.toml rivetr.local.toml
-# Edit rivetr.local.toml if needed - defaults work for local dev
 ```
 
-### 2. Run the backend
+Run the backend in one terminal:
 
 ```bash
-# With auto-reload (recommended)
 cargo watch -x "run -- --config rivetr.local.toml"
-
-# Without auto-reload
+# or, without auto-reload
 cargo run -- --config rivetr.local.toml
 ```
 
-The API and dashboard are served on `http://localhost:8080`.
+The backend serves the embedded dashboard and API at `http://localhost:8080`.
 
-### 3. Run the frontend dev server
-
-Open a second terminal:
+Run the frontend in a second terminal:
 
 ```bash
 cd frontend
@@ -52,150 +40,139 @@ npm install
 npm run dev
 ```
 
-The Vite dev server runs on `http://localhost:5173` and proxies `/api/` requests to the backend. Use the Vite URL during development to get hot-module reload.
+Vite serves `http://localhost:5173` and proxies `/api/` to port 8080. Use the Vite URL while working on React so hot module reload works; the backend URL serves the last production build.
 
-### 4. Quality checks
+## Build and test commands
 
-Run these before committing:
+Run these before opening a pull request. They match CI.
+
+Backend:
 
 ```bash
-# Backend
-cargo fmt --check
-cargo clippy        # no new warnings allowed
-cargo test
+cargo fmt --all -- --check
+cargo clippy --all-targets --all-features -- -D warnings
+cargo test --all-features
+cargo build --release
+```
 
-# Frontend
+The terminal UI is behind a feature flag:
+
+```bash
+cargo build --release --features tui
+```
+
+Frontend:
+
+```bash
 cd frontend
-npm run lint
-npm run build       # ensure production build compiles
+npm ci
+npm run typecheck
+npm run build
 ```
 
----
+`npm run build` produces the client bundle that `postbuild` copies into `static/dist/client`, where `rust-embed` picks it up for the release binary.
 
-## Code organization
+## Repository layout
 
-The backend uses a **subdirectory module pattern**. Any file that grows beyond ~1000 lines is split into a directory:
+| Path | Contents |
+|------|----------|
+| `src/api/` | Axum route handlers, grouped by resource |
+| `src/engine/` | Deployment pipeline, service deploys, schedulers, builders, server operations |
+| `src/runtime/` | `ContainerRuntime` trait, Docker (Bollard) and Podman (CLI) implementations |
+| `src/proxy/` | Embedded reverse proxy, ACME/TLS, access logs, traffic analytics |
+| `src/db/` | SQLite pool, migration runner, models, service template seeders |
+| `src/mcp/` | MCP server and tools |
+| `src/settings/`, `src/backup/`, `src/cli/`, `src/tui/` | Instance settings, backups, CLI subcommands, terminal UI |
+| `migrations/` | Numbered SQL migrations |
+| `frontend/app/` | React Router dashboard source |
 
-```
-src/api/apps.rs   →   src/api/apps/
-                          ├── mod.rs     (route registration, re-exports)
-                          ├── crud.rs    (list, get, create, update, delete)
-                          ├── control.rs (start, stop, restart)
-                          └── upload.rs  (ZIP upload deploy flow)
-```
+For how the components fit together, see `docs/architecture/architecture.md` in the Rivetr repository, especially the source layout section.
 
-### Backend module map
+## Code style
 
-| Directory | Responsibility |
-|-----------|---------------|
-| `src/api/` | All Axum route handlers, grouped by resource |
-| `src/engine/` | Deployment pipeline, container monitor, scheduler |
-| `src/runtime/` | Container runtime abstraction (Docker, Podman) |
-| `src/proxy/` | Embedded reverse proxy and ACME/TLS |
-| `src/db/` | SQLite models, queries, migrations, seeders |
-| `src/backup/` | S3-compatible backup and restore |
-| `src/logging/` | Log draining to external providers |
-| `src/monitoring/` | Uptime tracking, Prometheus metrics |
-| `src/notifications/` | Alert channels (Slack, Discord, email, Telegram, etc.) |
-| `src/mcp/` | MCP server for AI assistant integration |
-| `src/crypto/` | AES-256-GCM encryption utilities |
-| `src/cli/` | CLI subcommands (`rivetr backup`, `rivetr restore`) |
-| `src/config/` | Configuration parsing (TOML → typed structs) |
+Rust:
 
-### Frontend structure
+- `rustfmt` with the repository defaults; CI fails on any diff. `clippy` runs with `-D warnings`, so add no new warnings.
+- Public functions get doc comments. Use parameterized SQLx queries, never string-built SQL, and validate input through `src/api/validation/`.
+- Use `crate::` imports in submodules, not `super::super::`.
 
-```
-frontend/app/
-├── routes/       # Page-level route components
-├── components/   # Reusable UI components (shadcn/ui)
-├── types/        # TypeScript type definitions
-└── lib/          # API client, React Query hooks, utilities
-```
+A Rust file over roughly 1000 lines becomes a subdirectory module. `mod.rs` holds only declarations, re-exports, and route registration; re-export the public surface so callers do not change when files split. A backend handler expected to pass roughly 500 lines starts as a subdirectory module, and a frontend route over roughly 600 lines extracts its panels into components.
 
----
+Frontend:
 
-## Adding a feature
+- Shared types live under `frontend/app/types/` and API calls under `frontend/app/lib/`.
+- Reuse the primitives in `frontend/app/components/ui/`. Routes live in `frontend/app/routes/` and use React Router file-based routing.
 
-### Backend
+## Database changes
 
-1. **Database first**: Add a migration in `migrations/`. Follow the numbered format.
-2. **Update models**: Add or edit structs in `src/db/models/` and re-export from `mod.rs`.
-3. **Add route handlers**: Create or extend the relevant module in `src/api/`. Register the route in `src/api/mod.rs`.
-4. **Wire up state**: If the feature needs shared state, add it to `AppState` in `src/lib.rs`.
-5. **Implement for both runtimes**: If adding container operations, implement for both `DockerRuntime` and `PodmanRuntime`.
+Add schema changes as a new numbered SQL file in `migrations/`. Migrations must be idempotent, because `run_migrations` in `src/db/mod.rs` may run against an existing database. Register the file at the end of `run_migrations`.
 
-### Frontend
+Then:
 
-1. **Add types**: Add interfaces in `frontend/app/types/` and re-export from `types/index.ts`.
-2. **Add API calls**: Add fetch calls or React Query hooks in `frontend/app/lib/`.
-3. **Add components**: Use shadcn/ui primitives. Keep components small and focused.
-4. **Add routes**: New pages go in `frontend/app/routes/`.
+1. Add or update models under `src/db/models/` and re-export them from `src/db/models/mod.rs`.
+2. Add route handlers under the matching `src/api/` module, and register the route in that module and in `src/api/mod.rs`. For a route under `/api`, classify its token scope in `src/api/scopes.rs`; a test fails when a route has no entry.
+3. Add shared state to `AppState` in `src/lib.rs` if needed. If the feature touches containers, implement it for both `DockerRuntime` and `PodmanRuntime` through the `ContainerRuntime` trait.
+4. Run `cargo test --all-features`.
 
-### Adding a service template
+## Adding a service template
 
-Templates live in `src/db/seeders/`. Each file covers a category.
+The gallery currently holds 365 templates. Templates are seeded from category files under `src/db/seeders/`. To add one:
 
-1. Find the appropriate category file (or create one if the category doesn't exist).
-2. Add a new `ServiceTemplate` entry following the pattern of existing entries.
-3. If you create a new category file, import and call it from `src/db/seeders/mod.rs`.
-4. Run `cargo test` to verify compilation.
-
----
+1. Open the category file that fits, or create a new one.
+2. Add a `ServiceTemplate` entry that follows the existing entries, including image, ports, volumes, environment, and metadata.
+3. If you created a category file, import and call it from `src/db/seeders/mod.rs`, then run `cargo test` to verify compilation and seeding.
 
 ## Pull request checklist
 
-- [ ] `cargo fmt --check` passes
-- [ ] `cargo clippy` passes with no new warnings
-- [ ] `cargo test` passes
-- [ ] For frontend changes: `npm run lint` and `npm run build` pass
-- [ ] No secrets or credentials committed
-- [ ] New public Rust functions have doc comments
-- [ ] If user-facing, `README.md` is updated
+- [ ] `cargo fmt --all -- --check` passes.
+- [ ] `cargo clippy --all-targets --all-features -- -D warnings` passes with no new warnings.
+- [ ] `cargo test --all-features` passes.
+- [ ] For frontend changes, `npm run typecheck` and `npm run build` pass.
+- [ ] No secrets, credentials, tokens, or personal data are committed.
+- [ ] User-facing changes update `README.md` or the matching page under `docs/reference/`.
+- [ ] New API routes have a scope entry and a test.
 
----
+Keep pull requests focused. Unrelated refactors make review slower.
 
-## Branch naming
+## Branches and commits
 
+Branch names use a type prefix:
+
+```text
+feat/description
+fix/description
+refactor/description
+docs/description
 ```
-feat/description       # New features
-fix/description        # Bug fixes
-refactor/description   # Code reorganization
-docs/description       # Documentation only
-```
 
-## Commit messages
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-Follow [Conventional Commits](https://www.conventionalcommits.org/):
-
-```
+```text
 feat: add Telegram notification channel
-fix: correct watch path glob matching for nested directories
-docs: update contributing guide with frontend patterns
-refactor: split src/api/apps.rs into subdirectory module
+fix: correct watch path glob for nested directories
+refactor: split src/api/apps.rs into a subdirectory module
 ```
 
-Types: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`.
+Allowed types are `feat`, `fix`, `refactor`, `docs`, `test`, and `chore`.
 
----
+## Documentation
 
-## Issue labels
-
-| Label | Meaning |
-|-------|---------|
-| `good first issue` | Self-contained, well-scoped, good starting point |
-| `help wanted` | Maintainer could use community input |
-| `bug` | Something not working as documented |
-| `enhancement` | New feature or improvement |
-| `backend` | Rust/server-side change |
-| `frontend` | React/TypeScript change |
-| `security` | Security-related issue |
-
----
+Product documentation lives in the Rivetr repository: `README.md` for the overview, `docs/reference/` for configuration and feature reference, and `docs/architecture/` for design. Update the relevant file in the same pull request as the code change. This website is maintained separately; note public doc changes in the PR.
 
 ## Security
 
-Report security vulnerabilities **privately** via [GitHub Security Advisories](https://github.com/KwaminaWhyte/rivetr/security/advisories/new), not as public issues. Never commit secrets or credentials. Use parameterized queries for all database operations. Follow OWASP guidelines for auth or session-related code.
+- Report vulnerabilities privately through [GitHub Security Advisories](https://github.com/KwaminaWhyte/rivetr/security/advisories/new). Do not open a public issue.
+- Never commit secrets or credentials.
+- Use parameterized queries for every database operation.
+- Validate input through `src/api/validation/`.
+- Follow OWASP guidance for authentication and session code.
+
+See `SECURITY.md` in the Rivetr repository for the full disclosure policy.
+
+## Getting help
+
+Search [existing issues](https://github.com/KwaminaWhyte/rivetr/issues) before opening a new one. For design questions, read `docs/architecture/architecture.md` first, then ask in the issue with the specific component and behavior you are working on.
 
 ## License
 
-By contributing, you agree your contributions will be licensed under the [MIT License](https://github.com/KwaminaWhyte/rivetr/blob/main/LICENSE).
+By contributing, you agree that your changes are licensed under the MIT License.

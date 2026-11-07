@@ -1,195 +1,174 @@
 # Deployments
 
+A deployment takes source code, produces a container image, starts a container and moves traffic to it without dropping requests. Rivetr keeps the previous version until the new one passes its health check.
+
 ## The pipeline
 
-Every deployment goes through the same five-stage pipeline:
+| Stage | What happens |
+|---|---|
+| Freeze check | The app's freeze windows are evaluated. A blocked deploy is recorded with status `skipped`. |
+| Queue | The deployment waits for a build slot. `[runtime] max_concurrent_deployments` defaults to 2. |
+| Clone | The Git CLI clones the repository and checks out the branch or commit. Shallow clones are on by default. |
+| Build | The selected build type produces an image. See [Build types](/docs/build-types). |
+| Start | The new container starts on a private port on the `rivetr` network. |
+| Health check | Rivetr polls HTTP or runs a command inside the container until it passes, the retries run out, or the timeout expires. |
+| Switch | The proxy route table is updated atomically. New requests go to the new container. |
+| Drain | In-flight requests on the old container finish, up to `[proxy] drain_timeout_secs` (default 30). Then the old container is stopped. |
 
-```
-Clone → Build → Start → Health check → Atomic proxy switch
-                                │
-                           fail → Rollback to previous
-```
+The route table sits behind `ArcSwap`, so the switch does not restart the proxy or interrupt unrelated apps. If the health check fails, Rivetr keeps the old container serving and marks the deployment failed.
 
-1. **Clone**: Rivetr clones the repository at the target commit using the `git2` crate (no git CLI dependency). For large repos, it does a shallow clone.
-2. **Build**: The image is built using the configured builder (see Build types below). Build CPU and memory are capped by the `[runtime]` limits in `rivetr.toml`.
-3. **Start**: The container is started on a private port. It is not yet receiving traffic.
-4. **Health check**: Rivetr polls the configured health check endpoint until it returns 200 or the timeout expires. If the check passes, deployment continues; if it fails, the new container is stopped and the previous version stays live.
-5. **Atomic proxy switch**: The embedded reverse proxy updates its route table atomically using ArcSwap. Traffic switches to the new container with no dropped connections.
+Deployment statuses are `pending`, `queued`, `running`, `success`, `failed`, `cancelled` and `skipped`.
 
----
+## Build types at a glance
 
-## Build types
+| Build type | Use it when |
+|---|---|
+| Dockerfile | The repository has a Dockerfile, or you need full control of the image. |
+| Nixpacks | You want automatic language and framework detection with no Dockerfile. |
+| Railpack | The repository has a `railpack.toml`, or you want Railway's successor to Nixpacks. |
+| Cloud Native Buildpacks | You want Paketo or Heroku buildpacks and a `project.toml`. |
+| Static | The app is a static site with no server process. Rivetr builds an NGINX image. |
+| Docker image | The image already exists in a registry and only needs to be pulled and run. |
 
-Rivetr auto-detects the builder from your repository, or you can pin it in `deploy.toml`.
+Build type, Dockerfile path, build commands and publish directory are set on the app's **Build** tab or through the API. They are stored per app in the database.
 
-| Builder | When used | Config |
-|---------|-----------|--------|
-| **Dockerfile** | A `Dockerfile` is present in the repo root | `builder = "dockerfile"` |
-| **Nixpacks** | No Dockerfile; Nixpacks detects the language | `builder = "nixpacks"` |
-| **Railpack** | Explicit opt-in | `builder = "railpack"` |
-| **Buildpacks** | Heroku/Paketo buildpacks | `builder = "buildpacks"` |
-| **Static** | Pure static site (HTML/CSS/JS) | `builder = "static"` |
+## Health checks and zero-downtime
 
-Example `deploy.toml` using Nixpacks:
+Configure the health check under the app's **Healthcheck** tab:
 
-```toml
-app = "my-api"
-port = 3000
+- HTTP check: path, expected status code, optional expected body text.
+- Command check: a command run inside the container, with exit code 0 meaning healthy.
+- Timing: interval, timeout, retries and start period.
 
-[build]
-builder = "nixpacks"
-```
+The check window is never shorter than `[runtime] health_check_timeout_secs`, which defaults to 20 seconds. An app-specific setting can extend it.
 
----
+A deployment only goes live after the check passes. Requests continue to reach the old container until the atomic switch, and the old container stays alive during the drain window. WebSocket tunnels are not waited for during drain.
 
-## Connecting a Git provider
+## Rollback
 
-### GitHub, GitLab, Gitea, Bitbucket
+### Automatic rollback
 
-1. Go to **Settings → Git Providers** and add a personal access token for your provider.
-2. Or, for GitHub, create a **GitHub App** under **Settings → GitHub Apps** for per-repo fine-grained access.
+If the new container fails its health check, the deployment is marked failed and the previous container keeps serving. No manual action is needed.
 
-### Setting up a webhook
+### Manual rollback
 
-In your repository's webhook settings, add:
-
-```
-URL:     https://your-rivetr-instance/webhooks/github
-Secret:  (the value of webhooks.github_secret in rivetr.toml)
-Events:  Push events, Pull request events
-```
-
-Rivetr verifies the HMAC-SHA256 signature on every webhook delivery.
-
-| Provider | Webhook URL |
-|----------|-------------|
-| GitHub | `/webhooks/github` |
-| GitLab | `/webhooks/gitlab` |
-| Gitea | `/webhooks/gitea` |
-| Bitbucket | `/webhooks/bitbucket` |
-
----
-
-## Preview environments
-
-Enable preview deployments for a repository and every pull request gets its own environment on a unique subdomain:
-
-```
-pr-42.my-app.preview.example.com
-```
-
-When the PR is closed or merged, the preview is automatically torn down. The preview domain is configured via `proxy.preview_domain` in `rivetr.toml`.
-
----
-
-## Rollbacks
-
-To roll back to any previous deployment, use the dashboard's Deployments tab or the API:
+Open the app's **Deployments** page and choose rollback on a previous successful deployment, or call:
 
 ```bash
-curl -X POST \
-  -H "Authorization: Bearer <token>" \
-  https://your-instance/api/deployments/<deployment-id>/rollback
+curl -X POST http://localhost:8080/api/deployments/DEPLOYMENT_ID/rollback \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN"
 ```
 
-The rolled-back version goes through the same health-check pipeline before the proxy switches.
+Rollback reuses the image from the target deployment, starts a container from it, health checks it and swaps the route. It does not rebuild. The previous container is renamed with a `-prev` suffix while the rollback container starts.
 
----
+Rollback settings on the app's **Rollback** tab control automatic rollback, registry push and the maximum number of versions. Retention is 1 to 50 deployments and defaults to 10; successful deployments beyond that count are pruned, which also limits how far back you can roll back.
 
-## Deploying a specific commit or tag
+### Rollback with data
 
-Trigger a deployment at a specific commit SHA or tag:
+A deployment can snapshot managed databases before it starts. Enable **Snapshot before deploy** on the app's **Rollback** tab. When rolling back from the Deployments page, select **Also restore database data** to restore the snapshot taken before that deployment.
+
+Supported engines are PostgreSQL, MySQL, MariaDB, MongoDB, Redis and KeyDB. Snapshots are limited to 256 MiB. A restore replaces current data: anything written after the snapshot is lost. Rivetr takes a safety backup of the current data first. Redis and KeyDB restores stop the container and replace `dump.rdb`, so they need a local volume and no AOF.
+
+## Preview deployments
+
+Preview deployments build pull requests on their own subdomain. All four Git providers are supported: GitHub, GitLab, Gitea and Bitbucket.
+
+- Enable **Enable PR Previews** on the app's **Build** tab.
+- The preview hostname is `pr-<number>.<app>.<preview_domain>`. Set `[proxy] preview_domain` in `rivetr.toml`; if unset it defaults to `preview.localhost`.
+- The **Previews** tab lists active previews and allows redeploy or delete.
+- Closing or merging the pull request cleans up the preview.
+- GitHub pull requests receive a comment with the preview URL.
+
+Preview deployments are exempt from freeze windows unless the window explicitly includes previews.
+
+## Deploy a commit, tag or schedule
+
+The deploy control on the app page deploys the configured branch by default. It also accepts a specific commit SHA or Git tag. Over the API:
 
 ```bash
-# Deploy from the CLI
-rivetr deploy my-app --ref v1.2.3
-
-# Deploy via API
-curl -X POST \
-  -H "Authorization: Bearer <token>" \
+curl -X POST http://localhost:8080/api/apps/APP_ID/deploy \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"ref": "v1.2.3"}' \
-  https://your-instance/api/apps/<app-id>/deploy
+  -d '{"git_tag": "v1.2.3"}'
 ```
 
----
+Use `"commit_sha"` for a commit. An empty body deploys the configured branch.
 
-## Deployment approvals and freeze windows
+To schedule a deployment, add `scheduled_at` as an RFC 3339 timestamp:
 
-### Approval workflow
-
-Enable approval-required deployments for an app. When a deploy is triggered, it enters a `pending` state and waits for an authorized user to approve or reject it.
-
-```bash
-# Approve
-curl -X POST -H "Authorization: Bearer <token>" \
-  https://your-instance/api/deployments/<id>/approve
-
-# Reject
-curl -X POST -H "Authorization: Bearer <token>" \
-  https://your-instance/api/deployments/<id>/reject
+```json
+{ "commit_sha": "abc123", "scheduled_at": "2026-11-10T09:00:00Z" }
 ```
 
-### Freeze windows
+The scheduler checks every minute and queues deployments whose time has passed. A scheduled deployment is checked against freeze windows when it becomes due, not when it is created. If the app requires approval, the deployment waits for an admin; approving it queues the deployment immediately.
 
-Block all deployments during scheduled maintenance periods. Deployments attempted during a freeze window are queued until the window ends.
+## Approvals
+
+Enable **Require Approval** on the app's **Advanced** tab. A deployment created by a non-admin then waits with a pending approval and is not queued until an admin approves it. Only users with the `admin` role can approve or reject.
 
 ```bash
-curl -X POST \
-  -H "Authorization: Bearer <token>" \
+curl -X POST http://localhost:8080/api/deployments/DEPLOYMENT_ID/approve \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN"
+
+curl -X POST http://localhost:8080/api/deployments/DEPLOYMENT_ID/reject \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"name": "Saturday maintenance", "cron_start": "0 22 * * 6", "duration_minutes": 120}' \
-  https://your-instance/api/apps/<app-id>/freeze-windows
+  -d '{"reason": "Waiting for the release window"}'
 ```
 
----
+Admins bypass the approval requirement.
+
+## Freeze windows
+
+Freeze windows block deployments during maintenance periods. Create them under **Advanced > Deployment Control** on the app, or team-wide. Each window has a start time, end time and days of the week, all in UTC, with `HH:MM` times and days numbered from 0 (Sunday). A window whose end time is earlier than its start crosses midnight.
+
+Windows apply to manual deploys, Git and registry webhooks, scheduled deploys, tag deploys and Compose auto-deploys. Previews are exempt unless the window includes them.
+
+A blocked webhook deploy is recorded twice: a deployment with status `skipped`, and a webhook event with status `frozen`. ZIP uploads are manual and are not blocked at trigger time.
 
 ## Watch paths
 
-Only trigger a deploy when specific files change in a push. Useful for monorepos.
+Watch paths limit webhook deploys to pushes that change selected files. Set them on the **Build** tab as a JSON array:
 
-```toml
-# deploy.toml
-[deploy]
-watch_paths = ["packages/api/**", "shared/**"]
+```json
+["src/", "package.json", "Dockerfile"]
 ```
 
-A push that only changes files in `packages/frontend/` will not trigger a deploy for an app configured with the above.
+An empty list deploys on every push. A path ending in `/` matches everything under it. Matching uses glob patterns, so `src/**` and `*.json` work. If no changed file matches, the deployment is skipped and the webhook event records the reason.
 
----
+## Replicas
 
-## Scheduled deployments
-
-Trigger a deploy at a specific date and time via the API, or configure a cron-based scheduled job in the dashboard under **App → Jobs**.
-
----
-
-## Container replicas
-
-Scale an app to multiple replicas. Traffic is distributed round-robin across all healthy replicas.
-
-```toml
-# deploy.toml
-[resources]
-replicas = 3
-```
-
-Or update replicas live without a redeploy:
+Run up to 10 containers for one app behind round-robin load balancing. Set the count on the **Resources** tab, or over the API:
 
 ```bash
-curl -X PUT \
-  -H "Authorization: Bearer <token>" \
+curl -X PUT http://localhost:8080/api/apps/APP_ID/replicas/count \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"count": 3}' \
-  https://your-instance/api/apps/<app-id>/replicas/count
+  -d '{"count": 3}'
 ```
 
----
+Replicas are for single-server apps. For an app placed on multiple servers, set containers per server under **Resources > Servers** instead.
 
-## DockerHub auto-deploy
+## ZIP uploads
 
-Add a DockerHub webhook to automatically redeploy when a new image is pushed to a Docker Hub repository:
+Choose **Upload ZIP** when creating an app, or upload a new source from the app. The archive limit is 100 MB. Rivetr detects the build type from the archive contents and stores the extracted source for later deploys.
 
-```
-URL: https://your-rivetr-instance/webhooks/dockerhub
-```
+Over the API, send a multipart request to `POST /api/apps/APP_ID/deploy/upload` with the archive in the `file` or `zip` field. Subsequent deploys rebuild from the stored source without another upload.
+
+## Cancellation and cloning
+
+A queued or running deployment can be cancelled from the Deployments page or with `POST /api/apps/APP_ID/deployments/DEPLOYMENT_ID/cancel`. Cancelled deployments stop before they switch traffic.
+
+Apps, databases and services can be cloned to another project, environment or server. Volume data can be included when cloning within the same server; cross-server clones copy configuration only. Clone jobs run in the background and report progress through `/api/clone-jobs/{id}`.
+
+## Resource limits
+
+CPU and memory limits are set per app on the **Resources** tab. Changes apply live through `docker update` without a redeploy. Limits fall back to `[runtime] default_memory_limit` (512 MB) when unset. PID limits (`default_pids_limit`, 512) and the OOM score adjustment (`default_oom_score_adj`, 500) also apply by default. Builds are capped separately by `build_cpu_limit` (2 CPUs) and `build_memory_limit` (2 GB).
+
+## Related
+
+- [Build types](/docs/build-types): builder configuration and detection.
+- [Webhooks](/docs/webhooks): triggers, signatures and the event log.
+- [Services](/docs/services): Docker Compose and template deployments.
+- [Environment variables](/docs/environment-variables): secrets available at build and run time.
+- [Domains and HTTPS](/docs/domains-and-https): routing and certificates.

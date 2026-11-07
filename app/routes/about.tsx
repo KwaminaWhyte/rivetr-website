@@ -7,6 +7,8 @@ import {
 } from "~/components/ui";
 import { GithubIcon } from "~/components/icons/github";
 import { SITE } from "~/lib/content";
+import { pageMeta, siteOrigin } from "~/lib/meta";
+import type { Route } from "./+types/about";
 import {
   Binary,
   Database,
@@ -18,17 +20,19 @@ import {
   Bot,
   GitBranch,
   Server,
+  Fingerprint,
+  ChartNoAxesCombined,
+  KeyRound,
+  LayoutDashboard,
 } from "lucide-react";
 
-export function meta() {
-  return [
-    { title: "About: Rivetr" },
-    {
-      name: "description",
-      content:
-        "Why Rivetr exists: a self-hosted PaaS that runs in a single Rust binary with ~30MB RAM and zero external dependencies: no Redis, no PostgreSQL, no Traefik.",
-    },
-  ];
+export function meta({ matches }: Route.MetaArgs) {
+  return pageMeta({
+    title: "About: Rivetr",
+    description:
+      "Why Rivetr exists: a self-hosted PaaS in a single Rust binary, with 52 MB RSS, no Redis, PostgreSQL, or Traefik, and everything from deploys to backups included.",
+    origin: siteOrigin(matches),
+  });
 }
 
 // ─── Philosophy principles ───────────────────────────────────────────────────
@@ -36,75 +40,91 @@ const PRINCIPLES = [
   {
     icon: Zap,
     title: "Small by default",
-    body: "The control plane idles at ~30–80 MB of RAM. Not as a party trick, because it means you can run the whole platform on a $4 VPS and still have headroom for your apps.",
+    body: "Measured on 1.0.0 with 30 containers, the process used 52 MB RSS. The release binary is 47 MB. That means the whole platform fits on a small VPS with room left for apps.",
   },
   {
     icon: Database,
     title: "No external dependencies",
-    body: "An embedded SQLite database in WAL mode and a built-in reverse proxy replace the Postgres, Redis, and Traefik that competing tools require. Less to install. Less to break. Less to secure.",
+    body: "Embedded SQLite in WAL mode and an embedded reverse proxy replace the PostgreSQL, Redis, and Traefik that competing tools require. Less to install, less to break, less to secure.",
   },
   {
     icon: Shield,
     title: "Own your platform",
-    body: "MIT licensed. No paid tiers. No feature gates. No phoning home. You run the binary; you own the data; you decide the upgrade schedule.",
+    body: "MIT licensed. No paid tiers, feature gates, or usage telemetry. You run the binary, own the data, and choose the upgrade schedule. The only outbound check is an update check you can disable.",
   },
   {
     icon: Box,
     title: "Everything included",
-    body: "Zero-downtime deploys, automatic HTTPS, managed databases, S3 backups, RBAC, SSO, multi-server, Docker Swarm, preview environments, a TUI, and a native MCP server, all in one binary.",
+    body: "Zero-downtime deploys, automatic HTTPS, 9 managed databases, 365 templates, RBAC, SSO, passkeys, multi-server, Swarm, backups, a TUI, and a built-in MCP server in one binary.",
   },
 ] as const;
 
 // ─── Tech layer entries ───────────────────────────────────────────────────────
 const TECH = [
   {
-    label: "Language & runtime",
+    label: "Language and runtime",
     value: "Rust + Tokio",
     detail:
-      "Single-threaded async tasks, zero GC pauses, predictable low memory footprint.",
+      "One async process with no garbage collector and a predictable memory footprint.",
   },
   {
     label: "HTTP layer",
-    value: "Axum 0.7+",
+    value: "Axum 0.8",
     detail:
-      "Extractor-based routing, native WebSocket support, Tower middleware stack.",
+      "Typed extractors, WebSocket support, and a Tower middleware stack.",
   },
   {
     label: "Database",
-    value: "SQLite / SQLx (WAL)",
+    value: "SQLite + SQLx 0.9 (WAL)",
     detail:
-      "Embedded single-file state. Compile-time SQL verification via SQLx. WAL mode for concurrent reads.",
+      "Embedded single-file state with compile-checked SQL and concurrent reads in WAL mode.",
   },
   {
     label: "Reverse proxy",
-    value: "ArcSwap-powered",
+    value: "hyper + rustls + ArcSwap",
     detail:
-      "Lock-free atomic route table updates via ArcSwap. Zero-copy pass-through; no sub-process.",
+      "Lock-free atomic route updates, per-domain certificates, and HTTP/2 over ALPN.",
   },
   {
     label: "Container runtimes",
     value: "Docker + Podman",
     detail:
-      "Docker via Bollard (socket API). Podman via CLI. Auto-detected at startup.",
+      "Docker through Bollard 0.21 and the socket API; Podman through its CLI. Auto-detected at startup.",
   },
   {
-    label: "Git ops",
-    value: "git2 (libgit2)",
+    label: "Git operations",
+    value: "git CLI",
     detail:
-      "In-process cloning, SSH key handling, and progress callbacks, no shell.",
+      "Shallow clones by default, with submodules and Git LFS opt-in per app and SSH keys handled by Rivetr.",
+  },
+  {
+    label: "Dashboard",
+    value: "React 19 + React Router 8",
+    detail:
+      "TypeScript and Tailwind 4, served from the same binary as the API and proxy.",
+  },
+  {
+    label: "TLS and ACME",
+    value: "rustls 0.23 + rcgen",
+    detail:
+      "HTTP-01 and DNS-01 issuance for Cloudflare, Route 53, Hetzner, and DigitalOcean.",
   },
 ] as const;
 
 // ─── Capability highlights ────────────────────────────────────────────────────
 const CAPABILITIES = [
-  { icon: GitBranch, text: "GitHub, GitLab, Gitea, Bitbucket webhooks" },
-  { icon: Globe, text: "Automatic HTTPS via Let's Encrypt" },
-  { icon: Database, text: "Managed databases: Postgres, MySQL, MongoDB, Redis, ClickHouse" },
-  { icon: Server, text: "Multi-server over SSH + Docker Swarm" },
-  { icon: Box, text: "273 one-click service templates" },
-  { icon: Shield, text: "RBAC + multi-tenant, SSO, 2FA, encrypted secrets" },
-  { icon: TerminalSquare, text: "Browser terminal, remote filesystem browser, TUI" },
-  { icon: Bot, text: "Native MCP server for AI assistants" },
+  { icon: GitBranch, text: "GitHub, GitLab, Gitea, Bitbucket, any Git URL" },
+  { icon: Globe, text: "Automatic HTTPS with per-domain certificates" },
+  { icon: Database, text: "9 managed databases, from PostgreSQL to LibSQL" },
+  { icon: Server, text: "Multi-server deploys, build servers, and Swarm" },
+  { icon: LayoutDashboard, text: "365 one-click service templates" },
+  { icon: Fingerprint, text: "Passkeys, TOTP 2FA, OAuth, OIDC SSO" },
+  { icon: Shield, text: "AES-256-GCM secrets and scoped API tokens" },
+  { icon: ChartNoAxesCombined, text: "Traffic analytics, Prometheus metrics, uptime" },
+  { icon: KeyRound, text: "Vault, OpenBao, Infisical, Doppler, AWS Secrets Manager" },
+  { icon: TerminalSquare, text: "Browser terminal, remote file browser, TUI, CLI" },
+  { icon: Bot, text: "Built-in MCP server with 11 tools" },
+  { icon: Binary, text: "Database, volume, and instance backups with restore" },
 ] as const;
 
 export default function About() {
@@ -126,23 +146,22 @@ export default function About() {
             Open source · MIT licensed
           </Badge>
           <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-bold tracking-tight text-strong sm:text-5xl lg:text-6xl">
-            Why{" "}
-            <span className="text-gradient">Rivetr</span>{" "}
-            exists
+            Why <span className="text-gradient">Rivetr</span> exists
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-subtle">
-            Most self-hosted PaaS tools ship a constellation of containers:
-            Postgres, Redis, Traefik, and a control-plane API, that together
-            idle at 400–800&nbsp;MB of RAM. The bet behind Rivetr is simpler:
-            a PaaS control plane should be small enough to run on the cheapest
-            VPS you can rent.
+            Many self-hosted PaaS tools need PostgreSQL, Redis, and a reverse
+            proxy before they can deploy anything. Coolify and Dokploy ask for
+            2 GB of RAM in their docs. The bet behind Rivetr is simpler: a PaaS
+            control plane should be small enough to run on the cheapest VPS you
+            can rent.
           </p>
           <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-subtle">
             Rivetr is a single Rust binary. It embeds its own database (SQLite
-            in WAL mode) and its own reverse proxy. It idles at{" "}
-            <span className="font-semibold text-fg">~30–80&nbsp;MB</span>{" "}
-            of RAM, has zero external runtime dependencies, and still does
-            everything you need to ship production software.
+            in WAL mode) and its own reverse proxy. Measured on 1.0.0 with 30
+            containers, it used{" "}
+            <span className="font-semibold text-fg">52 MB RSS</span>; the
+            release binary is 47 MB. It still does everything needed to ship
+            production software.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <Button href={SITE.github} size="lg">
@@ -162,7 +181,7 @@ export default function About() {
           <SectionHeading
             eyebrow="Philosophy"
             title="Four principles"
-            blurb="These aren't marketing bullets, they're the constraints that every design decision is checked against."
+            blurb="These are not marketing bullets. They are the constraints every design decision is checked against."
           />
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {PRINCIPLES.map(({ icon: Icon, title, body }) => (
@@ -171,7 +190,7 @@ export default function About() {
                 className="group rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-border-strong hover:bg-surface-strong"
               >
                 <div className="mb-4 inline-flex rounded-xl border border-brand-500/30 bg-brand-500/10 p-3">
-                  <Icon className="h-5 w-5 text-brand-400" aria-hidden />
+                  <Icon className="h-5 w-5 text-brand-300" aria-hidden />
                 </div>
                 <h3 className="mb-2 text-base font-semibold text-strong">
                   {title}
@@ -190,11 +209,11 @@ export default function About() {
             eyebrow="What's inside"
             title={
               <>
-                The tech that makes{" "}
-                <span className="text-gradient">30&nbsp;MB</span> possible
+                The stack that makes{" "}
+                <span className="text-gradient">52 MB</span> possible
               </>
             }
-            blurb="Every layer was chosen to minimise runtime overhead and external surface area."
+            blurb="Every layer was chosen to keep runtime overhead and external surface area low."
           />
           <div className="mt-14 overflow-hidden rounded-2xl border border-border">
             <table className="w-full text-sm">
@@ -224,7 +243,7 @@ export default function About() {
                     <td className="px-6 py-4 font-medium text-muted">
                       {label}
                     </td>
-                    <td className="px-6 py-4 font-mono text-brand-400">
+                    <td className="px-6 py-4 font-mono text-brand-300">
                       {value}
                     </td>
                     <td className="hidden px-6 py-4 text-subtle md:table-cell">
@@ -244,16 +263,16 @@ export default function About() {
           <SectionHeading
             eyebrow="Capabilities"
             title="Everything you need, nothing you don't"
-            blurb="Being small doesn't mean being limited. Rivetr covers the full lifecycle from first deploy to production scale."
+            blurb="Being small does not mean being limited. Rivetr covers the full lifecycle from first deploy to production scale."
           />
-          <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {CAPABILITIES.map(({ icon: Icon, text }) => (
               <li
                 key={text}
                 className="flex items-start gap-3 rounded-xl border border-border bg-surface p-4"
               >
                 <div className="mt-0.5 shrink-0 rounded-lg border border-border-strong bg-surface-strong p-1.5">
-                  <Icon className="h-4 w-4 text-brand-400" aria-hidden />
+                  <Icon className="h-4 w-4 text-brand-300" aria-hidden />
                 </div>
                 <span className="text-sm leading-relaxed text-muted">
                   {text}
@@ -270,16 +289,16 @@ export default function About() {
           <div className="rounded-2xl border border-border bg-surface p-8 sm:p-12">
             <div className="mx-auto max-w-2xl text-center">
               <Binary
-                className="mx-auto mb-6 h-10 w-10 text-brand-400"
+                className="mx-auto mb-6 h-10 w-10 text-brand-300"
                 aria-hidden
               />
               <h2 className="text-2xl font-bold text-strong sm:text-3xl">
                 Free. Forever.
               </h2>
               <p className="mt-4 text-lg leading-relaxed text-subtle">
-                Rivetr is MIT licensed. There are no paid tiers, no feature
-                gates, and no telemetry. Self-host it on any server you own or
-                rent, with no seat limits and no expiry.
+                Rivetr is MIT licensed. There are no paid tiers, feature gates,
+                or usage telemetry. Self-host it on any server you own or rent,
+                with no seat limits and no expiry.
               </p>
               <div className="mt-8 flex flex-wrap justify-center gap-4">
                 <Button href={SITE.github} size="lg">
@@ -297,7 +316,7 @@ export default function About() {
                 <p className="mb-2 text-xs uppercase tracking-widest text-subtle">
                   Quick install
                 </p>
-                <pre className="inline-block rounded-lg border border-border bg-bg px-5 py-3 font-mono text-sm text-fg">
+                <pre className="inline-block max-w-full overflow-x-auto rounded-lg border border-border bg-bg px-5 py-3 text-left font-mono text-xs text-fg sm:text-sm">
                   {SITE.installCmd}
                 </pre>
               </div>

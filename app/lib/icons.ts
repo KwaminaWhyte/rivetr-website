@@ -1,6 +1,6 @@
 // Explicit icon map so only the icons we actually use get bundled.
 // (A namespace `import * as` from lucide-react pulls in the entire icon set,
-// ~600kB, which defeats the whole "lean" pitch.)
+// which defeats the whole "lean" pitch.)
 import {
   GitBranch,
   Package,
@@ -27,6 +27,12 @@ import {
   Hammer,
   CloudUpload,
   Box,
+  LayoutDashboard,
+  Wand2,
+  Palette,
+  Fingerprint,
+  DatabaseBackup,
+  GitMerge,
   type LucideIcon,
 } from "lucide-react";
 
@@ -55,6 +61,12 @@ export const ICONS: Record<string, LucideIcon> = {
   Network,
   Hammer,
   CloudUpload,
+  LayoutDashboard,
+  Wand2,
+  Palette,
+  Fingerprint,
+  DatabaseBackup,
+  GitMerge,
 };
 
 export const FallbackIcon = Box;

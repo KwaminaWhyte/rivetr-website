@@ -44,7 +44,7 @@ export function Button({
   const variants = {
     // Primary stays brand-on-white; readable in both themes.
     primary:
-      "bg-brand-500 text-white hover:bg-brand-400 hover:-translate-y-0.5 shadow-[0_8px_30px_-8px_rgba(249,115,22,0.6)]",
+      "bg-brand-500 text-white hover:bg-brand-400 hover:-translate-y-0.5 shadow-[0_8px_30px_-8px_rgba(99,102,241,0.7)]",
     outline:
       "border border-border-strong text-fg hover:border-brand-500/60 hover:text-strong hover:bg-surface-strong/60",
     ghost: "text-muted hover:text-strong hover:bg-surface-strong/60",

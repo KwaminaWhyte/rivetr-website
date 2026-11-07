@@ -1,166 +1,185 @@
-# Build Types
+# Build types
 
-Rivetr supports five build strategies. You can specify one explicitly in `deploy.toml` or let Rivetr auto-detect the right one from your repository.
+A build type turns a repository into a container image. Rivetr supports Dockerfile, Nixpacks, Railpack, Cloud Native Buildpacks, static sites and prebuilt images. The build type is set per app on the **Build** tab or through the app API and stored in the database. There is no repository config file for Rivetr itself; each builder reads only its own native file (`Dockerfile`, `nixpacks.toml`, `railpack.toml` or `project.toml`) when present.
 
----
+## Choosing a build type
 
-## Auto-Detection
+| Build type | Dashboard label | API value | Best for |
+|---|---|---|---|
+| Dockerfile | Dockerfile | `dockerfile` | Repositories with a Dockerfile, or builds that need exact control |
+| Nixpacks | Nixpacks | `nixpacks` | Most languages and frameworks with no Dockerfile |
+| Railpack | Railpack | `railpack` | Projects that benefit from Railpack caching, or that ship `railpack.toml` |
+| Cloud Native Buildpacks | Buildpacks | `cnb` | Paketo or Heroku buildpacks, often Java and .NET |
+| Static site | Static | `staticsite` | Sites with no server process |
+| Prebuilt image | Docker Registry source | not a build type | Images already built and pushed to a registry |
 
-When no `[build]` section is present in `deploy.toml`, Rivetr scans the repository root in this priority order:
-
-1. `Dockerfile` / `dockerfile` (any case) → **Dockerfile**
-2. `nixpacks.toml` → **Nixpacks**
-3. `railpack.toml` → **Railpack**
-4. `Procfile` → **Heroku/Paketo buildpacks**
-5. `index.html` + no server framework → **Static site**
-6. Falls back to **Nixpacks** (handles most language ecosystems automatically)
-
-You can override detection at any time by setting `build.type` in `deploy.toml`.
-
----
+The API also accepts `static` as an alias for `staticsite`. Use `staticsite` when creating a static app through the API; that is the value the dashboard writes and the value the build pipeline dispatches on. Nixpacks is the default for new Git apps.
 
 ## Dockerfile
 
-Use when you have full control over the build and want explicit image construction.
+Rivetr builds the image with the Docker daemon or Podman and passes the configured context.
 
-**Detection:** A `Dockerfile` (or `dockerfile`) exists in the repository root (or at the path specified by `build.dockerfile`).
+| Setting | Meaning |
+|---|---|
+| Dockerfile name | File name to look for. Default `Dockerfile`. |
+| Dockerfile path | Full path relative to the repository. Takes precedence over the file name. |
+| Target | Multi-stage build target passed as `--target`. |
+| Base directory | Build context, for monorepos where the app is in a subdirectory. |
+| Custom Docker options | Extra options passed to the build. |
+| Inline Dockerfile | A Dockerfile stored in the app settings instead of the repository. |
 
-**deploy.toml:**
+Dockerfile builds also support **Build Secrets** for BuildKit secrets. They are available only to Dockerfile builds; Nixpacks, Railpack and buildpacks ignore them.
 
-```toml
-[build]
-type = "dockerfile"
-dockerfile = "./Dockerfile"          # relative to repo root; default is ./Dockerfile
-build_args = { NODE_ENV = "production" }
+```dockerfile
+FROM node:22-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM node:22-alpine
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=build /app ./
+EXPOSE 3000
+CMD ["npm", "start"]
 ```
 
-**When to use:**
-- You need multi-stage builds for smaller images
-- You have non-standard build steps (compiled assets, code generation, etc.)
-- You want reproducible builds pinned to a specific base image
-
----
+When Rivetr auto-detects a build type for an uploaded archive, it looks for `Dockerfile`, `dockerfile`, `Containerfile` or `containerfile` in the repository root first, then in `docker/`, `.docker/` and `build/`.
 
 ## Nixpacks
 
-[Nixpacks](https://nixpacks.com) auto-generates a Dockerfile from your source code. No configuration needed for most projects.
+Nixpacks inspects the repository and generates a build plan for the detected language and framework. Node.js, Python, Go, Rust, Ruby, PHP, Java and static sites are covered without configuration.
 
-**Detection:** `nixpacks.toml` present, or chosen as fallback for Node.js, Python, Ruby, Go, Rust, PHP, Java, and more.
+On the Build tab you can override three commands:
 
-**deploy.toml:**
+- Install command
+- Build command
+- Start command
 
-```toml
-[build]
-type = "nixpacks"
-# Optional: override the start command
-start_command = "node dist/server.js"
-```
-
-**`nixpacks.toml` (optional, in your repo root):**
+The repository can also carry a `nixpacks.toml`. Rivetr reads it and merges it with the app settings; app-level command overrides take precedence.
 
 ```toml
+# nixpacks.toml
+[phases.setup]
+nixPkgs = ["nodejs_22", "pnpm"]
+
+[phases.install]
+cmds = ["pnpm install --frozen-lockfile"]
+
 [phases.build]
-cmds = ["npm run build"]
+cmds = ["pnpm build"]
 
 [start]
-cmd = "node dist/server.js"
+cmd = "pnpm start"
 ```
 
-**When to use:**
-- You don't want to maintain a Dockerfile
-- Your app is a standard Node.js, Python, or Go project
-
----
+If detection finds nothing, Nixpacks is still selected with low confidence. A failed detection usually shows up as a missing start command; set one explicitly.
 
 ## Railpack
 
-[Railpack](https://railpack.io) is a faster alternative to Nixpacks with better caching and smaller output images.
+Railpack is Railway's successor to Nixpacks. It detects languages and frameworks, caches dependencies between builds and supports single-page apps. Rivetr starts a BuildKit container automatically if one is not running, because Railpack requires BuildKit.
 
-**Detection:** `railpack.toml` present in the repository root.
+Railpack reads `railpack.toml` from the repository when present and otherwise detects the project. Rivetr does not add install, build or start overrides on top.
 
-**deploy.toml:**
+Use Railpack when you want its caching behavior or already maintain a `railpack.toml`. For a standard Node.js or Python app, Nixpacks and Railpack both work; Railpack is the newer builder.
 
-```toml
-[build]
-type = "railpack"
-```
+## Cloud Native Buildpacks
 
-**When to use:**
-- You want faster builds than Nixpacks
-- You need better layer caching for large dependency trees
+Rivetr invokes the Pack CLI with a CNB builder. The builder is chosen from the project files:
 
----
+| Project | Builder |
+|---|---|
+| Maven or Gradle (`pom.xml`, `build.gradle`, `build.gradle.kts`) | `paketobuildpacks/builder-jammy-full` |
+| .NET (`.csproj`, `.fsproj`) | `paketobuildpacks/builder-jammy-base` |
+| Node.js, Python, Go or Ruby | `heroku/builder:24` |
+| Anything else | `paketobuildpacks/builder-jammy-base` |
 
-## Heroku / Paketo Buildpacks
-
-Uses the [Cloud Native Buildpacks](https://buildpacks.io/) (`pack` CLI) standard. Compatible with any Heroku-style `Procfile`.
-
-**Detection:** `Procfile` exists in the repository root.
-
-**deploy.toml:**
+A `project.toml` in the repository selects buildpacks and build-time environment variables:
 
 ```toml
-[build]
-type = "buildpack"
-builder = "heroku/builder:24"    # optional; defaults to heroku/builder:24
+# project.toml
+[[build.buildpacks]]
+id = "paketo-buildpacks/nodejs"
+
+[[build.env]]
+name = "BP_NODE_RUN_SCRIPTS"
+value = "build"
 ```
 
-**`Procfile` (in your repo root):**
+The installer installs the Pack CLI. If Pack is missing, CNB builds fail before the build starts.
 
-```
-web: node server.js
-worker: node worker.js
-```
+## Static sites
 
-**When to use:**
-- You already have a `Procfile` from Heroku
-- You prefer the standard buildpacks ecosystem
-- You want Paketo buildpacks for Spring Boot, .NET, or other JVM apps
+The static builder does not serve files directly from the Rivetr proxy. It builds an NGINX container image containing the generated site, starts that container and routes to it like any other app.
 
----
+| Setting | Default | Notes |
+|---|---|---|
+| Publish directory | `dist` | Directory produced by the build, copied into the image |
+| SPA mode | on | Unknown paths fall back to `index.html` with `try_files` |
+| Node version | 20 | Used when the build runs Node.js |
+| Port | 3000 | Internal NGINX port |
 
-## Static Sites
+Package manager detection uses the lockfile: `bun.lockb`, `pnpm-lock.yaml`, `yarn.lock`, then `package-lock.json`, and falls back to npm. Custom install and build commands, a custom NGINX config and build arguments are available for sites that need them.
 
-Serves pre-built static files directly from the embedded proxy, no container needed.
+Common publish directories:
 
-**Detection:** Repository contains only static files (`index.html` with no recognized server framework).
+| Framework | Output |
+|---|---|
+| Next.js static export | `out` |
+| Astro static | `dist` |
+| Vite | `dist`, or the custom `outDir` |
+| SvelteKit with `adapter-static` | `build` |
+| Plain HTML with no `package.json` | `.` |
 
-**deploy.toml:**
+Astro with SSR and SvelteKit with the Node adapter are not static sites; use Nixpacks or a Dockerfile for those.
 
-```toml
-[build]
-type = "static"
-publish_dir = "dist"     # directory to serve (relative to repo root)
-build_command = "npm run build"   # optional build step before serving
-```
+## Prebuilt images
 
-**When to use:**
-- React/Vue/Svelte SPAs with a `dist/` or `build/` output
-- Pure HTML/CSS/JS sites
-- Documentation sites built by tools like VitePress, MkDocs, or Hugo
+A prebuilt image is a deployment source, not a builder. Create the app with **Docker Registry**, enter the image reference (`registry.example.com/team/app:tag`) and set the container port. Rivetr pulls the image and starts it without cloning or building.
 
----
+To redeploy when a new image is pushed, configure a Docker Hub webhook and use a tag that matches the app's image. See [Webhooks](/docs/webhooks).
 
-## Summary Table
+## Automatic detection
 
-| Build Type | Detection | Needs Docker? | Config file |
-|------------|-----------|---------------|-------------|
-| Dockerfile | `Dockerfile` exists | Yes | `Dockerfile` |
-| Nixpacks | `nixpacks.toml` / fallback | Yes (builds image) | `nixpacks.toml` (optional) |
-| Railpack | `railpack.toml` | Yes (builds image) | `railpack.toml` |
-| Heroku/Paketo | `Procfile` | Yes (builds image) | `Procfile` |
-| Static | No server framework | No | `deploy.toml` |
+Automatic build type detection runs for uploaded ZIP archives. It does not run for Git apps: a Git app always uses the build type selected when it was created or last edited.
 
----
+Detection order:
 
-## Resource Limits During Build
+1. Dockerfile or Containerfile, in the root then `docker/`, `.docker/`, `build/`
+2. `docker-compose.yml`, `docker-compose.yaml`, `compose.yml` or `compose.yaml`
+3. `railpack.toml`
+4. `project.toml` (Cloud Native Buildpacks)
+5. `nixpacks.toml`
+6. Static framework detection (Next.js export, Astro, Vite, SvelteKit, plain `index.html`)
+7. Language files (`package.json`, `requirements.txt`, `go.mod`, `Cargo.toml`, `Gemfile`, and others), which select Nixpacks
+8. Fallback: Nixpacks with confidence 0.5
 
-Build containers are subject to the limits in `rivetr.toml`:
+You can override the detected type during upload. The override is stored with the app and used for later deploys.
 
-```toml
-[runtime]
-build_cpu_limit = "2"       # CPU cores
-build_memory_limit = "2g"   # Memory
-```
+## Build options
 
-These apply to all build types and prevent runaway builds from exhausting host resources.
+The **Build** tab also controls:
+
+| Option | Default | Effect |
+|---|---|---|
+| Shallow clone | on | `git clone --depth 1` for faster checkouts |
+| Submodules | off | `--recurse-submodules` during clone |
+| Git LFS | off | Runs `git lfs pull` after clone |
+| Disable cache | off | Builds without the builder cache |
+| Inject SOURCE_COMMIT | off | Passes the commit SHA as a build argument |
+| Build server | local | Runs the build on a remote build server over SSH |
+
+Builds are capped by `[runtime] build_cpu_limit` (default 2 CPUs) and `build_memory_limit` (default 2 GB). Build logs stream to the deployment page and are retained according to the app's log policy.
+
+## Troubleshooting
+
+| Symptom | Cause and fix |
+|---|---|
+| Nixpacks build exits with no start command | Detection missed the framework. Set a start command on the Build tab. |
+| Static app returns 403 or a directory listing | Publish directory is wrong. Set it to the directory the build actually writes, for example `out` for Next.js export. |
+| Railpack fails with a BuildKit error | BuildKit could not start. Check that Docker is running and that the host allows a privileged BuildKit container. |
+| Buildpacks fail with `pack` not found | Install the Pack CLI, or re-run the installer. |
+| Dockerfile build ignores the path | The file name and path both point somewhere else. The path takes precedence; clear it to use the name. |
+| Build runs out of memory | Raise `[runtime] build_memory_limit` or set a larger limit for the app build. |

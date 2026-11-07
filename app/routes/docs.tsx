@@ -2,16 +2,21 @@ import { useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router";
 import { Menu, X, BookOpen, ExternalLink } from "lucide-react";
 import { DOCS_NAV } from "~/lib/docs-nav";
+import { DocsSearch } from "~/components/docs-search";
 
 const GITHUB_DOCS_BASE =
-  "https://github.com/KwaminaWhyte/rivetr/tree/main/docs";
+  "https://github.com/KwaminaWhyte/rivetr-website/tree/main/app/content/docs";
 
 function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
   const location = useLocation();
+  const [query, setQuery] = useState("");
+  const searching = query.trim().length >= 2;
 
   return (
     <nav aria-label="Documentation navigation" className="space-y-6">
-      {DOCS_NAV.map((group) => (
+      <DocsSearch onNavigate={onLinkClick} onQueryChange={setQuery} />
+      {!searching &&
+        DOCS_NAV.map((group) => (
         <div key={group.group}>
           <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-widest text-subtle">
             {group.group}
@@ -61,8 +66,8 @@ export default function DocsLayout() {
 
   return (
     <div className="min-h-screen bg-bg">
-      {/* Top bar: same height as site-nav to account for fixed nav */}
-      <div className="h-14" aria-hidden="true" />
+      {/* Top bar: clears the fixed site nav */}
+      <div className="h-[72px]" aria-hidden="true" />
 
       <div className="mx-auto flex w-full max-w-7xl px-4 sm:px-8">
         {/* Desktop sidebar */}
@@ -70,8 +75,11 @@ export default function DocsLayout() {
           <div className="sticky top-[72px] max-h-[calc(100vh-72px)] overflow-y-auto py-8 pr-6">
             {/* Docs label */}
             <div className="mb-6 flex items-center gap-2 text-strong">
-              <BookOpen size={16} className="text-brand-400" />
+              <BookOpen size={16} className="text-brand-300" />
               <span className="text-sm font-semibold">Docs</span>
+              <span className="rounded-full border border-border-strong px-1.5 py-0.5 font-mono text-[10px] text-subtle">
+                v1.0
+              </span>
             </div>
             <SidebarContent />
           </div>
@@ -98,7 +106,7 @@ export default function DocsLayout() {
             />
             <aside className="fixed inset-y-0 left-0 z-40 w-64 overflow-y-auto border-r border-border bg-surface p-6 lg:hidden">
               <div className="mb-6 flex items-center gap-2 text-strong">
-                <BookOpen size={16} className="text-brand-400" />
+                <BookOpen size={16} className="text-brand-300" />
                 <span className="text-sm font-semibold">Docs</span>
               </div>
               <SidebarContent onLinkClick={() => setSidebarOpen(false)} />
@@ -107,8 +115,8 @@ export default function DocsLayout() {
         )}
 
         {/* Main content */}
-        <main className="min-w-0 flex-1 py-8 lg:pl-8 xl:pl-12">
-          <div className="mx-auto max-w-3xl">
+        <main className="min-w-0 flex-1 py-8 lg:pl-8">
+          <div className="mx-auto max-w-5xl">
             <Outlet />
           </div>
         </main>

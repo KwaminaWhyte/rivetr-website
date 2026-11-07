@@ -1,203 +1,163 @@
-# CLI Reference
+# CLI
 
-Rivetr ships a command-line interface that can control any running Rivetr instance, local or remote. All subcommands accept `--api-url` and `--token` flags, or the environment variables `RIVETR_API_URL` and `RIVETR_TOKEN`.
+The Rivetr binary is both the server and a command-line client. With no subcommand it starts the server; with a subcommand it runs a CLI command and exits. Version 1.0.0 has two groups of commands:
 
----
+- **Remote commands** talk to a running instance over its REST API, from any machine.
+- **Local commands** read `rivetr.toml` and the SQLite database directly on the host.
 
 ## Installation
 
-The CLI is the same binary as the server. Download a pre-built release:
+The production install script places the binary at `/opt/rivetr/rivetr` and runs it as a systemd service. Add that directory to `PATH` or call the full path. Prebuilt release binaries are also published for Linux and macOS.
 
-```bash
-# macOS (Apple Silicon)
-curl -Lo rivetr https://github.com/KwaminaWhyte/rivetr/releases/latest/download/rivetr-macos-arm64
-chmod +x rivetr
-sudo mv rivetr /usr/local/bin/
-
-# Linux (x86_64)
-curl -Lo rivetr https://github.com/KwaminaWhyte/rivetr/releases/latest/download/rivetr-linux-x86_64
-chmod +x rivetr
-sudo mv rivetr /usr/local/bin/
-```
-
-Or build from source:
+The terminal UI is behind the `tui` Cargo feature. Release binaries are built without it, so build from source to use `rivetr tui`:
 
 ```bash
 git clone https://github.com/KwaminaWhyte/rivetr.git
 cd rivetr
 cargo build --release --features tui
-sudo cp target/release/rivetr /usr/local/bin/
 ```
 
----
+## Global flags
 
-## Global Flags
+Flags go before the subcommand: `rivetr --api-url ... status`, not `rivetr status --api-url ...`.
 
-| Flag | Env var | Default | Description |
-|------|---------|---------|-------------|
-| `--config <path>` | - | `rivetr.toml` | Config file (server mode only) |
-| `--api-url <url>` | `RIVETR_API_URL` | `http://localhost:8080` | Rivetr instance URL |
-| `--token <token>` | `RIVETR_TOKEN` | - | API authentication token |
-| `--log-level <level>` | - | `info` | Log verbosity |
+| Flag | Environment variable | Default | Used by |
+|------|----------------------|---------|---------|
+| `--api-url <url>` | `RIVETR_API_URL` | `http://localhost:8080` | Remote commands |
+| `--token <token>` | `RIVETR_TOKEN` | none | Remote commands |
+| `--config <path>` | none | `rivetr.toml` | Server and local commands |
+| `--log-level <level>` | none | Config value (`info` by default) | Server mode |
+| `--skip-checks` | none | off | Server mode only; skips startup self-checks |
 
-Set environment variables to avoid passing flags on every command:
+Set the environment variables once to avoid repeating flags:
 
 ```bash
 export RIVETR_API_URL=https://rivetr.example.com
 export RIVETR_TOKEN=rvt_your_token_here
 ```
 
----
+## Remote commands
 
-## Starting the Server
+| Command | Purpose | Token scope |
+|---------|---------|-------------|
+| `rivetr status` | Health, version, component status, app/database/service counts, CPU, memory, uptime. | `read` |
+| `rivetr apps list` | List apps with ID, name, environment, domain, and port. | `read` |
+| `rivetr apps show <app>` | Show one app by name or UUID. | `read` |
+| `rivetr deploy <app>` | Trigger a deployment and print the deployment ID and status. | `read`, `deploy` |
+| `rivetr logs <app>` | Stream app logs over SSE with `--follow`. | `read` |
 
-Running `rivetr` with no subcommand (or `rivetr server`) starts the server:
+`status` calls `GET /api/system/health` and `GET /api/system/stats`. `apps` and `logs` resolve an app by UUID first, then by case-insensitive name.
 
-```bash
-rivetr --config /opt/rivetr/rivetr.toml
-```
-
----
-
-## `rivetr status`
-
-Show instance health, version, and uptime:
+`logs` only prints output with `--follow`; without it the command prints a hint instead of a historical tail. The `-n/--lines` flag is accepted, but the current streaming path does not use it.
 
 ```bash
-rivetr status
-# or against a remote instance:
-rivetr status --api-url https://rivetr.example.com --token rvt_…
-```
+rivetr --api-url https://rivetr.example.com --token rvt_... status
 
----
-
-## `rivetr apps`
-
-### `rivetr apps list`
-
-List all applications:
-
-```bash
 rivetr apps list
-```
-
-### `rivetr apps show <app>`
-
-Show details for a specific app by name or ID:
-
-```bash
 rivetr apps show my-api
-```
-
----
-
-## `rivetr deploy <app>`
-
-Trigger a deployment for an app by name or ID:
-
-```bash
 rivetr deploy my-api
-```
-
----
-
-## `rivetr logs <app>`
-
-Stream or tail application logs:
-
-```bash
-# Show last 100 lines (default)
-rivetr logs my-api
-
-# Show last 50 lines
-rivetr logs my-api -n 50
-
-# Follow (stream new logs as they arrive)
 rivetr logs my-api --follow
 ```
 
----
+An admin token or dashboard session token also works, but a personal API token with the scopes above is the safer choice for scripts and CI.
 
-## `rivetr backup`
+## Local commands
 
-Create a full instance backup (SQLite database + config + SSL certificates):
+Local commands run on the Rivetr host and read the database at `<data_dir>/rivetr.db` and the config file passed with `--config`. Stop the server where noted.
+
+| Command | Purpose |
+|---------|---------|
+| `rivetr backup` | Create an instance backup. |
+| `rivetr restore <file>` | Restore an instance backup. |
+| `rivetr reset-password <email>` | Reset a user's password offline. |
+| `rivetr config check` | Validate `rivetr.toml` and print a summary. |
+| `rivetr db encrypt-secrets` | Encrypt secrets stored before an encryption key existed. |
+| `rivetr db migrate-teams` | Assign legacy team-less resources to their creator's first team. |
+
+### `backup`
 
 ```bash
-# Save to default location (data/backups/)
-rivetr backup --config /opt/rivetr/rivetr.toml
-
-# Save to a specific path
-rivetr backup --config /opt/rivetr/rivetr.toml --output ./rivetr-$(date +%Y%m%d).tar.gz
+rivetr --config /opt/rivetr/rivetr.toml backup
+rivetr --config /opt/rivetr/rivetr.toml backup --output ./rivetr-backup.tar.gz
 ```
 
-The server does **not** need to be stopped for a backup.
+The default output is `<data_dir>/backups/rivetr-backup-<timestamp>.tar.gz`. The archive contains the SQLite database, `rivetr.toml`, TLS/ACME certificates, and dumps of databases run by Docker Compose services. The command checkpoints the SQLite WAL first and can run while the server is up. Run it as the user that owns `data_dir`.
 
----
-
-## `rivetr restore <backup_file>`
-
-Restore from a backup archive. **Stop the server before restoring.**
+### `restore`
 
 ```bash
 sudo systemctl stop rivetr
-rivetr restore ./rivetr-20260101.tar.gz --config /opt/rivetr/rivetr.toml
+rivetr --config /opt/rivetr/rivetr.toml restore ./rivetr-backup.tar.gz
 sudo systemctl start rivetr
 ```
 
-The command restores the database, config, and SSL certificates and prints a summary of what was restored.
+Restore replaces the database, config, and certificates. Stop the server first, and restart it afterwards. The command prints what was restored and any warnings.
 
----
-
-## `rivetr config check`
-
-Validate the config file and print any errors:
+### `reset-password`
 
 ```bash
-rivetr config check --config /opt/rivetr/rivetr.toml
+rivetr --config /opt/rivetr/rivetr.toml reset-password admin@example.com
+rivetr --config /opt/rivetr/rivetr.toml reset-password admin@example.com --password 'new-password'
 ```
 
----
+This is offline admin recovery for when SMTP is not configured or the admin is locked out. If `--password` is omitted, the command prompts. Passwords must be at least 12 characters. All of the user's sessions are revoked.
 
-## `rivetr db migrate-teams`
-
-One-time migration that assigns unassigned resources (apps, databases, services, projects) to their creator's first team. Run this once after upgrading to a version that introduced multi-tenancy.
+### `config check`
 
 ```bash
-# Dry run (shows what would be migrated, makes no changes)
-rivetr db migrate-teams --config rivetr.toml
-
-# Execute the migration
-rivetr db migrate-teams --config rivetr.toml --execute
+rivetr --config /opt/rivetr/rivetr.toml config check
 ```
 
----
+Prints the parsed server, runtime, security, and feature settings plus warnings for a missing encryption key or webhook secrets. An invalid file exits `1`. A missing file is reported but is not an error; the server would start with defaults.
 
-## `rivetr tui`
-
-Launch the keyboard-driven terminal dashboard. Requires a build with `--features tui` (included in all pre-built release binaries).
+### `db encrypt-secrets`
 
 ```bash
-rivetr tui --url https://rivetr.example.com --token rvt_…
+rivetr --config /opt/rivetr/rivetr.toml db encrypt-secrets
+rivetr --config /opt/rivetr/rivetr.toml db encrypt-secrets --execute
 ```
 
-Or using environment variables:
+Dry run by default. With `--execute`, creates `<data_dir>/.encryption_key` if needed and encrypts env vars, SSH keys and passwords, S3 keys, TOTP secrets, and GitHub App secrets in one transaction. Each value is decrypted back and compared before it is written, and rerunning the command changes nothing. Stop the server first, and back up the database and key files.
+
+### `db migrate-teams`
 
 ```bash
-export RIVETR_URL=https://rivetr.example.com
-export RIVETR_TOKEN=rvt_your_token_here
-rivetr tui
+rivetr --config /opt/rivetr/rivetr.toml db migrate-teams
+rivetr --config /opt/rivetr/rivetr.toml db migrate-teams --execute
 ```
 
-### TUI Keyboard Shortcuts
+Dry run by default. Assigns apps, projects, databases, and services with no team to their creator's first team. This is a one-time migration for older installations.
+
+## Terminal UI
+
+The TUI connects to a running instance and refreshes every 5 seconds. It uses `RIVETR_URL` for the instance URL, not `RIVETR_API_URL`. `RIVETR_TOKEN` is shared with the CLI.
+
+```bash
+rivetr tui --url https://rivetr.example.com --token rvt_...
+```
 
 | Key | Action |
 |-----|--------|
-| `Tab` / `1–4` | Switch tabs: Apps / Deployments / Servers / Logs |
-| `↑` / `↓` | Navigate list |
-| `d` | Deploy selected app |
-| `s` | Stop selected app |
-| `r` | Restart selected app |
-| `?` | Toggle help overlay |
-| `q` / `Ctrl-C` | Quit |
+| `Tab` / `Shift-Tab`, `→` / `←` | Switch between Apps, Deployments, Servers, and Logs tabs |
+| `↑` / `↓`, `k` / `j` | Navigate the list |
+| `Enter` | Select |
+| `d` | Deploy the selected app |
+| `s` | Stop the selected app |
+| `r` | Restart the selected app |
+| `R` | Refresh now |
+| `?` | Toggle the help overlay |
+| `q` / `Esc` / `Ctrl-C` | Quit |
 
-Data refreshes every 5 seconds. The status bar shows the connected instance URL and live connection state.
+## Exit codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Command succeeded. |
+| `1` | Runtime failure: connection error, non-2xx API response, app not found, invalid config, missing database, or a startup self-check failure in server mode. The error is printed to stderr. |
+| `2` | Command-line usage error from clap: unknown subcommand or flag, or a missing argument. |
+
+## Related pages
+
+- [REST API](/docs/api) for the endpoints behind the remote commands.
+- [Backups](/docs/backups) for database, volume, and instance backup schedules.
+- [Configuration](/docs/configuration) for `rivetr.toml`.

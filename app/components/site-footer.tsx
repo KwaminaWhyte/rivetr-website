@@ -10,22 +10,25 @@ const COLUMNS = [
       { label: "Features", href: "/features" },
       { label: "Compare", href: "/#compare" },
       { label: "How it works", href: "/#how" },
+      { label: "Changelog", href: "/changelog" },
     ],
   },
   {
     heading: "Resources",
     links: [
-      { label: "Docs", href: SITE.docs },
-      { label: "GitHub", href: SITE.github },
-      { label: "Changelog", href: `${SITE.github}/blob/main/CHANGELOG.md` },
+      { label: "Documentation", href: "/docs" },
+      { label: "Quick start", href: "/docs/quick-start" },
+      { label: "REST API", href: "/docs/api" },
+      { label: "MCP server", href: "/docs/mcp-server" },
     ],
   },
   {
     heading: "Project",
     links: [
+      { label: "GitHub", href: SITE.github },
+      { label: "Releases", href: SITE.releases },
       { label: "License (MIT)", href: `${SITE.github}/blob/main/LICENSE` },
-      { label: "Issues", href: `${SITE.github}/issues` },
-      { label: "Contributing", href: `${SITE.github}/blob/main/CONTRIBUTING.md` },
+      { label: "Contributing", href: "/docs/contributing" },
     ],
   },
 ];
@@ -54,10 +57,8 @@ export function SiteFooter() {
 
   return (
     <footer className="border-t border-border bg-elevated">
-      {/* Main content */}
       <div className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-8">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Brand column */}
           <div className="lg:col-span-1">
             <Link
               to="/"
@@ -65,19 +66,23 @@ export function SiteFooter() {
             >
               <RivetrLogo size={22} />
               {SITE.name}
+              <span className="rounded-full border border-border-strong px-1.5 py-0.5 font-mono text-[10px] font-medium text-subtle">
+                v{SITE.version}
+              </span>
             </Link>
             <p className="mt-2 text-sm text-subtle leading-relaxed">
               {SITE.tagline}
             </p>
-            {/* Install command chip */}
-            <div className="mt-4 inline-flex items-center rounded-md border border-border-strong bg-surface-strong px-3 py-1.5">
-              <code className="font-mono text-xs text-brand-300 select-all">
+            <div className="mt-4 inline-flex max-w-full items-center rounded-md border border-border-strong bg-surface-strong px-3 py-1.5">
+              <code className="truncate font-mono text-xs text-brand-300 select-all">
                 {SITE.installCmd}
               </code>
             </div>
+            <p className="mt-3 text-xs text-subtle">
+              Released {SITE.released}. MIT licensed.
+            </p>
           </div>
 
-          {/* Link columns */}
           {COLUMNS.map((col) => (
             <div key={col.heading}>
               <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest text-muted">
@@ -95,11 +100,10 @@ export function SiteFooter() {
         </div>
       </div>
 
-      {/* Bottom bar */}
       <div className="border-t border-border">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
           <p className="text-xs text-subtle">
-            &copy; {year} {SITE.name} &middot; MIT licensed
+            &copy; {year} {SITE.name} &middot; MIT licensed &middot; No telemetry
           </p>
           <a
             href={SITE.github}

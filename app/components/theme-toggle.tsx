@@ -7,7 +7,7 @@ type RootLoader = typeof import("~/root").loader;
 type RootAction = typeof import("~/root").action;
 
 function themeColorFor(theme: Theme): string {
-  return theme === "light" ? "#faf7f2" : "#07090d";
+  return theme === "light" ? "#f7f7fb" : "#06070d";
 }
 
 export function ThemeToggle({ className = "" }: { className?: string }) {
